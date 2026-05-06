@@ -284,6 +284,12 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kw-biz{display:flex;flex-direction:column;gap:2px;min-width:90px;margin-left:auto;}
 .kw-biz-lbl{font-size:10px;color:var(--tx3);}
 .kw-biz-val{font-size:12px;font-weight:600;color:var(--tx);}
+.kw-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--sur);border:1px solid var(--bd);border-radius:8px;}
+.kw-legend-item{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.kw-legend-item.ok{background:rgba(45,217,143,.12);color:var(--green);}
+.kw-legend-item.warn{background:rgba(245,160,51,.12);color:var(--orange);}
+.kw-legend-item.danger{background:rgba(240,101,101,.12);color:var(--red);}
+.kw-legend-item.critical{background:rgba(255,68,68,.15);color:#ff4444;}
 
 @media(max-width:768px){
   .kw-view{padding:10px;height:calc(100vh - 50px - 50px);}
@@ -292,6 +298,34 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
   .kw-meta{gap:12px;}
   .kw-header{flex-direction:column;align-items:flex-start;}
 }
+/* ── 거래명세서 현황 섹션 ────────────────────── */
+.inv-section{margin-top:24px;border-top:2px solid var(--bd2);padding-top:20px;}
+.inv-header{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+.inv-title{font-size:14px;font-weight:700;color:var(--tx);}
+.inv-summary{display:flex;gap:8px;flex-wrap:wrap;}
+.inv-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+.inv-badge.total{background:var(--sur2);color:var(--tx2);border:1px solid var(--bd);}
+.inv-badge.issued{background:rgba(45,217,143,.12);color:var(--green);}
+.inv-badge.pending{background:rgba(245,160,51,.12);color:var(--orange);}
+.inv-pjt{background:var(--sur);border:1px solid var(--bd);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.inv-pjt-hd{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--sur2);border-bottom:1px solid var(--bd);}
+.inv-pjt-name{font-size:12px;font-weight:700;color:var(--tx);flex:1;}
+.inv-adv{font-size:10px;padding:2px 7px;border-radius:3px;background:rgba(167,139,250,.15);color:#c4b5fd;font-weight:600;}
+.inv-pjt-stat{font-size:11px;color:var(--tx3);}
+.inv-rows{display:flex;flex-direction:column;}
+.inv-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--bd);font-size:11px;flex-wrap:wrap;}
+.inv-row:last-child{border-bottom:none;}
+.inv-row:hover{background:var(--sur2);}
+.inv-status{font-size:11px;font-weight:700;min-width:80px;}
+.inv-status.inv-issued{color:var(--green);}
+.inv-status.inv-pending{color:var(--orange);}
+.inv-media{color:var(--tx2);font-weight:500;min-width:80px;}
+.inv-period{color:var(--tx3);min-width:100px;}
+.inv-amt{font-weight:700;color:var(--tx);min-width:90px;text-align:right;}
+.inv-memo{color:var(--tx2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.inv-memo-empty{color:var(--tx3);flex:1;}
+@media(max-width:768px){.inv-period{display:none;}.inv-memo{max-width:120px;}}
+
 .detail-panel{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--sur);border-left:1px solid var(--bd2);z-index:300;display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 32px rgba(0,0,0,.4);}
 .detail-panel.open{right:0;}
 .detail-overlay{position:fixed;inset:0;z-index:299;display:none;cursor:default;}
@@ -627,6 +661,13 @@ body.offline .offline-bar{display:block;}
         </div>
         <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()">↻ 새로고침</button>
       </div>
+    </div>
+    <!-- 상태 범례 -->
+    <div class="kw-legend">
+      <span class="kw-legend-item ok">✅ 10만원 이상 · 잔액 충분</span>
+      <span class="kw-legend-item warn">⚠ 10만원 미만 · 잔액 주의</span>
+      <span class="kw-legend-item danger">⚠ 3만원 미만 · 잔액 부족</span>
+      <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
     </div>
     <div class="kw-grid" id="kwGrid"></div>
   </div>
@@ -1184,15 +1225,30 @@ function renderDateHeader(){
 }
 
 // ── BUDGET ────────────────────────────────────
+function isInvoice(r){return (r.media||'').includes('거래명세서');}
+function isIssued(status){
+  const s=String(status||'').trim();
+  return s==='전달'||s.includes('계산서 발행 완료');
+}
+
 function renderBudget(){
-  const tb=groups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.budget,0),0);
-  const ts=groups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.spent,0),0);
+  // 거래명세서 제외한 rows만 예산 집계
+  const budgetGroups=groups.map(g=>({
+    ...g,
+    rows:g.rows.filter(r=>!isInvoice(r))
+  })).filter(g=>g.rows.length>0);
+
+  const tb=budgetGroups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.budget,0),0);
+  const ts=budgetGroups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.spent,0),0);
   document.getElementById('bSummary').innerHTML=`
     <div class="bsum-card"><div class="bsum-label">전체 견적 합계</div><div class="bsum-value">${fmtMoney(tb)}</div></div>
     <div class="bsum-card"><div class="bsum-label">전체 집행 합계</div><div class="bsum-value g">${fmtMoney(ts)}</div></div>
     <div class="bsum-card"><div class="bsum-label">잔여 예산</div><div class="bsum-value b">${fmtMoney(tb-ts)}</div></div>`;
+
   const grid=document.getElementById('bGrid');grid.innerHTML='';
-  groups.forEach(g=>{
+
+  // PJT별 예산 카드 (거래명세서 제외)
+  budgetGroups.forEach(g=>{
     const gb=g.rows.reduce((s,r)=>s+r.budget,0),gs=g.rows.reduce((s,r)=>s+r.spent,0);
     const pct=gb?Math.min(100,Math.round(gs/gb*100)):0;
     const col=pct>90?'#f06565':pct>60?'#f5a033':'#2dd98f';
@@ -1216,7 +1272,71 @@ function renderBudget(){
         </div>`).join('')}</div>`;
     grid.appendChild(card);
   });
+
+  // ── 거래명세서 현황 섹션 ──────────────────────────
+  // 전체 rows에서 거래명세서만 추출
+  const allInvoiceRows=[];
+  groups.forEach(g=>g.rows.forEach(r=>{
+    if(isInvoice(r))allInvoiceRows.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
+  }));
+
+  if(!allInvoiceRows.length)return;
+
+  // 발행완료/미발행 집계
+  const totalInv=allInvoiceRows.length;
+  const issuedInv=allInvoiceRows.filter(r=>isIssued(r.status)).length;
+  const pendingInv=totalInv-issuedInv;
+
+  const sec=document.createElement('div');
+  sec.className='inv-section';
+  sec.innerHTML=`
+    <div class="inv-header">
+      <span class="inv-title">📄 거래명세서 현황</span>
+      <div class="inv-summary">
+        <span class="inv-badge total">전체 ${totalInv}건</span>
+        <span class="inv-badge issued">✅ 발행완료 ${issuedInv}건</span>
+        <span class="inv-badge pending">⏳ 미발행 ${pendingInv}건</span>
+      </div>
+    </div>`;
+
+  // PJT별 그룹핑
+  const invByPjt={};
+  allInvoiceRows.forEach(r=>{
+    if(!invByPjt[r._pjt])invByPjt[r._pjt]={color:r._color,advertiser:r._advertiser,rows:[]};
+    invByPjt[r._pjt].rows.push(r);
+  });
+
+  Object.entries(invByPjt).forEach(([pjt,g])=>{
+    const pjtDiv=document.createElement('div');
+    pjtDiv.className='inv-pjt';
+    const pjtIssued=g.rows.filter(r=>isIssued(r.status)).length;
+    pjtDiv.innerHTML=`
+      <div class="inv-pjt-hd">
+        <div class="pdot" style="background:${g.color}"></div>
+        <span class="inv-pjt-name">${pjt}</span>
+        ${g.advertiser?`<span class="inv-adv">${g.advertiser}</span>`:''}
+        <span class="inv-pjt-stat">${pjtIssued}/${g.rows.length} 발행완료</span>
+      </div>
+      <div class="inv-rows">
+        ${g.rows.map(r=>{
+          const issued=isIssued(r.status);
+          const statusTxt=r.status==='전달'?'전달완료':r.status.includes('발행 완료')?'발행완료':'미발행';
+          const statusCls=issued?'inv-issued':'inv-pending';
+          return `<div class="inv-row">
+            <span class="inv-status ${statusCls}">${issued?'✅':'⏳'} ${statusTxt}</span>
+            <span class="inv-media">${r.media}</span>
+            <span class="inv-period">${r.sdate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})} ~ ${r.edate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}</span>
+            <span class="inv-amt">${fmtMoney(r.budget)}</span>
+            ${r.memo?`<span class="inv-memo" title="${r.memo}">📝 ${r.memo}</span>`:'<span class="inv-memo-empty">—</span>'}
+          </div>`;
+        }).join('')}
+      </div>`;
+    sec.appendChild(pjtDiv);
+  });
+
+  grid.appendChild(sec);
 }
+
 
 // ── TOOLTIP ──────────────────────────────────
 const tip=document.getElementById('tip');
@@ -1367,7 +1487,7 @@ const KW_BIZ_INFO={
   'fiana':       '전체사용',
   'brinsight1':  '코오롱',
   'brinsight2':  '엠디엠플러스',
-  'brinsight3':  '둔천주공조합',
+  'brinsight3':  '우미건설',
   'brinsight4':  '계룡건설',
   'brinsight05': 'DL이앤씨',
   'brinsight6':  '금호건설',
