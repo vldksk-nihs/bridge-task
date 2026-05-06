@@ -1151,8 +1151,11 @@ function applyFilter(){
     if(q&&!r.pjt.toLowerCase().includes(q)&&!r.media.toLowerCase().includes(q)&&!r.bsa.toLowerCase().includes(q)&&!(r.type||'').toLowerCase().includes(q))return false;
     if(advf&&r.type!==advf)return false;
     if(mf&&r.bsa!==mf)return false;
-    if(sf==='진행중'){if(!isOngoing(r.status))return false;}
-    else if(sf==='종료'){if(!(r.status.includes('종료')&&!r.status.includes('예정')))return false;}
+    // 거래명세서 항목은 상태 필터 제외 (발행완료 등 별도 상태값 사용)
+    if(!isInvoice(r)){
+      if(sf==='진행중'){if(!isOngoing(r.status))return false;}
+      else if(sf==='종료'){if(!(r.status.includes('종료')&&!r.status.includes('예정')))return false;}
+    }
     if(pf&&r.pjt!==pf)return false;
     if(af&&r.assignee!==af)return false;
     return true;
