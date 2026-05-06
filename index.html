@@ -148,6 +148,10 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 /* BUDGET */
 .budget-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--sur2);border:1px solid var(--bd);border-radius:8px;padding:4px;}
+.sub-tab{flex:1;padding:7px 0;border:none;border-radius:6px;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
+.sub-tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.sub-tab:hover:not(.on){background:rgba(255,255,255,.05);color:var(--tx);}
 .bsum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 .bsum-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;}
 .bsum-label{font-size:11px;color:var(--tx3);margin-bottom:6px;}
@@ -298,9 +302,9 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
   .kw-meta{gap:12px;}
   .kw-header{flex-direction:column;align-items:flex-start;}
 }
-/* ── 거래명세서 현황 섹션 ────────────────────── */
-.inv-section{margin-top:24px;border-top:2px solid var(--bd2);padding-top:20px;}
-.inv-header{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+/* ── 거래명세서 서브페이지 ───────────────────── */
+.inv-top{margin-bottom:14px;}
+.inv-header{display:flex;align-items:center;flex-wrap:wrap;gap:10px;}
 .inv-title{font-size:14px;font-weight:700;color:var(--tx);}
 .inv-summary{display:flex;gap:8px;flex-wrap:wrap;}
 .inv-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
@@ -628,8 +632,21 @@ body.offline .offline-bar{display:block;}
   </div>
 
   <div class="budget-view hide" id="budgetView">
-    <div class="bsum" id="bSummary"></div>
-    <div class="bgrid" id="bGrid"></div>
+    <!-- 서브탭 -->
+    <div class="sub-tabs">
+      <button class="sub-tab on" id="subTabBudget" onclick="switchSubTab('budget')">💰 예산 요약</button>
+      <button class="sub-tab" id="subTabInvoice" onclick="switchSubTab('invoice')">📄 거래명세서</button>
+    </div>
+    <!-- 예산 요약 서브페이지 -->
+    <div id="subBudget">
+      <div class="bsum" id="bSummary"></div>
+      <div class="bgrid" id="bGrid"></div>
+    </div>
+    <!-- 거래명세서 서브페이지 -->
+    <div id="subInvoice" class="hide">
+      <div class="inv-top" id="invTop"></div>
+      <div id="invGrid"></div>
+    </div>
   </div>
 
   <div class="leave-view hide" id="leaveView">
@@ -1226,9 +1243,20 @@ function renderDateHeader(){
 
 // ── BUDGET ────────────────────────────────────
 function isInvoice(r){return (r.media||'').includes('거래명세서');}
+// 전달 = 미발행, 계산서 발행 완료 = 발행완료
 function isIssued(status){
   const s=String(status||'').trim();
-  return s==='전달'||s.includes('계산서 발행 완료');
+  return s.includes('계산서 발행 완료');
+}
+
+let currentSubTab='budget';
+function switchSubTab(tab){
+  currentSubTab=tab;
+  document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
+  document.getElementById('subTabInvoice').classList.toggle('on',tab==='invoice');
+  document.getElementById('subBudget').classList.toggle('hide',tab!=='budget');
+  document.getElementById('subInvoice').classList.toggle('hide',tab!=='invoice');
+  if(tab==='invoice')renderInvoice();
 }
 
 function renderBudget(){
@@ -1244,10 +1272,7 @@ function renderBudget(){
     <div class="bsum-card"><div class="bsum-label">전체 견적 합계</div><div class="bsum-value">${fmtMoney(tb)}</div></div>
     <div class="bsum-card"><div class="bsum-label">전체 집행 합계</div><div class="bsum-value g">${fmtMoney(ts)}</div></div>
     <div class="bsum-card"><div class="bsum-label">잔여 예산</div><div class="bsum-value b">${fmtMoney(tb-ts)}</div></div>`;
-
   const grid=document.getElementById('bGrid');grid.innerHTML='';
-
-  // PJT별 예산 카드 (거래명세서 제외)
   budgetGroups.forEach(g=>{
     const gb=g.rows.reduce((s,r)=>s+r.budget,0),gs=g.rows.reduce((s,r)=>s+r.spent,0);
     const pct=gb?Math.min(100,Math.round(gs/gb*100)):0;
@@ -1272,44 +1297,52 @@ function renderBudget(){
         </div>`).join('')}</div>`;
     grid.appendChild(card);
   });
+  // 거래명세서 서브탭도 데이터 갱신 (현재 보고 있으면 재렌더)
+  if(currentSubTab==='invoice')renderInvoice();
+}
 
-  // ── 거래명세서 현황 섹션 ──────────────────────────
+function renderInvoice(){
+  const topEl=document.getElementById('invTop');
+  const gridEl=document.getElementById('invGrid');
+  if(!topEl||!gridEl)return;
+
   // 전체 rows에서 거래명세서만 추출
-  const allInvoiceRows=[];
+  const allInv=[];
   groups.forEach(g=>g.rows.forEach(r=>{
-    if(isInvoice(r))allInvoiceRows.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
+    if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
   }));
 
-  if(!allInvoiceRows.length)return;
+  if(!allInv.length){
+    topEl.innerHTML='';
+    gridEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">거래명세서 항목이 없습니다</div>';
+    return;
+  }
 
-  // 발행완료/미발행 집계
-  const totalInv=allInvoiceRows.length;
-  const issuedInv=allInvoiceRows.filter(r=>isIssued(r.status)).length;
-  const pendingInv=totalInv-issuedInv;
-
-  const sec=document.createElement('div');
-  sec.className='inv-section';
-  sec.innerHTML=`
-    <div class="inv-header">
-      <span class="inv-title">📄 거래명세서 현황</span>
-      <div class="inv-summary">
-        <span class="inv-badge total">전체 ${totalInv}건</span>
-        <span class="inv-badge issued">✅ 발행완료 ${issuedInv}건</span>
-        <span class="inv-badge pending">⏳ 미발행 ${pendingInv}건</span>
-      </div>
-    </div>`;
+  // 요약 배지
+  const total=allInv.length;
+  const issued=allInv.filter(r=>isIssued(r.status)).length;
+  const pending=total-issued;
+  topEl.innerHTML=`<div class="inv-header">
+    <span class="inv-title">📄 거래명세서 현황</span>
+    <div class="inv-summary">
+      <span class="inv-badge total">전체 ${total}건</span>
+      <span class="inv-badge issued">✅ 발행완료 ${issued}건</span>
+      <span class="inv-badge pending">⏳ 미발행 ${pending}건</span>
+    </div>
+  </div>`;
 
   // PJT별 그룹핑
-  const invByPjt={};
-  allInvoiceRows.forEach(r=>{
-    if(!invByPjt[r._pjt])invByPjt[r._pjt]={color:r._color,advertiser:r._advertiser,rows:[]};
-    invByPjt[r._pjt].rows.push(r);
+  const byPjt={};
+  allInv.forEach(r=>{
+    if(!byPjt[r._pjt])byPjt[r._pjt]={color:r._color,advertiser:r._advertiser,rows:[]};
+    byPjt[r._pjt].rows.push(r);
   });
 
-  Object.entries(invByPjt).forEach(([pjt,g])=>{
+  gridEl.innerHTML='';
+  Object.entries(byPjt).forEach(([pjt,g])=>{
+    const pjtIssued=g.rows.filter(r=>isIssued(r.status)).length;
     const pjtDiv=document.createElement('div');
     pjtDiv.className='inv-pjt';
-    const pjtIssued=g.rows.filter(r=>isIssued(r.status)).length;
     pjtDiv.innerHTML=`
       <div class="inv-pjt-hd">
         <div class="pdot" style="background:${g.color}"></div>
@@ -1320,10 +1353,10 @@ function renderBudget(){
       <div class="inv-rows">
         ${g.rows.map(r=>{
           const issued=isIssued(r.status);
-          const statusTxt=r.status==='전달'?'전달완료':r.status.includes('발행 완료')?'발행완료':'미발행';
-          const statusCls=issued?'inv-issued':'inv-pending';
+          // 전달=미발행, 계산서 발행 완료=발행완료
+          const statusTxt=issued?'발행완료':'미발행';
           return `<div class="inv-row">
-            <span class="inv-status ${statusCls}">${issued?'✅':'⏳'} ${statusTxt}</span>
+            <span class="inv-status ${issued?'inv-issued':'inv-pending'}">${issued?'✅':'⏳'} ${statusTxt}</span>
             <span class="inv-media">${r.media}</span>
             <span class="inv-period">${r.sdate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})} ~ ${r.edate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}</span>
             <span class="inv-amt">${fmtMoney(r.budget)}</span>
@@ -1331,10 +1364,8 @@ function renderBudget(){
           </div>`;
         }).join('')}
       </div>`;
-    sec.appendChild(pjtDiv);
+    gridEl.appendChild(pjtDiv);
   });
-
-  grid.appendChild(sec);
 }
 
 
