@@ -705,6 +705,7 @@ body.offline .offline-bar{display:block;}
           <input type="text" class="inv-search" id="invSearch" placeholder="🔍 현장명 / 광고주 검색" oninput="renderInvoice()">
         </div>
         <div class="inv-ctrl-r">
+          <select class="fi" id="invMonthFi" onchange="renderInvoice()"><option value="">월 전체</option></select>
           <select class="fi" id="invAssigneeFi" onchange="renderInvoice()"><option value="">담당자 전체</option></select>
           <select class="fi" id="invSortFi" onchange="renderInvoice()">
             <option value="pending">미발행 먼저</option>
@@ -1404,6 +1405,7 @@ function renderInvoice(){
   }
   // 선택된 연도 기준 필터
   const q=(document.getElementById('invSearch')?.value||'').toLowerCase();
+  const mFiVal=document.getElementById('invMonthFi')?.value||'';
   const aFiVal=document.getElementById('invAssigneeFi')?.value||'';
   const sortVal=document.getElementById('invSortFi')?.value||'pending';
   let filtered=allInv.filter(r=>{
