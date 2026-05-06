@@ -148,10 +148,6 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 /* BUDGET */
 .budget-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
-.sub-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--sur2);border:1px solid var(--bd);border-radius:8px;padding:4px;}
-.sub-tab{flex:1;padding:7px 0;border:none;border-radius:6px;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
-.sub-tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2);}
-.sub-tab:hover:not(.on){background:rgba(255,255,255,.05);color:var(--tx);}
 .bsum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 .bsum-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;}
 .bsum-label{font-size:11px;color:var(--tx3);margin-bottom:6px;}
@@ -530,6 +526,7 @@ body.offline .offline-bar{display:block;}
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
     <button class="tab" onclick="switchView('leave')"><span class="tab-ic">🏖</span><span class="tab-text">🏖 연차현황</span></button>
     <button class="tab" onclick="switchView('keyword')"><span class="tab-ic">💳</span><span class="tab-text">💳 키워드광고</span></button>
+    <button class="tab hide" id="invoiceTab" onclick="switchView('invoice')"><span class="tab-ic">📄</span><span class="tab-text">📄 거래명세서</span></button>
   </nav>
   <div class="hdr-r">
     <div class="user-info hide" id="userInfo"><span id="userEmail"></span><span class="ub" id="userBadge"></span></div>
@@ -632,21 +629,8 @@ body.offline .offline-bar{display:block;}
   </div>
 
   <div class="budget-view hide" id="budgetView">
-    <!-- 서브탭 -->
-    <div class="sub-tabs">
-      <button class="sub-tab on" id="subTabBudget" onclick="switchSubTab('budget')">💰 예산 요약</button>
-      <button class="sub-tab" id="subTabInvoice" onclick="switchSubTab('invoice')">📄 거래명세서</button>
-    </div>
-    <!-- 예산 요약 서브페이지 -->
-    <div id="subBudget">
-      <div class="bsum" id="bSummary"></div>
-      <div class="bgrid" id="bGrid"></div>
-    </div>
-    <!-- 거래명세서 서브페이지 -->
-    <div id="subInvoice" class="hide">
-      <div class="inv-top" id="invTop"></div>
-      <div id="invGrid"></div>
-    </div>
+    <div class="bsum" id="bSummary"></div>
+    <div class="bgrid" id="bGrid"></div>
   </div>
 
   <div class="leave-view hide" id="leaveView">
@@ -687,6 +671,12 @@ body.offline .offline-bar{display:block;}
       <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
     </div>
     <div class="kw-grid" id="kwGrid"></div>
+  </div>
+
+  <!-- 거래명세서 탭 -->
+  <div class="budget-view hide" id="invoiceView">
+    <div class="inv-top" id="invTop"></div>
+    <div id="invGrid"></div>
   </div>
 </div>
 
@@ -788,7 +778,9 @@ body.offline .offline-bar{display:block;}
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
 const BUDGET_ACCESS=[ADMIN_EMAIL,'woooak@gmail.com','haesuinthesea@gmail.com'];
+const INVOICE_ACCESS=BUDGET_ACCESS; // 동일 권한
 function canAccessBudget(){return BUDGET_ACCESS.includes(userEmail);}
+function canAccessInvoice(){return INVOICE_ACCESS.includes(userEmail);}
 
 // ── 기본값 (자동 입력) ──────────────────────────
 const DEFAULTS={
@@ -930,7 +922,7 @@ function handleLogin(){
 function handleLogout(){
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();
-  ['ganttView','budgetView','leaveView','keywordView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo'].forEach(id=>document.getElementById(id).classList.add('hide'));
+  ['ganttView','budgetView','leaveView','keywordView','invoiceView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo'].forEach(id=>document.getElementById(id).classList.add('hide'));
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
@@ -946,8 +938,9 @@ function onLoggedIn(){
   document.getElementById('userBadge').style.background=isAdmin?'rgba(79,110,247,.2)':'var(--sur3)';
   document.getElementById('userBadge').style.color=isAdmin?'#99aaff':'var(--tx2)';
 
-  // 예산 탭 권한 체크
+  // 예산/거래명세서 탭 권한 체크
   document.getElementById('budgetTab').classList.toggle('hide',!canAccessBudget());
+  document.getElementById('invoiceTab').classList.toggle('hide',!canAccessInvoice());
 
   showLoading('데이터를 불러오는 중...');
   fetchData().finally(hideLoading);
@@ -1249,16 +1242,6 @@ function isIssued(status){
   return s.includes('계산서 발행 완료');
 }
 
-let currentSubTab='budget';
-function switchSubTab(tab){
-  currentSubTab=tab;
-  document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
-  document.getElementById('subTabInvoice').classList.toggle('on',tab==='invoice');
-  document.getElementById('subBudget').classList.toggle('hide',tab!=='budget');
-  document.getElementById('subInvoice').classList.toggle('hide',tab!=='invoice');
-  if(tab==='invoice')renderInvoice();
-}
-
 function renderBudget(){
   // 거래명세서 제외한 rows만 예산 집계
   const budgetGroups=groups.map(g=>({
@@ -1297,8 +1280,7 @@ function renderBudget(){
         </div>`).join('')}</div>`;
     grid.appendChild(card);
   });
-  // 거래명세서 서브탭도 데이터 갱신 (현재 보고 있으면 재렌더)
-  if(currentSubTab==='invoice')renderInvoice();
+  // 거래명세서 서브탭 분리됨 - 별도 renderInvoice() 호출
 }
 
 function renderInvoice(){
@@ -1480,8 +1462,10 @@ function updateMonthLabel(){
 
 function switchView(v){
   if(v==='budget'&&!canAccessBudget()){
-    alert('예산 요약 페이지는 권한이 부여된 사용자만 접근 가능합니다.\n관리자에게 문의해주세요.');
-    return;
+    alert('예산 요약 페이지는 권한이 부여된 사용자만 접근 가능합니다.');return;
+  }
+  if(v==='invoice'&&!canAccessInvoice()){
+    alert('거래명세서 페이지는 권한이 부여된 사용자만 접근 가능합니다.');return;
   }
   view=v;
   document.querySelectorAll('.tab').forEach((t,i)=>{
@@ -1490,21 +1474,21 @@ function switchView(v){
     else if(i===1&&v==='budget')on=true;
     else if(i===2&&v==='leave')on=true;
     else if(i===3&&v==='keyword')on=true;
+    else if(i===4&&v==='invoice')on=true;
     t.classList.toggle('on',on);
   });
   document.getElementById('ganttView').classList.toggle('hide',v!=='gantt');
   document.getElementById('budgetView').classList.toggle('hide',v!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',v!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',v!=='keyword');
+  document.getElementById('invoiceView').classList.toggle('hide',v!=='invoice');
   document.getElementById('navG').style.display=v==='gantt'?'flex':'none';
   document.getElementById('fbar').style.display=(v==='gantt'||v==='budget')?'flex':'none';
-  if(v==='gantt'&&groups.length){
-    if(isMobile())applyMobilePjtMode();
-    else renderGantt();
-  }
+  if(v==='gantt'&&groups.length){if(isMobile())applyMobilePjtMode();else renderGantt();}
   else if(v==='budget'&&groups.length)renderBudget();
   else if(v==='leave')renderLeave();
   else if(v==='keyword')renderKeyword();
+  else if(v==='invoice')renderInvoice();
   haptic(8);
 }
 
@@ -1883,8 +1867,10 @@ function updateSyncTime(){
   document.getElementById('budgetView').classList.toggle('hide',view!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',view!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',view!=='keyword');
+  document.getElementById('invoiceView').classList.toggle('hide',view!=='invoice');
   if(view==='leave')renderLeave();
   if(view==='keyword')renderKeyword();
+  if(view==='invoice')renderInvoice();
 }
 
 // ─────────────────────────────────────────────
