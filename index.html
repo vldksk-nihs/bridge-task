@@ -153,7 +153,15 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .sub-tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .sub-tab:hover:not(.on){background:rgba(255,255,255,.05);color:var(--tx);}
 
+/* 연도 탭 */
+.inv-year-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.inv-year-tab{padding:6px 18px;border-radius:20px;border:1px solid var(--bd2);background:var(--sur2);color:var(--tx2);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;}
+.inv-year-tab:hover{background:var(--sur3);color:var(--tx);}
+.inv-year-tab.on{background:var(--pri);color:#fff;border-color:var(--pri);}
+.inv-year-tab .ytab-cnt{font-size:10px;opacity:.8;margin-left:4px;}
+
 /* 거래명세서 컨트롤바 */
+
 .inv-ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .inv-ctrl-l{flex:1;}
 .inv-ctrl-r{display:flex;gap:6px;flex-wrap:wrap;}
@@ -689,13 +697,14 @@ body.offline .offline-bar{display:block;}
     </div>
     <!-- 거래명세서 -->
     <div id="subInvoice" class="hide">
+      <!-- 연도 탭 -->
+      <div class="inv-year-tabs" id="invYearTabs"></div>
       <!-- 컨트롤바 -->
       <div class="inv-ctrl">
         <div class="inv-ctrl-l">
           <input type="text" class="inv-search" id="invSearch" placeholder="🔍 현장명 / 광고주 검색" oninput="renderInvoice()">
         </div>
         <div class="inv-ctrl-r">
-          <select class="fi" id="invMonthFi" onchange="renderInvoice()"><option value="">월 전체</option></select>
           <select class="fi" id="invAssigneeFi" onchange="renderInvoice()"><option value="">담당자 전체</option></select>
           <select class="fi" id="invSortFi" onchange="renderInvoice()">
             <option value="pending">미발행 먼저</option>
@@ -1317,6 +1326,8 @@ function isIssued(status){
 }
 
 let currentSubTab='budget';
+let selectedInvYear=TODAY.getFullYear(); // 기본값: 현재 연도
+
 function switchSubTab(tab){
   currentSubTab=tab;
   document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
@@ -1329,14 +1340,53 @@ function switchSubTab(tab){
 function buildInvoiceFilters(){
   const allInv=[];
   groups.forEach(g=>g.rows.forEach(r=>{if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});}));
-  const months=[...new Set(allInv.map(r=>`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`))].sort();
-  const assignees=[...new Set(allInv.map(r=>r.assignee).filter(Boolean))].sort();
+
+  // 연도 목록 추출
+  const years=[...new Set(allInv.map(r=>r.edate.getFullYear()))].sort();
+  // 선택 연도 유효성 보정 (현재 연도 우선, 없으면 최근 연도)
+  if(!years.includes(selectedInvYear)&&years.length){
+    selectedInvYear=years.includes(TODAY.getFullYear())?TODAY.getFullYear():years[years.length-1];
+  }
+
+  // 연도 탭 렌더
+  const yearTabsEl=document.getElementById('invYearTabs');
+  if(yearTabsEl){
+    yearTabsEl.innerHTML=years.map(y=>{
+      const yCnt=allInv.filter(r=>r.edate.getFullYear()===y).length;
+      const yPending=allInv.filter(r=>r.edate.getFullYear()===y&&!isIssued(r.status)).length;
+      const badge=yPending>0?`⏳ ${yPending}건`:` ✅ ${yCnt}건`;
+      return `<button class="inv-year-tab${y===selectedInvYear?' on':''}" onclick="selectInvYear(${y})">
+        ${y}년 <span class="ytab-cnt">${badge}</span>
+      </button>`;
+    }).join('');
+  }
+
+  // 월 필터 (선택 연도 기준)
   const mFi=document.getElementById('invMonthFi');
+  if(mFi){
+    const months=[...new Set(allInv
+      .filter(r=>r.edate.getFullYear()===selectedInvYear)
+      .map(r=>String(r.edate.getMonth()+1).padStart(2,'0')))].sort();
+    const mVal=mFi.value;
+    mFi.innerHTML='<option value="">월 전체</option>'+months.map(m=>`<option value="${m}">${parseInt(m)}월</option>`).join('');
+    mFi.value=months.includes(mVal)?mVal:'';
+  }
+
+  // 담당자 필터 (선택 연도 기준)
   const aFi=document.getElementById('invAssigneeFi');
-  const mVal=mFi.value,aVal=aFi.value;
-  mFi.innerHTML='<option value="">월 전체</option>'+months.map(m=>{const[y,mo]=m.split('.');return`<option value="${m}">${y}년 ${parseInt(mo)}월</option>`;}).join('');
-  aFi.innerHTML='<option value="">담당자 전체</option>'+assignees.map(a=>`<option>${a}</option>`).join('');
-  mFi.value=mVal;aFi.value=aVal;
+  if(aFi){
+    const assignees=[...new Set(allInv.filter(r=>r.edate.getFullYear()===selectedInvYear).map(r=>r.assignee).filter(Boolean))].sort();
+    const aVal=aFi.value;
+    aFi.innerHTML='<option value="">담당자 전체</option>'+assignees.map(a=>`<option>${a}</option>`).join('');
+    aFi.value=aVal;
+  }
+}
+
+function selectInvYear(y){
+  selectedInvYear=y;
+  buildInvoiceFilters();
+  renderInvoice();
+  haptic(8);
 }
 
 function renderInvoice(){
@@ -1352,14 +1402,14 @@ function renderInvoice(){
     topEl.innerHTML='';gridEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">거래명세서 항목이 없습니다</div>';
     if(annualEl)annualEl.innerHTML='';return;
   }
-  // 필터
+  // 선택된 연도 기준 필터
   const q=(document.getElementById('invSearch')?.value||'').toLowerCase();
-  const mFiVal=document.getElementById('invMonthFi')?.value||'';
   const aFiVal=document.getElementById('invAssigneeFi')?.value||'';
   const sortVal=document.getElementById('invSortFi')?.value||'pending';
   let filtered=allInv.filter(r=>{
+    if(r.edate.getFullYear()!==selectedInvYear)return false;
     if(q&&!r._pjt.toLowerCase().includes(q)&&!r._advertiser.toLowerCase().includes(q))return false;
-    if(mFiVal){const key=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;if(key!==mFiVal)return false;}
+    if(mFiVal&&String(r.edate.getMonth()+1).padStart(2,'0')!==mFiVal)return false;
     if(aFiVal&&r.assignee!==aFiVal)return false;
     return true;
   });
@@ -1371,10 +1421,11 @@ function renderInvoice(){
     if(sortVal==='amount')return b.budget-a.budget;
     return a.edate-b.edate;
   });
-  // 요약카드
-  const total=allInv.length,issued=allInv.filter(r=>isIssued(r.status)).length,pending=total-issued;
-  const totalAmt=allInv.reduce((s,r)=>s+r.budget,0);
-  const issuedAmt=allInv.filter(r=>isIssued(r.status)).reduce((s,r)=>s+r.budget,0);
+  // 요약카드 (선택 연도 기준)
+  const yearInv=allInv.filter(r=>r.edate.getFullYear()===selectedInvYear);
+  const total=yearInv.length,issued=yearInv.filter(r=>isIssued(r.status)).length,pending=total-issued;
+  const totalAmt=yearInv.reduce((s,r)=>s+r.budget,0);
+  const issuedAmt=yearInv.filter(r=>isIssued(r.status)).reduce((s,r)=>s+r.budget,0);
   topEl.innerHTML=`<div class="inv-sum-cards">
     <div class="inv-sum-card"><span class="inv-sum-lbl">전체</span><span class="inv-sum-val">${total}건</span><span class="inv-sum-sub">${fmtMoney(totalAmt)}</span></div>
     <div class="inv-sum-card pending-card"><span class="inv-sum-lbl">⏳ 미발행</span><span class="inv-sum-val">${pending}건</span><span class="inv-sum-sub">${fmtMoney(totalAmt-issuedAmt)}</span></div>
@@ -1421,17 +1472,17 @@ function renderInvoice(){
       gridEl.appendChild(mDiv);
     });
   }
-  // 연간 발행 요약
+  // 연간 발행 요약 (선택 연도)
   if(annualEl){
     const byM={};
-    allInv.forEach(r=>{
-      const k=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;
+    yearInv.forEach(r=>{
+      const k=String(r.edate.getMonth()+1).padStart(2,'0');
       if(!byM[k])byM[k]={total:0,issued:0,amt:0};
       byM[k].total++;if(isIssued(r.status))byM[k].issued++;byM[k].amt+=r.budget;
     });
     const maxTotal=Math.max(...Object.values(byM).map(v=>v.total),1);
-    const rows=Object.entries(byM).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>{
-      const[y,mo]=k.split('.');const pct=Math.round(v.issued/v.total*100);
+    const rows=Object.entries(byM).sort(([a],[b])=>a.localeCompare(b)).map(([mo,v])=>{
+      const pct=Math.round(v.issued/v.total*100);
       const allDone=v.issued===v.total;const barW=Math.round(v.total/maxTotal*100);
       return `<div class="inv-annual-row ${allDone?'all-done':'has-pending'}">
         <span class="inv-annual-month">${parseInt(mo)}월</span>
@@ -1440,8 +1491,7 @@ function renderInvoice(){
         <span class="inv-annual-amt">${fmtMoney(v.amt)}</span>
       </div>`;
     }).join('');
-    const yr=[...new Set(allInv.map(r=>r.edate.getFullYear()))].join('/');
-    annualEl.innerHTML=`<div class="inv-annual-title">📊 ${yr}년 월별 발행 현황</div><div class="inv-annual-grid">${rows}</div>`;
+    annualEl.innerHTML=`<div class="inv-annual-title">📊 ${selectedInvYear}년 월별 발행 현황</div><div class="inv-annual-grid">${rows}</div>`;
   }
 }
 
