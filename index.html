@@ -148,6 +148,37 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 /* BUDGET */
 .budget-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--sur2);border:1px solid var(--bd);border-radius:8px;padding:4px;}
+.sub-tab{flex:1;padding:7px 0;border:none;border-radius:6px;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
+.sub-tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.sub-tab:hover:not(.on){background:rgba(255,255,255,.05);color:var(--tx);}
+
+/* 거래명세서 컨트롤바 */
+.inv-ctrl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.inv-ctrl-l{flex:1;}
+.inv-ctrl-r{display:flex;gap:6px;flex-wrap:wrap;}
+.inv-search{width:100%;padding:7px 12px;background:var(--sur2);border:1px solid var(--bd);border-radius:6px;color:var(--tx);font-size:12px;font-family:inherit;}
+.inv-search:focus{outline:none;border-color:var(--pri);}
+
+/* 연간 발행 요약 */
+.inv-annual{margin-top:28px;border-top:2px solid var(--bd2);padding-top:20px;}
+.inv-annual-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px;}
+.inv-annual-grid{display:flex;flex-direction:column;gap:6px;}
+.inv-annual-row{display:grid;grid-template-columns:60px 1fr 80px 80px;align-items:center;gap:10px;font-size:11px;}
+.inv-annual-month{font-weight:600;color:var(--tx2);}
+.inv-annual-bar-wrap{background:var(--sur2);border-radius:4px;overflow:hidden;height:14px;position:relative;}
+.inv-annual-bar-bg{height:100%;border-radius:4px;background:rgba(79,110,247,.15);}
+.inv-annual-bar-fill{height:100%;border-radius:4px;background:var(--green);position:absolute;top:0;left:0;transition:.4s;}
+.inv-annual-cnt{color:var(--tx3);text-align:right;}
+.inv-annual-amt{color:var(--tx);font-weight:600;text-align:right;}
+.inv-annual-row.all-done .inv-annual-month{color:var(--green);}
+.inv-annual-row.has-pending .inv-annual-month{color:var(--orange);}
+@media(max-width:768px){
+  .inv-ctrl{flex-direction:column;}
+  .inv-ctrl-r{width:100%;}
+  .inv-annual-row{grid-template-columns:50px 1fr 60px;}
+  .inv-annual-amt{display:none;}
+}
 .bsum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 .bsum-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;}
 .bsum-label{font-size:11px;color:var(--tx3);margin-bottom:6px;}
@@ -544,7 +575,6 @@ body.offline .offline-bar{display:block;}
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
     <button class="tab" onclick="switchView('leave')"><span class="tab-ic">🏖</span><span class="tab-text">🏖 연차현황</span></button>
     <button class="tab" onclick="switchView('keyword')"><span class="tab-ic">💳</span><span class="tab-text">💳 키워드광고</span></button>
-    <button class="tab hide" id="invoiceTab" onclick="switchView('invoice')"><span class="tab-ic">📄</span><span class="tab-text">📄 거래명세서</span></button>
   </nav>
   <div class="hdr-r">
     <div class="user-info hide" id="userInfo"><span id="userEmail"></span><span class="ub" id="userBadge"></span></div>
@@ -647,8 +677,39 @@ body.offline .offline-bar{display:block;}
   </div>
 
   <div class="budget-view hide" id="budgetView">
-    <div class="bsum" id="bSummary"></div>
-    <div class="bgrid" id="bGrid"></div>
+    <!-- 서브탭 -->
+    <div class="sub-tabs">
+      <button class="sub-tab on" id="subTabBudget" onclick="switchSubTab('budget')">💰 예산 요약</button>
+      <button class="sub-tab" id="subTabInvoice" onclick="switchSubTab('invoice')">📄 거래명세서</button>
+    </div>
+    <!-- 예산 요약 -->
+    <div id="subBudget">
+      <div class="bsum" id="bSummary"></div>
+      <div class="bgrid" id="bGrid"></div>
+    </div>
+    <!-- 거래명세서 -->
+    <div id="subInvoice" class="hide">
+      <!-- 컨트롤바 -->
+      <div class="inv-ctrl">
+        <div class="inv-ctrl-l">
+          <input type="text" class="inv-search" id="invSearch" placeholder="🔍 현장명 / 광고주 검색" oninput="renderInvoice()">
+        </div>
+        <div class="inv-ctrl-r">
+          <select class="fi" id="invMonthFi" onchange="renderInvoice()"><option value="">월 전체</option></select>
+          <select class="fi" id="invAssigneeFi" onchange="renderInvoice()"><option value="">담당자 전체</option></select>
+          <select class="fi" id="invSortFi" onchange="renderInvoice()">
+            <option value="pending">미발행 먼저</option>
+            <option value="issued">발행완료 먼저</option>
+            <option value="month">월별 순</option>
+            <option value="amount">금액 높은순</option>
+          </select>
+        </div>
+      </div>
+      <div class="inv-top" id="invTop"></div>
+      <div id="invGrid"></div>
+      <!-- 연간 발행 요약 -->
+      <div class="inv-annual" id="invAnnual"></div>
+    </div>
   </div>
 
   <div class="leave-view hide" id="leaveView">
@@ -689,12 +750,6 @@ body.offline .offline-bar{display:block;}
       <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
     </div>
     <div class="kw-grid" id="kwGrid"></div>
-  </div>
-
-  <!-- 거래명세서 탭 -->
-  <div class="budget-view hide" id="invoiceView">
-    <div class="inv-top" id="invTop"></div>
-    <div id="invGrid"></div>
   </div>
 </div>
 
@@ -940,7 +995,7 @@ function handleLogin(){
 function handleLogout(){
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();
-  ['ganttView','budgetView','leaveView','keywordView','invoiceView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo'].forEach(id=>document.getElementById(id).classList.add('hide'));
+  ['ganttView','budgetView','leaveView','keywordView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo'].forEach(id=>document.getElementById(id).classList.add('hide'));
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
@@ -956,9 +1011,8 @@ function onLoggedIn(){
   document.getElementById('userBadge').style.background=isAdmin?'rgba(79,110,247,.2)':'var(--sur3)';
   document.getElementById('userBadge').style.color=isAdmin?'#99aaff':'var(--tx2)';
 
-  // 예산/거래명세서 탭 권한 체크
+  // 예산/거래명세서 서브탭 권한 체크
   document.getElementById('budgetTab').classList.toggle('hide',!canAccessBudget());
-  document.getElementById('invoiceTab').classList.toggle('hide',!canAccessInvoice());
 
   showLoading('데이터를 불러오는 중...');
   fetchData().finally(hideLoading);
@@ -1254,10 +1308,138 @@ function renderDateHeader(){
 
 // ── BUDGET ────────────────────────────────────
 function isInvoice(r){return (r.media||'').includes('거래명세서');}
-// 전달 = 미발행, 계산서 발행 완료 = 발행완료
 function isIssued(status){
   const s=String(status||'').trim();
   return s.includes('계산서 발행 완료');
+}
+
+let currentSubTab='budget';
+function switchSubTab(tab){
+  currentSubTab=tab;
+  document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
+  document.getElementById('subTabInvoice').classList.toggle('on',tab==='invoice');
+  document.getElementById('subBudget').classList.toggle('hide',tab!=='budget');
+  document.getElementById('subInvoice').classList.toggle('hide',tab!=='invoice');
+  if(tab==='invoice'){buildInvoiceFilters();renderInvoice();}
+}
+
+function buildInvoiceFilters(){
+  const allInv=[];
+  groups.forEach(g=>g.rows.forEach(r=>{if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});}));
+  const months=[...new Set(allInv.map(r=>`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`))].sort();
+  const assignees=[...new Set(allInv.map(r=>r.assignee).filter(Boolean))].sort();
+  const mFi=document.getElementById('invMonthFi');
+  const aFi=document.getElementById('invAssigneeFi');
+  const mVal=mFi.value,aVal=aFi.value;
+  mFi.innerHTML='<option value="">월 전체</option>'+months.map(m=>{const[y,mo]=m.split('.');return`<option value="${m}">${y}년 ${parseInt(mo)}월</option>`;}).join('');
+  aFi.innerHTML='<option value="">담당자 전체</option>'+assignees.map(a=>`<option>${a}</option>`).join('');
+  mFi.value=mVal;aFi.value=aVal;
+}
+
+function renderInvoice(){
+  const topEl=document.getElementById('invTop');
+  const gridEl=document.getElementById('invGrid');
+  const annualEl=document.getElementById('invAnnual');
+  if(!topEl||!gridEl)return;
+  const allInv=[];
+  groups.forEach(g=>g.rows.forEach(r=>{
+    if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
+  }));
+  if(!allInv.length){
+    topEl.innerHTML='';gridEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">거래명세서 항목이 없습니다</div>';
+    if(annualEl)annualEl.innerHTML='';return;
+  }
+  // 필터
+  const q=(document.getElementById('invSearch')?.value||'').toLowerCase();
+  const mFiVal=document.getElementById('invMonthFi')?.value||'';
+  const aFiVal=document.getElementById('invAssigneeFi')?.value||'';
+  const sortVal=document.getElementById('invSortFi')?.value||'pending';
+  let filtered=allInv.filter(r=>{
+    if(q&&!r._pjt.toLowerCase().includes(q)&&!r._advertiser.toLowerCase().includes(q))return false;
+    if(mFiVal){const key=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;if(key!==mFiVal)return false;}
+    if(aFiVal&&r.assignee!==aFiVal)return false;
+    return true;
+  });
+  // 정렬
+  filtered.sort((a,b)=>{
+    const ai=isIssued(a.status)?1:0,bi=isIssued(b.status)?1:0;
+    if(sortVal==='pending'){if(ai!==bi)return ai-bi;return b.edate-a.edate;}
+    if(sortVal==='issued'){if(ai!==bi)return bi-ai;return b.edate-a.edate;}
+    if(sortVal==='amount')return b.budget-a.budget;
+    return a.edate-b.edate;
+  });
+  // 요약카드
+  const total=allInv.length,issued=allInv.filter(r=>isIssued(r.status)).length,pending=total-issued;
+  const totalAmt=allInv.reduce((s,r)=>s+r.budget,0);
+  const issuedAmt=allInv.filter(r=>isIssued(r.status)).reduce((s,r)=>s+r.budget,0);
+  topEl.innerHTML=`<div class="inv-sum-cards">
+    <div class="inv-sum-card"><span class="inv-sum-lbl">전체</span><span class="inv-sum-val">${total}건</span><span class="inv-sum-sub">${fmtMoney(totalAmt)}</span></div>
+    <div class="inv-sum-card pending-card"><span class="inv-sum-lbl">⏳ 미발행</span><span class="inv-sum-val">${pending}건</span><span class="inv-sum-sub">${fmtMoney(totalAmt-issuedAmt)}</span></div>
+    <div class="inv-sum-card issued-card"><span class="inv-sum-lbl">✅ 발행완료</span><span class="inv-sum-val">${issued}건</span><span class="inv-sum-sub">${fmtMoney(issuedAmt)}</span></div>
+    <div class="inv-sum-card"><span class="inv-sum-lbl">발행률</span><span class="inv-sum-val" style="color:var(--pri)">${total?Math.round(issued/total*100):0}%</span><span class="inv-sum-sub">${issued}/${total} 완료</span></div>
+  </div>`;
+  // 목록
+  if(!filtered.length){
+    gridEl.innerHTML='<div style="padding:30px;text-align:center;color:var(--tx3);font-size:12px">해당하는 항목이 없습니다</div>';
+  } else {
+    const byMonth={};
+    filtered.forEach(r=>{
+      const key=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;
+      if(!byMonth[key])byMonth[key]=[];byMonth[key].push(r);
+    });
+    gridEl.innerHTML='';
+    Object.keys(byMonth).sort().forEach(monthKey=>{
+      const items=byMonth[monthKey];const[y,m]=monthKey.split('.');
+      const pCnt=items.filter(r=>!isIssued(r.status)).length;
+      const mDiv=document.createElement('div');mDiv.className='inv-month-group';
+      mDiv.innerHTML=`<div class="inv-month-label">📅 ${y}년 ${parseInt(m)}월
+        ${pCnt>0?`<span class="inv-m-badge" style="background:rgba(245,160,51,.15);color:var(--orange)">⏳ 미발행 ${pCnt}건</span>`:''}
+        ${pCnt===0?`<span class="inv-m-badge" style="background:rgba(45,217,143,.12);color:var(--green)">✅ 전체 발행완료</span>`:''}
+      </div>`;
+      items.forEach(r=>{
+        const iss=isIssued(r.status);
+        const card=document.createElement('div');card.className=`inv-card ${iss?'inv-card-issued':'inv-card-pending'}`;
+        const period=`${r.sdate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})} ~ ${r.edate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}`;
+        card.innerHTML=`
+          <div class="inv-card-status"><span class="inv-status-icon">${iss?'✅':'⏳'}</span><span class="inv-status-txt">${iss?'발행완료':'미발행'}</span></div>
+          <div class="inv-card-info">
+            <span class="inv-card-pjt">${r._pjt}</span>
+            <div class="inv-card-meta">
+              ${r._advertiser?`<span class="inv-card-adv">${r._advertiser}</span>`:''}
+              <span class="inv-card-period">📅 ${period}</span>
+              ${r.memo?`<span class="inv-card-memo">📝 ${r.memo}</span>`:''}
+            </div>
+          </div>
+          <span class="inv-card-media">${r.media}</span>
+          <span class="inv-card-amt">${fmtMoney(r.budget)}</span>
+          <span class="inv-card-assignee">${r.assignee||'—'}</span>`;
+        mDiv.appendChild(card);
+      });
+      gridEl.appendChild(mDiv);
+    });
+  }
+  // 연간 발행 요약
+  if(annualEl){
+    const byM={};
+    allInv.forEach(r=>{
+      const k=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;
+      if(!byM[k])byM[k]={total:0,issued:0,amt:0};
+      byM[k].total++;if(isIssued(r.status))byM[k].issued++;byM[k].amt+=r.budget;
+    });
+    const maxTotal=Math.max(...Object.values(byM).map(v=>v.total),1);
+    const rows=Object.entries(byM).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>{
+      const[y,mo]=k.split('.');const pct=Math.round(v.issued/v.total*100);
+      const allDone=v.issued===v.total;const barW=Math.round(v.total/maxTotal*100);
+      return `<div class="inv-annual-row ${allDone?'all-done':'has-pending'}">
+        <span class="inv-annual-month">${parseInt(mo)}월</span>
+        <div class="inv-annual-bar-wrap"><div class="inv-annual-bar-bg" style="width:${barW}%"></div><div class="inv-annual-bar-fill" style="width:${Math.round(v.issued/v.total*barW)}%"></div></div>
+        <span class="inv-annual-cnt">${v.issued}/${v.total} (${pct}%)</span>
+        <span class="inv-annual-amt">${fmtMoney(v.amt)}</span>
+      </div>`;
+    }).join('');
+    const yr=[...new Set(allInv.map(r=>r.edate.getFullYear()))].join('/');
+    annualEl.innerHTML=`<div class="inv-annual-title">📊 ${yr}년 월별 발행 현황</div><div class="inv-annual-grid">${rows}</div>`;
+  }
 }
 
 function renderBudget(){
@@ -1300,110 +1482,6 @@ function renderBudget(){
   });
   // 거래명세서 서브탭 분리됨 - 별도 renderInvoice() 호출
 }
-
-function renderInvoice(){
-  const topEl=document.getElementById('invTop');
-  const gridEl=document.getElementById('invGrid');
-  if(!topEl||!gridEl)return;
-
-  // 거래명세서 전체 추출
-  const allInv=[];
-  groups.forEach(g=>g.rows.forEach(r=>{
-    if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
-  }));
-
-  if(!allInv.length){
-    topEl.innerHTML='';
-    gridEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">거래명세서 항목이 없습니다</div>';
-    return;
-  }
-
-  // 요약 집계
-  const total=allInv.length;
-  const issued=allInv.filter(r=>isIssued(r.status)).length;
-  const pending=total-issued;
-  const totalAmt=allInv.reduce((s,r)=>s+r.budget,0);
-  const issuedAmt=allInv.filter(r=>isIssued(r.status)).reduce((s,r)=>s+r.budget,0);
-
-  // 요약 카드
-  topEl.innerHTML=`
-    <div class="inv-sum-cards">
-      <div class="inv-sum-card">
-        <span class="inv-sum-lbl">전체</span>
-        <span class="inv-sum-val">${total}건</span>
-        <span class="inv-sum-sub">${fmtMoney(totalAmt)}</span>
-      </div>
-      <div class="inv-sum-card pending-card">
-        <span class="inv-sum-lbl">⏳ 미발행</span>
-        <span class="inv-sum-val">${pending}건</span>
-        <span class="inv-sum-sub">${fmtMoney(totalAmt-issuedAmt)}</span>
-      </div>
-      <div class="inv-sum-card issued-card">
-        <span class="inv-sum-lbl">✅ 발행완료</span>
-        <span class="inv-sum-val">${issued}건</span>
-        <span class="inv-sum-sub">${fmtMoney(issuedAmt)}</span>
-      </div>
-      <div class="inv-sum-card">
-        <span class="inv-sum-lbl">발행률</span>
-        <span class="inv-sum-val" style="color:var(--pri)">${total?Math.round(issued/total*100):0}%</span>
-        <span class="inv-sum-sub">${issued}/${total} 완료</span>
-      </div>
-    </div>`;
-
-  // 월별 그룹핑 — 미발행 우선, 동일 상태 내에서 종료일 기준 최신순
-  const sorted=[...allInv].sort((a,b)=>{
-    const ap=isIssued(a.status)?1:0, bp=isIssued(b.status)?1:0;
-    if(ap!==bp)return ap-bp; // 미발행 먼저
-    return b.edate-a.edate;  // 최신 종료일 먼저
-  });
-
-  // 월 키로 그룹핑 (종료일 기준)
-  const byMonth={};
-  sorted.forEach(r=>{
-    const key=`${r.edate.getFullYear()}.${String(r.edate.getMonth()+1).padStart(2,'0')}`;
-    if(!byMonth[key])byMonth[key]=[];
-    byMonth[key].push(r);
-  });
-
-  gridEl.innerHTML='';
-  Object.entries(byMonth).sort(([a],[b])=>a.localeCompare(b)).forEach(([monthKey,items])=>{
-    const [y,m]=monthKey.split('.');
-    const pendingCnt=items.filter(r=>!isIssued(r.status)).length;
-    const monthDiv=document.createElement('div');
-    monthDiv.className='inv-month-group';
-    monthDiv.innerHTML=`<div class="inv-month-label">
-      📅 ${y}년 ${parseInt(m)}월
-      ${pendingCnt>0?`<span class="inv-m-badge" style="background:rgba(245,160,51,.15);color:var(--orange)">⏳ 미발행 ${pendingCnt}건</span>`:''}
-      ${pendingCnt===0?`<span class="inv-m-badge" style="background:rgba(45,217,143,.12);color:var(--green)">✅ 전체 발행완료</span>`:''}
-    </div>`;
-
-    items.forEach(r=>{
-      const issued=isIssued(r.status);
-      const card=document.createElement('div');
-      card.className=`inv-card ${issued?'inv-card-issued':'inv-card-pending'}`;
-      const period=`${r.sdate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})} ~ ${r.edate.toLocaleDateString('ko-KR',{month:'2-digit',day:'2-digit'})}`;
-      card.innerHTML=`
-        <div class="inv-card-status">
-          <span class="inv-status-icon">${issued?'✅':'⏳'}</span>
-          <span class="inv-status-txt">${issued?'발행완료':'미발행'}</span>
-        </div>
-        <div class="inv-card-info">
-          <span class="inv-card-pjt">${r._pjt}</span>
-          <div class="inv-card-meta">
-            ${r._advertiser?`<span class="inv-card-adv">${r._advertiser}</span>`:''}
-            <span class="inv-card-period">📅 ${period}</span>
-            ${r.memo?`<span class="inv-card-memo">📝 ${r.memo}</span>`:''}
-          </div>
-        </div>
-        <span class="inv-card-media">${r.media}</span>
-        <span class="inv-card-amt">${fmtMoney(r.budget)}</span>
-        <span class="inv-card-assignee">${r.assignee||'—'}</span>`;
-      monthDiv.appendChild(card);
-    });
-    gridEl.appendChild(monthDiv);
-  });
-}
-
 
 // ── TOOLTIP ──────────────────────────────────
 const tip=document.getElementById('tip');
@@ -1518,9 +1596,6 @@ function switchView(v){
   if(v==='budget'&&!canAccessBudget()){
     alert('예산 요약 페이지는 권한이 부여된 사용자만 접근 가능합니다.');return;
   }
-  if(v==='invoice'&&!canAccessInvoice()){
-    alert('거래명세서 페이지는 권한이 부여된 사용자만 접근 가능합니다.');return;
-  }
   view=v;
   document.querySelectorAll('.tab').forEach((t,i)=>{
     let on=false;
@@ -1528,21 +1603,18 @@ function switchView(v){
     else if(i===1&&v==='budget')on=true;
     else if(i===2&&v==='leave')on=true;
     else if(i===3&&v==='keyword')on=true;
-    else if(i===4&&v==='invoice')on=true;
     t.classList.toggle('on',on);
   });
   document.getElementById('ganttView').classList.toggle('hide',v!=='gantt');
   document.getElementById('budgetView').classList.toggle('hide',v!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',v!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',v!=='keyword');
-  document.getElementById('invoiceView').classList.toggle('hide',v!=='invoice');
   document.getElementById('navG').style.display=v==='gantt'?'flex':'none';
   document.getElementById('fbar').style.display=(v==='gantt'||v==='budget')?'flex':'none';
   if(v==='gantt'&&groups.length){if(isMobile())applyMobilePjtMode();else renderGantt();}
   else if(v==='budget'&&groups.length)renderBudget();
   else if(v==='leave')renderLeave();
   else if(v==='keyword')renderKeyword();
-  else if(v==='invoice')renderInvoice();
   haptic(8);
 }
 
@@ -1921,10 +1993,8 @@ function updateSyncTime(){
   document.getElementById('budgetView').classList.toggle('hide',view!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',view!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',view!=='keyword');
-  document.getElementById('invoiceView').classList.toggle('hide',view!=='invoice');
   if(view==='leave')renderLeave();
   if(view==='keyword')renderKeyword();
-  if(view==='invoice')renderInvoice();
 }
 
 // ─────────────────────────────────────────────
