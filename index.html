@@ -982,14 +982,16 @@ function isEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());}
 // 진행중/종료예정/시작전/확인중 → 모두 '진행중'으로 표시(s-on, bar-on)
 // 진행중으로 표기할 상태값: 진행중/확인중/시작전/전달/대기/연장예정/종료예정 → 모두 '진행중'
 function isOngoing(s){return /진행|시작|확인|전달|대기|연장|종료예정|예정/.test((s||'').replace(/\s/g,''));}
+// 종료 판단: '종료' 포함(예정 제외) 또는 '계산서 발행 완료'
+function isDoneStatus(s){const st=String(s||'').trim();return (st.includes('종료')&&!st.includes('예정'))||st.includes('계산서 발행 완료');}
 function displayStatus(s){
   if(!s)return'';
-  if(s.includes('종료')&&!s.includes('예정'))return'종료';
+  if(isDoneStatus(s))return'종료';
   if(isOngoing(s))return'진행중';
   return s;
 }
-function scls(s){if(!s)return'';if(s.includes('종료')&&!s.includes('예정'))return's-done';if(isOngoing(s))return's-on';if(s.includes('진달')||s.includes('전달'))return's-send';return's-pre';}
-function bcls(s){if(!s)return'bar-pre';if(s.includes('종료')&&!s.includes('예정'))return'bar-done';if(isOngoing(s))return'bar-on';if(s.includes('진달')||s.includes('전달'))return'bar-send';return'bar-pre';}
+function scls(s){if(!s)return'';if(isDoneStatus(s))return's-done';if(isOngoing(s))return's-on';return's-pre';}
+function bcls(s){if(!s)return'bar-pre';if(isDoneStatus(s))return'bar-done';if(isOngoing(s))return'bar-on';return'bar-pre';}
 function mcls(m){if(!m)return'm-default';const l=m.toLowerCase();if(l.includes('나스'))return'm-nas';if(l.includes('카페'))return'm-naver';if(l.includes('m2'))return'm-m2';if(l.includes('meta')||l.includes('메타'))return'm-meta';if(l.includes('kakao')||l.includes('카카오'))return'm-kakao';if(l.includes('youtube')||l.includes('유튜브'))return'm-youtube';if(l.includes('거래명세서'))return'm-gm';return'm-default';}
 
 // ── OAUTH ──────────────────────────────────────
@@ -1180,7 +1182,7 @@ function applyFilter(){
     // 거래명세서 항목은 상태 필터 제외 (발행완료 등 별도 상태값 사용)
     if(!isInvoice(r)){
       if(sf==='진행중'){if(!isOngoing(r.status))return false;}
-      else if(sf==='종료'){if(!(r.status.includes('종료')&&!r.status.includes('예정')))return false;}
+      else if(sf==='종료'){if(!(isDoneStatus(r.status)))return false;}
     }
     if(pf&&r.pjt!==pf)return false;
     if(af&&r.assignee!==af)return false;
@@ -1246,7 +1248,7 @@ function renderGantt(){
     // 매체명 오름차순 정렬 (렌더용 복사본, 원본 데이터 변경 없음)
     const sortedRows=[...g.rows].sort((a,b)=>a.media.localeCompare(b.media,'ko'));
     sortedRows.forEach(r=>{
-      const isDone=r.status.includes('종료')&&!r.status.includes('예정');
+      const isDone=isDoneStatus(r.status);
       const rl=document.createElement('div');rl.className='grow-l'+(isDone?' done-row':'');
       rl.style.height='34px';
       rl.innerHTML=`<span class="rname" title="${r.media}">${r.media}</span><span class="rbadge ${mcls(r.bsa)}">${r.bsa}</span><span class="rbadge ${scls(r.status)}">${displayStatus(r.status)}</span>`;
@@ -2227,7 +2229,7 @@ function renderMobilePjt(){
 
   const sortedRows=[...g.rows].sort((a,b)=>a.media.localeCompare(b.media,'ko'));
   sortedRows.forEach(r=>{
-    const isDone=r.status.includes('종료')&&!r.status.includes('예정');
+    const isDone=isDoneStatus(r.status);
     const rr=document.createElement('div');
     rr.className='grow-r'+(isDone?' done-row':'');
     rr.style.width=totalW+'px';rr.style.height='34px';
