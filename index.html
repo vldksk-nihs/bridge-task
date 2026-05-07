@@ -21,6 +21,11 @@
   --pri:#4f6ef7;--pri2:#3b56d4;
   --green:#2dd98f;--blue:#5ba3f5;--orange:#f5a033;--red:#f06565;--gray:#505870;
   --sh:0 8px 32px rgba(0,0,0,.5);
+  --hdr-h:52px;    /* 헤더 높이 */
+  --fbar-h:53px;   /* 필터바 높이 */
+  --view-h:calc(100vh - var(--hdr-h) - var(--fbar-h)); /* 뷰 영역 높이 */
+  --m-hdr-h:50px;  /* 모바일 헤더 */
+  --m-view-h:calc(100vh - var(--m-hdr-h) - var(--m-hdr-h)); /* 모바일 뷰 */
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;min-height:100vh;}
@@ -32,7 +37,9 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .logo{font-size:13px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;}
 .logo em{color:var(--pri);font-style:normal;}
 .tabs{display:flex;gap:2px;margin-left:14px;}
-.tab{padding:5px 13px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);border:none;background:none;font-family:inherit;transition:.15s;}
+.tab{padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);border:none;background:none;font-family:inherit;transition:.15s;white-space:nowrap;}
+.tab:hover{color:var(--tx);background:var(--sur2);}
+.tab.on{color:var(--tx);background:var(--sur2);font-weight:700;}
 .tab:hover{background:var(--sur2);color:var(--tx);}
 .tab.on{background:var(--pri);color:#fff;}
 .hdr-r{margin-left:auto;display:flex;align-items:center;gap:8px;}
@@ -68,7 +75,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 /* GANTT */
 /* gantt-outer: 세로 flex (PJT바 + wrap) */
-.gantt-outer{display:flex;flex-direction:column;height:calc(100vh - 105px);overflow:hidden;}
+.gantt-outer{display:flex;flex-direction:column;height:var(--view-h);overflow:hidden;}
 .gantt-wrap{display:flex;flex:1;overflow:hidden;}
 /* PC에서 pjt-bar 없으니 gantt-wrap이 100% 차지 */
 .gl{width:300px;flex-shrink:0;overflow:hidden;background:var(--sur);border-right:1px solid var(--bd);}
@@ -106,8 +113,8 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 .grow-l{display:flex;align-items:center;gap:5px;padding:0 12px;border-bottom:1px solid var(--bd);height:34px;box-sizing:border-box;overflow:hidden;transition:.1s;}
 .grow-l:hover{background:var(--sur2);}
-.grow-l.done-row{opacity:.7;}
-.grow-r.done-row{opacity:.8;}
+.grow-l.done-row{opacity:.55;border-left:2px solid var(--gray);}
+.grow-r.done-row{opacity:.6;}
 .rname{font-size:11px;color:var(--tx);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rbadge{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;flex-shrink:0;font-weight:500;}
 .m-nas{background:rgba(91,163,245,.14);color:#5ba3f5;}
@@ -125,7 +132,10 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .s-send{background:rgba(245,160,51,.14);color:var(--orange);}
 
 .grow-r{display:flex;align-items:center;border-bottom:1px solid var(--bd);height:34px;box-sizing:border-box;position:relative;flex-shrink:0;overflow:hidden;}
-.today-ln{position:absolute;top:0;bottom:0;width:1.5px;background:var(--orange);opacity:.7;pointer-events:none;z-index:5;}
+.today-ln{position:absolute;top:0;bottom:0;width:2px;background:var(--orange);opacity:.8;pointer-events:all;z-index:5;cursor:pointer;}
+.today-ln:hover{opacity:1;width:3px;}
+.today-ln::after{content:'오늘';position:absolute;top:4px;left:4px;font-size:9px;font-weight:700;color:var(--orange);background:var(--sur);padding:1px 4px;border-radius:3px;white-space:nowrap;opacity:0;transition:.15s;}
+.today-ln:hover::after{opacity:1;}
 .gbar{position:absolute;height:18px;border-radius:3px;display:flex;align-items:center;padding:0 7px;font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;cursor:pointer;top:50%;transform:translateY(-50%);z-index:2;transition:filter .15s;}
 .gbar:hover{filter:brightness(1.15);}
 .bar-on{background:rgba(45,217,143,.85);color:#052a1a;}
@@ -147,11 +157,11 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .tip-v{font-weight:500;text-align:right;}
 
 /* BUDGET */
-.budget-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
-.sub-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--sur2);border:1px solid var(--bd);border-radius:8px;padding:4px;}
-.sub-tab{flex:1;padding:7px 0;border:none;border-radius:6px;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
-.sub-tab.on{background:var(--sur);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2);}
-.sub-tab:hover:not(.on){background:rgba(255,255,255,.05);color:var(--tx);}
+.budget-view{padding:18px;overflow-y:auto;height:var(--view-h);}
+.sub-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--bd);padding-bottom:12px;}
+.sub-tab{padding:6px 16px;border-radius:6px;border:none;background:transparent;color:var(--tx2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
+.sub-tab.on{background:var(--pri);color:#fff;}
+.sub-tab:hover:not(.on){background:var(--sur2);color:var(--tx);}
 
 /* 연도 탭 */
 .inv-year-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
@@ -229,7 +239,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .cmap{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
 /* LEAVE VIEW */
-.leave-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
+.leave-view{padding:18px;overflow-y:auto;height:var(--view-h);}
 .leave-banner{background:linear-gradient(90deg,rgba(245,160,51,.15),rgba(245,160,51,.04));border:1px solid rgba(245,160,51,.3);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12px;display:flex;align-items:center;gap:10px;color:#ffb347;}
 .leave-banner .lb-ic{font-size:16px;}
 .leave-toolbar{display:flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
@@ -266,7 +276,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .lp-stat strong{color:var(--tx);font-size:14px;margin-left:4px;}
 
 /* ── KEYWORD AD VIEW ──────────────────────────── */
-.kw-view{padding:18px;overflow-y:auto;height:calc(100vh - 105px);}
+.kw-view{padding:18px;overflow-y:auto;height:var(--view-h);}
 .kw-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin-bottom:16px;}
 .kw-header-l{display:flex;align-items:center;gap:12px;}
 .kw-title{font-size:14px;font-weight:700;color:var(--tx);}
@@ -332,7 +342,13 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 @media(max-width:768px){
   .kw-view{padding:10px;height:calc(100vh - 50px - 50px);}
-  .kw-card{flex-wrap:wrap;gap:10px;padding:12px 14px;}
+  .kw-card{flex-wrap:nowrap;gap:8px;padding:10px 12px;}
+  .kw-card .kw-acct{min-width:80px;font-size:12px;}
+  .kw-card .kw-balance{min-width:100px;font-size:15px;}
+  .kw-card .kw-meta{display:none;}
+  .kw-card .kw-biz{min-width:70px;}
+  .kw-card .kw-biz-val{font-size:11px;}
+  .kw-unchanged{font-size:10px;padding:2px 6px;}
   .kw-balance{font-size:17px;min-width:auto;}
   .kw-meta{gap:12px;}
   .kw-header{flex-direction:column;align-items:flex-start;}
@@ -587,7 +603,7 @@ body.offline .offline-bar{display:block;}
   <div class="hdr-r">
     <div class="user-info hide" id="userInfo"><span id="userEmail"></span><span class="ub" id="userBadge"></span></div>
     <div class="sync hide" id="syncWrap"><span class="dot"></span><span id="syncTime"></span></div>
-    <button class="btn-ic hide" id="refBtn" onclick="manualRefresh()" title="새로고침">↻</button>
+    <button class="btn-ic hide" id="refBtn" onclick="manualRefresh()" title="전체 데이터 새로고침 (Ctrl+R)">↻</button>
     <button class="theme-toggle hide" id="themeBtn" onclick="toggleTheme()" title="테마 변경">🌙</button>
     <button class="btn btn-g hide" id="settingsBtn" style="font-size:11px;padding:5px 11px" onclick="openSettings()">⚙ 설정</button>
     <button class="btn btn-p" style="font-size:11px;padding:5px 11px" id="loginBtn" onclick="handleLogin()">Google 로그인</button>
@@ -749,7 +765,7 @@ body.offline .offline-bar{display:block;}
           <span class="kw-total-lbl">전체 잔액</span>
           <span class="kw-total-val" id="kwTotal">—</span>
         </div>
-        <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()">↻ 새로고침</button>
+        <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()" title="키워드광고 잔액만 새로고침 (Apps Script 실행은 별도)">↻ 잔액 새로고침</button>
       </div>
     </div>
     <!-- 상태 범례 -->
@@ -926,7 +942,7 @@ function clearToken(){sessionStorage.removeItem('brin_tk');localStorage.removeIt
 
 // ── STATE ──────────────────────────────────────
 let token=null,userEmail='',rows=[],groups=[],filtered=[],pollTimer=null,view='gantt';
-const CELL=24,DAYS=600;
+const CELL=24,DAYS=365;
 function getTodayKST(){const now=new Date();const kst=new Date(now.getTime()+9*60*60*1000);return new Date(kst.getUTCFullYear(),kst.getUTCMonth(),kst.getUTCDate());}
 const TODAY=getTodayKST();
 let tlStart=null;
@@ -1261,11 +1277,12 @@ function renderGantt(){
 
   // gr 스크롤 → gl 수직 동기화
   const ganttLeft=document.getElementById('ganttLeft'),ganttRight=document.getElementById('ganttRight');
-  ganttRight.onscroll=()=>{ ganttLeft.scrollTop=ganttRight.scrollTop; };
-  setTimeout(()=>{
-    // 좌측 끝부터 표시 (tlStart가 이미 2개월 전이라 오늘이 3번째 월에 위치)
-    ganttRight.scrollLeft=0;
-  },60);
+  ganttRight.onscroll=()=>{ganttLeft.scrollTop=ganttRight.scrollTop;};
+  const todayLines=ganttRight.querySelectorAll('.today-ln');
+  todayLines.forEach(tl=>tl.addEventListener('click',()=>{
+    ganttRight.scrollLeft=Math.max(0,todayPx-ganttRight.clientWidth/3);
+  }));
+  setTimeout(()=>{ganttRight.scrollLeft=0;},60);
 }
 
 // ── DATE HEADER (2-row, 1일 단위) ────────────────
@@ -1385,6 +1402,11 @@ function buildInvoiceFilters(){
 
 function selectInvYear(y){
   selectedInvYear=y;
+  // 연도 전환 시 월/검색 필터 초기화
+  const mFi=document.getElementById('invMonthFi');
+  const sFi=document.getElementById('invSearch');
+  if(mFi)mFi.value='';
+  if(sFi)sFi.value='';
   buildInvoiceFilters();
   renderInvoice();
   haptic(8);
@@ -1624,11 +1646,22 @@ function closeDetailPanel(){
 }
 // ESC 키로 닫기
 document.addEventListener('keydown',e=>{
+  // ESC — 모든 모달 닫기
   if(e.key==='Escape'){
-    closeDetailPanel();
-    closeSettings();
-    closeLeavePersonMo();
+    closeDetailPanel();closeSettings();closeLeavePersonMo();
   }
+  // 입력 중일 때는 단축키 무시
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  // Ctrl+R — 새로고침
+  if(e.ctrlKey&&e.key==='r'){
+    e.preventDefault();
+    if(token)manualRefresh();
+  }
+  // Ctrl+1~4 — 탭 전환
+  if(e.ctrlKey&&e.key==='1'){e.preventDefault();switchView('gantt');}
+  if(e.ctrlKey&&e.key==='2'){e.preventDefault();switchView('budget');}
+  if(e.ctrlKey&&e.key==='3'){e.preventDefault();switchView('leave');}
+  if(e.ctrlKey&&e.key==='4'){e.preventDefault();switchView('keyword');}
 });
 
 // ── NAV ──────────────────────────────────────
@@ -1871,10 +1904,12 @@ function parseLeaveSheet(values){
 function leaveShift(months){
   leaveCalDate=new Date(leaveCalDate.getFullYear(),leaveCalDate.getMonth()+months,1);
   renderLeave();
+  updateLeaveBanner();
 }
 function leaveToday(){
   leaveCalDate=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
   renderLeave();
+  updateLeaveBanner();
 }
 
 function renderLeave(){
@@ -1945,33 +1980,46 @@ function renderLeave(){
 function updateLeaveBanner(){
   const banner=document.getElementById('leaveBanner');
   if(!banner)return;
-  // 오늘 연차자 + 내일 연차자
-  const tomorrow=new Date(TODAY);tomorrow.setDate(tomorrow.getDate()+1);
-  const todayNames=[],tomorrowNames=[];
-  leaveData.forEach(p=>{
-    p.dates.forEach(d=>{
-      if(d.getTime()===TODAY.getTime())todayNames.push(p.name);
-      else if(d.getTime()===tomorrow.getTime())tomorrowNames.push(p.name);
+  const isCurrentMonth=leaveCalDate.getFullYear()===TODAY.getFullYear()&&leaveCalDate.getMonth()===TODAY.getMonth();
+
+  // 현재 달력이 오늘이 속한 달일 때만 오늘/내일/이번주 배너 표시
+  if(isCurrentMonth){
+    const tomorrow=new Date(TODAY);tomorrow.setDate(tomorrow.getDate()+1);
+    const todayNames=[],tomorrowNames=[];
+    leaveData.forEach(p=>{
+      p.dates.forEach(d=>{
+        if(d.getTime()===TODAY.getTime())todayNames.push(p.name);
+        else if(d.getTime()===tomorrow.getTime())tomorrowNames.push(p.name);
+      });
     });
-  });
-  let parts=[];
-  if(todayNames.length)parts.push(`<span><span class="lb-ic">🏖</span><strong>오늘 연차:</strong> ${todayNames.join(', ')}</span>`);
-  if(tomorrowNames.length)parts.push(`<span><span class="lb-ic">📅</span><strong>내일 연차:</strong> ${tomorrowNames.join(', ')}</span>`);
-  // 이번 주 (오늘~+6일)
-  const weekEnd=new Date(TODAY);weekEnd.setDate(weekEnd.getDate()+6);
-  const weekNames=new Set();
-  leaveData.forEach(p=>{
-    p.dates.forEach(d=>{
-      if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(p.name);
+    let parts=[];
+    if(todayNames.length)parts.push(`<span><span class="lb-ic">🏖</span><strong>오늘 연차:</strong> ${todayNames.join(', ')}</span>`);
+    if(tomorrowNames.length)parts.push(`<span><span class="lb-ic">📅</span><strong>내일 연차:</strong> ${tomorrowNames.join(', ')}</span>`);
+    const weekEnd=new Date(TODAY);weekEnd.setDate(weekEnd.getDate()+6);
+    const weekNames=new Set();
+    leaveData.forEach(p=>{
+      p.dates.forEach(d=>{
+        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(p.name);
+      });
     });
-  });
-  if(weekNames.size)parts.push(`<span style="opacity:.85">이번 주 추가 예정: ${[...weekNames].join(', ')}</span>`);
-  if(parts.length){
-    banner.innerHTML=parts.join('<span style="margin:0 8px;opacity:.4">|</span>');
-    banner.classList.remove('hide');
+    if(weekNames.size)parts.push(`<span style="opacity:.85">이번 주 추가 예정: ${[...weekNames].join(', ')}</span>`);
+    if(parts.length){
+      banner.innerHTML=parts.join('<span style="margin:0 8px;opacity:.4">|</span>');
+      banner.classList.remove('hide');return;
+    }
   } else {
-    banner.classList.add('hide');
+    // 다른 달로 이동했을 때 해당 달 연차자 요약 표시
+    const y=leaveCalDate.getFullYear(),m=leaveCalDate.getMonth();
+    const monthNames=new Set();
+    leaveData.forEach(p=>{
+      p.dates.forEach(d=>{if(d.getFullYear()===y&&d.getMonth()===m)monthNames.add(p.name);});
+    });
+    if(monthNames.size){
+      banner.innerHTML=`<span><span class="lb-ic">📅</span><strong>${y}년 ${m+1}월 연차 예정:</strong> ${[...monthNames].join(', ')}</span>`;
+      banner.classList.remove('hide');return;
+    }
   }
+  banner.classList.add('hide');
 }
 
 // 인원별 모달
