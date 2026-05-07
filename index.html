@@ -1180,6 +1180,7 @@ function applyFilter(){
     if(advf&&r.type!==advf)return false;
     if(mf&&r.bsa!==mf)return false;
     // 거래명세서: 계산서 발행 완료(=종료)는 진행중 필터에서 제외
+    // 단, 거래명세서 탭(renderInvoice)에서는 별도 처리하므로 여기서 rows에는 포함 유지
     if(isInvoice(r)){
       if(sf==='진행중'&&isDoneStatus(r.status))return false;
       if(sf==='종료'&&!isDoneStatus(r.status))return false;
@@ -1422,10 +1423,15 @@ function renderInvoice(){
   const gridEl=document.getElementById('invGrid');
   const annualEl=document.getElementById('invAnnual');
   if(!topEl||!gridEl)return;
+
+  // 거래명세서는 상태 필터 무관하게 rows 전체에서 추출
   const allInv=[];
-  groups.forEach(g=>g.rows.forEach(r=>{
-    if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});
-  }));
+  rows.forEach(r=>{
+    if(!isInvoice(r))return;
+    // PJT 색상은 getPjtColor 사용
+    const g=groups.find(g=>g.name===r.pjt);
+    allInv.push({...r,_pjt:r.pjt,_color:(g?g.color:getPjtColor(r.pjt)),_advertiser:r.type||''});
+  });
   if(!allInv.length){
     topEl.innerHTML='';gridEl.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">거래명세서 항목이 없습니다</div>';
     if(annualEl)annualEl.innerHTML='';return;
