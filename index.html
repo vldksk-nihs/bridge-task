@@ -1158,13 +1158,37 @@ function debounceFilter(){
 function buildFilters(){
   const advs=[...new Set(rows.map(r=>r.type).filter(Boolean))].sort();
   const bsas=[...new Set(rows.map(r=>r.bsa).filter(Boolean))].sort();
-  const pjts=[...new Set(rows.map(r=>r.pjt).filter(Boolean))].sort();
   const assignees=[...new Set(rows.map(r=>r.assignee).filter(v=>v&&!/^[₩\d,\s]+$/.test(v)))].sort();
   const advfi=document.getElementById('advertiserFi'),mfi=document.getElementById('mediaFi'),pfi=document.getElementById('pjtFi'),afi=document.getElementById('assigneeFi');
   const advv=advfi.value,mv=mfi.value,pv=pfi.value,av=afi.value;
   advfi.innerHTML='<option value="">광고주 전체</option>'+advs.map(a=>`<option>${a}</option>`).join('');
   mfi.innerHTML='<option value="">랩사 전체</option>'+bsas.map(m=>`<option>${m}</option>`).join('');
-  pfi.innerHTML='<option value="">PJT 전체</option>'+pjts.map(p=>`<option>${p}</option>`).join('');
+
+  // PJT 진행중/종료 분류 (거래명세서 제외 후 판단)
+  const pjtMap={};
+  rows.forEach(r=>{
+    if(!r.pjt)return;
+    if(!pjtMap[r.pjt])pjtMap[r.pjt]={active:false,done:true};
+    if(isInvoice(r))return; // 거래명세서는 상태 판단에서 제외
+    if(!isDoneStatus(r.status))pjtMap[r.pjt].active=true;
+    else pjtMap[r.pjt].done=pjtMap[r.pjt].done&&true;
+  });
+  const activePjts=Object.keys(pjtMap).filter(p=>pjtMap[p].active).sort();
+  const donePjts=Object.keys(pjtMap).filter(p=>!pjtMap[p].active).sort();
+
+  let pjtHtml='<option value="">PJT 전체</option>';
+  if(activePjts.length){
+    pjtHtml+=`<optgroup label="▶ 진행중 (${activePjts.length})">`;
+    pjtHtml+=activePjts.map(p=>`<option value="${p}">${p}</option>`).join('');
+    pjtHtml+=`</optgroup>`;
+  }
+  if(donePjts.length){
+    pjtHtml+=`<optgroup label="■ 종료 (${donePjts.length})">`;
+    pjtHtml+=donePjts.map(p=>`<option value="${p}" style="color:#f06565">${p}</option>`).join('');
+    pjtHtml+=`</optgroup>`;
+  }
+  pfi.innerHTML=pjtHtml;
+
   afi.innerHTML='<option value="">담당자 전체</option>'+assignees.map(a=>`<option>${a}</option>`).join('');
   advfi.value=advv;mfi.value=mv;pfi.value=pv;afi.value=av;
 }
@@ -2141,7 +2165,7 @@ function openMobileFilter(){
   pairs.forEach(([src,dst])=>{
     const s=document.getElementById(src),d=document.getElementById(dst);
     if(!s||!d)return;
-    if(d.children.length<=1)d.innerHTML=s.innerHTML;
+    d.innerHTML=s.innerHTML; // 항상 동기화 (optgroup 포함)
     d.value=s.value;
   });
   document.getElementById('mFilterDrawer').classList.add('open');
