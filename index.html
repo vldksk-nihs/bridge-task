@@ -240,6 +240,30 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 
 /* LEAVE VIEW */
 .leave-view{padding:18px;overflow-y:auto;height:var(--view-h);}
+
+/* 연차현황 서브페이지 */
+.ls-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px;}
+.ls-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.ls-card-top{display:flex;align-items:center;gap:10px;}
+.ls-avatar{width:36px;height:36px;border-radius:50%;background:var(--pri);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.ls-name{font-size:13px;font-weight:700;color:var(--tx);}
+.ls-today{font-size:10px;color:var(--orange);font-weight:700;padding:2px 6px;background:rgba(245,160,51,.15);border-radius:4px;animation:lpulse 1.4s ease-in-out infinite;}
+.ls-dates{display:flex;flex-wrap:wrap;gap:4px;}
+.ls-chip{font-size:10px;padding:3px 8px;border-radius:4px;background:var(--sur2);color:var(--tx2);border:1px solid var(--bd);}
+.ls-chip.past{opacity:.5;}
+.ls-chip.today{background:rgba(245,160,51,.2);color:var(--orange);border-color:rgba(245,160,51,.4);font-weight:700;}
+.ls-chip.upcoming{background:rgba(79,110,247,.15);color:#99aaff;border-color:rgba(79,110,247,.3);}
+.ls-empty{font-size:11px;color:var(--tx3);font-style:italic;}
+.ls-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);padding-top:6px;border-top:1px solid var(--bd);}
+.ls-stat strong{color:var(--tx);font-size:12px;}
+
+.ls-section-title{font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;}
+.ls-section-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+
+@media(max-width:768px){
+  .ls-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .ls-card{padding:12px;}
+}
 .leave-banner{background:linear-gradient(90deg,rgba(245,160,51,.15),rgba(245,160,51,.04));border:1px solid rgba(245,160,51,.3);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12px;display:flex;align-items:center;gap:10px;color:#ffb347;}
 .leave-banner .lb-ic{font-size:16px;}
 .leave-toolbar{display:flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;margin-bottom:14px;}
@@ -739,17 +763,29 @@ body.offline .offline-bar{display:block;}
   </div>
 
   <div class="leave-view hide" id="leaveView">
-    <div class="leave-banner hide" id="leaveBanner"></div>
-    <div class="leave-toolbar">
-      <button class="btn-ic" onclick="leaveShift(-1)" title="이전 달">‹</button>
-      <span class="leave-month" id="leaveMonthLabel"></span>
-      <button class="btn-ic" onclick="leaveShift(1)" title="다음 달">›</button>
-      <button class="btn btn-g" style="font-size:11px;padding:5px 10px;margin-left:6px" onclick="leaveToday()">오늘</button>
-      <span class="leave-summary" id="leaveSummary"></span>
+    <!-- 서브탭 (관리자만 연차현황 탭 표시) -->
+    <div class="sub-tabs" id="leaveSubTabs">
+      <button class="sub-tab on" id="subTabCalendar" onclick="switchLeaveTab('calendar')">📅 달력</button>
+      <button class="sub-tab hide" id="subTabLeaveSummary" onclick="switchLeaveTab('summary')">📊 연차현황</button>
     </div>
-    <div class="leave-cal-wrap">
-      <div class="leave-cal-head" id="leaveCalHead"></div>
-      <div class="leave-cal-grid" id="leaveCalGrid"></div>
+    <!-- 달력 서브페이지 -->
+    <div id="subLeaveCalendar">
+      <div class="leave-banner hide" id="leaveBanner"></div>
+      <div class="leave-toolbar">
+        <button class="btn-ic" onclick="leaveShift(-1)" title="이전 달">‹</button>
+        <span class="leave-month" id="leaveMonthLabel"></span>
+        <button class="btn-ic" onclick="leaveShift(1)" title="다음 달">›</button>
+        <button class="btn btn-g" style="font-size:11px;padding:5px 10px;margin-left:6px" onclick="leaveToday()">오늘</button>
+        <span class="leave-summary" id="leaveSummary"></span>
+      </div>
+      <div class="leave-cal-wrap">
+        <div class="leave-cal-head" id="leaveCalHead"></div>
+        <div class="leave-cal-grid" id="leaveCalGrid"></div>
+      </div>
+    </div>
+    <!-- 연차현황 서브페이지 (관리자 전용) -->
+    <div id="subLeaveSummary" class="hide">
+      <div id="leaveSummaryGrid"></div>
     </div>
   </div>
 
@@ -876,10 +912,54 @@ body.offline .offline-bar{display:block;}
 <script>
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
-const BUDGET_ACCESS=[ADMIN_EMAIL,'woooak@gmail.com','haesuinthesea@gmail.com'];
-const INVOICE_ACCESS=BUDGET_ACCESS; // 동일 권한
-function canAccessBudget(){return BUDGET_ACCESS.includes(userEmail);}
-function canAccessInvoice(){return INVOICE_ACCESS.includes(userEmail);}
+
+// ── 팀 구성 ──────────────────────────────────────────────
+// 1팀(관리자): 전체 PJT 확인
+// 2팀: 소속 담당자 PJT만 확인
+// 3팀: 소속 담당자 PJT만 확인
+const TEAMS={
+  team1:{
+    label:'1팀',
+    members:['vldksk@gmail.com','woooak@gmail.com'],
+    accessAll:true,   // 전체 PJT 확인 가능
+    assignees:null,   // 필터 없음
+  },
+  team2:{
+    label:'2팀',
+    members:['sj@brin.co.kr','haesuinthesea@gmail.com'],
+    accessAll:false,
+    assignees:['sj@brin.co.kr','haesuinthesea@gmail.com'],
+  },
+  team3:{
+    label:'3팀',
+    members:['dch@brin.co.kr','doyobeeee@gmail.com','cksgud312660@gmail.com','dudqhr06@gmail.com','hyunjjinn0127@gmail.com'],
+    accessAll:false,
+    assignees:['dch@brin.co.kr','doyobeeee@gmail.com','cksgud312660@gmail.com','dudqhr06@gmail.com','hyunjjinn0127@gmail.com'],
+  },
+};
+
+// 현재 유저의 팀 반환
+function getUserTeam(){
+  for(const [key,team] of Object.entries(TEAMS)){
+    if(team.members.includes(userEmail))return team;
+  }
+  return null;
+}
+
+// 예산/거래명세서 접근 가능 여부 (모든 팀 가능, 단 범위가 다름)
+function canAccessBudget(){return !!getUserTeam();}
+function canAccessInvoice(){return !!getUserTeam();}
+
+// 팀 기준으로 groups 필터링
+function getTeamBudgetGroups(allGroups){
+  const team=getUserTeam();
+  if(!team)return [];
+  if(team.accessAll)return allGroups; // 1팀: 전체
+  // 2/3팀: 소속 담당자가 포함된 PJT만
+  return allGroups.filter(g=>
+    g.rows.some(r=>team.assignees.includes(r.assignee))
+  );
+}
 
 // ── 기본값 (자동 입력) ──────────────────────────
 const DEFAULTS={
@@ -944,7 +1024,23 @@ function clearToken(){sessionStorage.removeItem('brin_tk');localStorage.removeIt
 let token=null,userEmail='',rows=[],groups=[],filtered=[],pollTimer=null,view='gantt';
 const CELL=24,DAYS=365;
 function getTodayKST(){const now=new Date();const kst=new Date(now.getTime()+9*60*60*1000);return new Date(kst.getUTCFullYear(),kst.getUTCMonth(),kst.getUTCDate());}
-const TODAY=getTodayKST();
+let TODAY=getTodayKST();
+
+// 자정이 지나면 TODAY 갱신 + 데이터 재로드
+function scheduleMidnightRefresh(){
+  const now=new Date();
+  const kstNow=new Date(now.getTime()+9*60*60*1000);
+  const msUntilMidnight=(
+    (23-kstNow.getUTCHours())*3600000+
+    (59-kstNow.getUTCMinutes())*60000+
+    (60-kstNow.getUTCSeconds())*1000
+  );
+  setTimeout(()=>{
+    TODAY=getTodayKST();
+    if(token){fetchData();fetchLeaveData();}
+    scheduleMidnightRefresh(); // 다음 자정 예약
+  },msUntilMidnight);
+}
 let tlStart=null;
 
 const COLORS=['#4f6ef7','#2dd98f','#f5a033','#f06565','#a78bfa','#f472b6','#22d3ee','#fb923c','#84cc16','#e879f9','#06b6d4','#fbbf24'];
@@ -1027,6 +1123,10 @@ function handleLogout(){
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
+  // 서브탭 상태 초기화
+  currentSubTab='budget';
+  currentLeaveTab='calendar';
+  selectedInvYear=TODAY.getFullYear();
 }
 function onLoggedIn(){
   document.getElementById('loginBtn').classList.add('hide');
@@ -1039,8 +1139,10 @@ function onLoggedIn(){
   document.getElementById('userBadge').style.background=isAdmin?'rgba(79,110,247,.2)':'var(--sur3)';
   document.getElementById('userBadge').style.color=isAdmin?'#99aaff':'var(--tx2)';
 
-  // 예산/거래명세서 서브탭 권한 체크
+  // 예산/거래명세서 탭 — 팀 소속이면 모두 접근 가능 (범위는 팀별로 다름)
   document.getElementById('budgetTab').classList.toggle('hide',!canAccessBudget());
+  // 연차현황 서브탭 - 관리자만
+  document.getElementById('subTabLeaveSummary').classList.toggle('hide',!isAdmin);
 
   showLoading('데이터를 불러오는 중...');
   fetchData().finally(hideLoading);
@@ -1377,6 +1479,9 @@ let currentSubTab='budget';
 let selectedInvYear=TODAY.getFullYear(); // 기본값: 현재 연도
 
 function switchSubTab(tab){
+  if(tab==='invoice'&&!canAccessInvoice()){
+    alert('거래명세서는 권한이 부여된 사용자만 접근 가능합니다.');return;
+  }
   currentSubTab=tab;
   document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
   document.getElementById('subTabInvoice').classList.toggle('on',tab==='invoice');
@@ -1448,11 +1553,13 @@ function renderInvoice(){
   const annualEl=document.getElementById('invAnnual');
   if(!topEl||!gridEl)return;
 
-  // 거래명세서는 상태 필터 무관하게 rows 전체에서 추출
+  // 거래명세서는 상태 필터 무관하게 rows 전체에서 추출 (팀 권한 적용)
+  const team=getUserTeam();
   const allInv=[];
   rows.forEach(r=>{
     if(!isInvoice(r))return;
-    // PJT 색상은 getPjtColor 사용
+    // 팀 필터: 2/3팀은 소속 담당자 PJT만
+    if(team&&!team.accessAll&&!team.assignees.includes(r.assignee))return;
     const g=groups.find(g=>g.name===r.pjt);
     allInv.push({...r,_pjt:r.pjt,_color:(g?g.color:getPjtColor(r.pjt)),_advertiser:r.type||''});
   });
@@ -1555,16 +1662,20 @@ function renderInvoice(){
 }
 
 function renderBudget(){
-  // 거래명세서 제외한 rows만 예산 집계
-  const budgetGroups=groups.map(g=>({
+  // 거래명세서 제외 + 팀 권한 필터 적용
+  const allBudgetGroups=groups.map(g=>({
     ...g,
     rows:g.rows.filter(r=>!isInvoice(r))
   })).filter(g=>g.rows.length>0);
 
+  const budgetGroups=getTeamBudgetGroups(allBudgetGroups);
+  const team=getUserTeam();
+  const teamLabel=team&&!team.accessAll?`<span style="font-size:11px;color:var(--tx3);margin-left:8px;">${team.label} 담당 PJT</span>`:'';
+
   const tb=budgetGroups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.budget,0),0);
   const ts=budgetGroups.reduce((s,g)=>s+g.rows.reduce((ss,r)=>ss+r.spent,0),0);
   document.getElementById('bSummary').innerHTML=`
-    <div class="bsum-card"><div class="bsum-label">전체 견적 합계</div><div class="bsum-value">${fmtMoney(tb)}</div></div>
+    <div class="bsum-card"><div class="bsum-label">전체 견적 합계${teamLabel}</div><div class="bsum-value">${fmtMoney(tb)}</div></div>
     <div class="bsum-card"><div class="bsum-label">전체 집행 합계</div><div class="bsum-value g">${fmtMoney(ts)}</div></div>
     <div class="bsum-card"><div class="bsum-label">잔여 예산</div><div class="bsum-value b">${fmtMoney(tb-ts)}</div></div>`;
   const grid=document.getElementById('bGrid');grid.innerHTML='';
@@ -1886,6 +1997,7 @@ function refreshKeyword(){
   if(btn)btn.style.opacity='0.4';
   fetchKeywordData().finally(()=>{
     if(btn)btn.style.opacity='1';
+    if(view==='keyword')renderKeyword();
     showToast('키워드광고 잔액 새로고침 완료','ok');
   });
 }
@@ -1899,7 +2011,7 @@ async function fetchLeaveData(){
     if(!res.ok)return;
     const data=await res.json();
     parseLeaveSheet(data.values||[]);
-    if(view==='leave')renderLeave();
+    if(view==='leave'){if(currentLeaveTab==='summary')renderLeaveSummary();else renderLeave();}
     updateLeaveBanner();
   }catch(e){console.warn('[BRIN-leave] fetch error',e);}
 }
@@ -1911,7 +2023,12 @@ function parseLeaveDate(str){
   let m=s.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
   if(m){
     const mo=parseInt(m[1])-1,day=parseInt(m[2]);
-    const d=new Date(TODAY.getFullYear(),mo,day);d.setHours(0,0,0,0);
+    const curYear=TODAY.getFullYear();
+    const d=new Date(curYear,mo,day);d.setHours(0,0,0,0);
+    // 연도 경계 처리: 현재가 11~12월이고 날짜가 1~3월이면 다음 해로 판단
+    if(TODAY.getMonth()>=10&&mo<=2){
+      return new Date(curYear+1,mo,day);
+    }
     return d;
   }
   // 일반 날짜 형식 fallback
@@ -1945,6 +2062,128 @@ function leaveToday(){
   leaveCalDate=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
   renderLeave();
   updateLeaveBanner();
+}
+
+// ── 연차 서브탭 ───────────────────────────────
+let currentLeaveTab='calendar';
+
+// 연차현황 카드 클릭 → 해당 월 달력으로 이동
+function goToLeaveCalendarFor(month, year){
+  leaveCalDate=new Date(year,month,1);
+  switchLeaveTab('calendar');
+  haptic(10);
+}
+
+function switchLeaveTab(tab){
+  currentLeaveTab=tab;
+  document.getElementById('subTabCalendar').classList.toggle('on',tab==='calendar');
+  document.getElementById('subTabLeaveSummary').classList.toggle('on',tab==='summary');
+  document.getElementById('subLeaveCalendar').classList.toggle('hide',tab!=='calendar');
+  document.getElementById('subLeaveSummary').classList.toggle('hide',tab!=='summary');
+  if(tab==='calendar'){renderLeave();updateLeaveBanner();}
+  else if(tab==='summary')renderLeaveSummary();
+  haptic(8);
+}
+
+function renderLeaveSummary(){
+  const el=document.getElementById('leaveSummaryGrid');
+  if(!el)return;
+  if(!leaveData.length){
+    el.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3);font-size:12px">연차 데이터가 없습니다</div>';
+    return;
+  }
+
+  const today=TODAY;
+  // 오늘 연차 중인 인원 / 아닌 인원 분리
+  const todayLeave=leaveData.filter(p=>p.dates.some(d=>d.getTime()===today.getTime()));
+  const others=leaveData.filter(p=>!p.dates.some(d=>d.getTime()===today.getTime()));
+  const sorted=[...todayLeave,...others];
+
+  // 월별 연차 매트릭스 (12개월)
+  const year=today.getFullYear();
+  const months=Array.from({length:12},(_,i)=>i); // 0~11
+
+  // 요약 통계 먼저
+  const totalDays=leaveData.reduce((s,p)=>s+p.dates.length,0);
+  const usedDays=leaveData.reduce((s,p)=>s+p.dates.filter(d=>d<=today).length,0);
+
+  let html=`
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+      <div class="bsum-card"><div class="bsum-label">전체 인원</div><div class="bsum-value">${leaveData.length}명</div></div>
+      <div class="bsum-card"><div class="bsum-label">전체 연차</div><div class="bsum-value">${totalDays}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">사용 완료</div><div class="bsum-value g">${usedDays}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">예정</div><div class="bsum-value b">${totalDays-usedDays}일</div></div>
+    </div>`;
+
+  // 오늘 연차 중
+  if(todayLeave.length){
+    html+=`<div class="ls-section-title">🏖 오늘 연차 <span class="ls-section-badge" style="background:rgba(245,160,51,.15);color:var(--orange)">${todayLeave.length}명</span></div>`;
+  }
+
+  html+=`<div class="ls-grid" id="lsGridMain">`;
+  sorted.forEach(p=>{
+    const isOnLeaveToday=p.dates.some(d=>d.getTime()===today.getTime());
+    const pastDates=p.dates.filter(d=>d<today&&d.getTime()!==today.getTime()).sort((a,b)=>a-b);
+    const futureDates=p.dates.filter(d=>d>today).sort((a,b)=>a-b);
+    const todayDate=p.dates.filter(d=>d.getTime()===today.getTime());
+    const allSorted=[...pastDates,...todayDate,...futureDates];
+    const initial=p.name.charAt(0);
+
+    const chips=allSorted.map(d=>{
+      const isToday=d.getTime()===today.getTime();
+      const isPast=d<today&&!isToday;
+      const cls=isToday?'today':isPast?'past':'upcoming';
+      return `<span class="ls-chip ${cls}">${d.getMonth()+1}/${d.getDate()}</span>`;
+    }).join('');
+
+    html+=`<div class="ls-card" style="cursor:pointer;${isOnLeaveToday?'border-color:rgba(245,160,51,.4);background:rgba(245,160,51,.03)':''}" onclick="goToLeaveCalendarFor(${today.getMonth()},${today.getFullYear()})">
+      <div class="ls-card-top">
+        <div class="ls-avatar" style="background:${isOnLeaveToday?'var(--orange)':'var(--pri)'}">${initial}</div>
+        <span class="ls-name">${p.name}</span>
+        ${isOnLeaveToday?'<span class="ls-today">연차 중</span>':''}
+      </div>
+      ${allSorted.length?`<div class="ls-dates">${chips}</div>`:'<span class="ls-empty">연차 없음</span>'}
+      <div class="ls-stat">
+        <span>사용 <strong>${pastDates.length+todayDate.length}일</strong></span>
+        <span>예정 <strong>${futureDates.length}일</strong></span>
+        <span>합계 <strong>${p.dates.length}일</strong></span>
+      </div>
+      <div style="font-size:10px;color:var(--tx3);margin-top:2px;">📅 달력에서 보기</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // 월별 연차 분포 테이블
+  html+=`<div class="ls-section-title" style="margin-top:24px;">📆 ${year}년 월별 연차 분포</div>
+  <div style="overflow-x:auto">
+  <table style="width:100%;border-collapse:collapse;font-size:11px;">
+    <thead>
+      <tr>
+        <th style="padding:6px 10px;text-align:left;color:var(--tx2);border-bottom:1px solid var(--bd);white-space:nowrap;">이름</th>
+        ${months.map(m=>`<th style="padding:6px 8px;text-align:center;color:var(--tx2);border-bottom:1px solid var(--bd);min-width:36px;">${m+1}월</th>`).join('')}
+        <th style="padding:6px 10px;text-align:center;color:var(--tx2);border-bottom:1px solid var(--bd);">합계</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${leaveData.map(p=>{
+        const cells=months.map(m=>{
+          const cnt=p.dates.filter(d=>d.getFullYear()===year&&d.getMonth()===m).length;
+          const isThisMonth=m===today.getMonth();
+          const bg=cnt>0?(isThisMonth?'rgba(245,160,51,.2)':'rgba(79,110,247,.12)'):'';
+          const color=cnt>0?(isThisMonth?'var(--orange)':'#99aaff'):'var(--tx3)';
+          return `<td style="padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);background:${bg};color:${color};font-weight:${cnt>0?'700':'400'}">${cnt||'·'}</td>`;
+        }).join('');
+        return `<tr>
+          <td style="padding:6px 10px;font-weight:600;color:var(--tx);border-bottom:1px solid var(--bd);white-space:nowrap;">${p.name}</td>
+          ${cells}
+          <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--tx);border-bottom:1px solid var(--bd);">${p.dates.filter(d=>d.getFullYear()===year).length}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>
+  </div>`;
+
+  el.innerHTML=html;
 }
 
 function renderLeave(){
@@ -2131,7 +2370,7 @@ function updateSyncTime(){
   document.getElementById('budgetView').classList.toggle('hide',view!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',view!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',view!=='keyword');
-  if(view==='leave')renderLeave();
+  if(view==='leave'){if(currentLeaveTab==='summary')renderLeaveSummary();else renderLeave();}
   if(view==='keyword')renderKeyword();
 }
 
@@ -2222,7 +2461,29 @@ function rebuildMobilePjtSelector(){
   if(!sel)return;
   if(!groups.length){sel.innerHTML='<option>데이터 없음</option>';return;}
   if(mobilePjtIdx>=groups.length)mobilePjtIdx=0;
-  sel.innerHTML=groups.map((g,i)=>`<option value="${i}">${g.name}${g.advertiser?` · ${g.advertiser}`:''} (${g.rows.length})</option>`).join('');
+
+  // PC와 동일하게 진행중/종료 구분
+  const pjtFi=document.getElementById('pjtFi');
+  if(pjtFi&&pjtFi.querySelector('optgroup')){
+    // pjtFi의 optgroup 구조를 참고해 groups 분류
+    const activeNames=new Set([...pjtFi.querySelectorAll('optgroup:first-of-type option')].map(o=>o.value));
+    const activeGroups=groups.filter(g=>activeNames.has(g.name));
+    const doneGroups=groups.filter(g=>!activeNames.has(g.name));
+    let html='';
+    if(activeGroups.length){
+      html+=`<optgroup label="▶ 진행중">`;
+      html+=activeGroups.map(g=>{const i=groups.indexOf(g);return`<option value="${i}">${g.name}${g.advertiser?` · ${g.advertiser}`:''}</option>`;}).join('');
+      html+=`</optgroup>`;
+    }
+    if(doneGroups.length){
+      html+=`<optgroup label="■ 종료">`;
+      html+=doneGroups.map(g=>{const i=groups.indexOf(g);return`<option value="${i}" style="color:#f06565">${g.name}${g.advertiser?` · ${g.advertiser}`:''}</option>`;}).join('');
+      html+=`</optgroup>`;
+    }
+    sel.innerHTML=html;
+  } else {
+    sel.innerHTML=groups.map((g,i)=>`<option value="${i}">${g.name}${g.advertiser?` · ${g.advertiser}`:''}</option>`).join('');
+  }
   sel.value=mobilePjtIdx;
 }
 function mPjtChange(){
@@ -2386,9 +2647,12 @@ window.addEventListener('resize',()=>{
 window.addEventListener('load',()=>{
   // 이전 버전 잔여 데이터 정리
   try{localStorage.removeItem('brin_budget_wl');}catch(e){}
+  try{localStorage.removeItem('brin_tk');}catch(e){} // 이전 1일유지 방식 잔재
   loadCFG();
   // 테마 적용
   applyTheme(localStorage.getItem('brin_theme')||'dark');
+  // 자정 날짜 갱신 예약
+  scheduleMidnightRefresh();
   // 모바일 기능 셋업
   setupPullToRefresh();
   setupLeaveSwipe();
