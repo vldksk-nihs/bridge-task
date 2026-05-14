@@ -7,10 +7,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BRIN">
 <meta name="theme-color" content="#0b0d15">
-<link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkJSSU4gVGFzayBNYW5hZ2VyIiwKICAic2hvcnRfbmFtZSI6ICJCUklOIiwKICAic3RhcnRfdXJsIjogIi4vIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAib3JpZW50YXRpb24iOiAiYW55IiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGIwZDE1IiwKICAidGhlbWVfY29sb3IiOiAiIzRmNmVmNyIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTkyIDE5Micgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInPjxyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyByeD0nMzInIGZpbGw9JyM0ZjZlZjcnLz48dGV4dCB4PSc1MCUnIHk9JzU1JScgZG9taW5hbnQtYmFzZWxpbmU9J21pZGRsZScgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nIzAwMDAwMCcgZm9udC1zaXplPSc2MCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtd2VpZ2h0PSc4MDAnPkJSPC90ZXh0Pjwvc3ZnPj4iLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9CiAgXQp9">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23000' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4">
+<meta name="version" content="v4.12">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -36,6 +36,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);
 .hdr{display:flex;align-items:center;gap:10px;padding:0 18px;height:52px;background:var(--sur);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;}
 .logo{font-size:13px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;}
 .logo em{color:var(--pri);font-style:normal;}
+.logo .ver{display:inline-block;margin-left:5px;font-size:9px;font-weight:600;color:var(--tx3);background:var(--sur2);padding:1px 5px;border-radius:3px;border:1px solid var(--bd);letter-spacing:.3px;}
 .tabs{display:flex;gap:2px;margin-left:14px;}
 .tab{padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:500;color:var(--tx2);border:none;background:none;font-family:inherit;transition:.15s;white-space:nowrap;}
 .tab:hover{color:var(--tx);background:var(--sur2);}
@@ -121,7 +122,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .m-naver{background:rgba(3,199,90,.13);color:#03c75a;}
 .m-m2{background:rgba(34,211,238,.12);color:#22d3ee;}
 .m-meta{background:rgba(24,119,242,.12);color:#1877f2;}
-.m-kakao{background:rgba(254,229,0,.1);color:#c9a800;}
+.m-kakao{background:rgba(254,229,0,.18);color:#ffd83d;}
 .m-youtube{background:rgba(255,50,50,.12);color:#ff4040;}
 .m-gm{background:rgba(245,160,51,.12);color:var(--orange);}
 .m-default{background:var(--sur3);color:var(--tx2);}
@@ -144,10 +145,10 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .bar-done{background:rgba(90,100,130,.75);color:#b0bcd0;background-image:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(0,0,0,.2) 4px,rgba(0,0,0,.2) 5px);}
 .bar-send{background:rgba(245,160,51,.85);color:#2a1700;}
 .dday-tag{position:absolute;right:5px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:var(--orange);z-index:6;pointer-events:none;background:rgba(11,13,21,.85);padding:1px 4px;border-radius:2px;border:1px solid var(--orange);}
-.dday-tag.pulse{animation:dpulse 1.6s ease-in-out infinite;}
-.dday-tag.pulse-urgent{animation:dpulseUrgent 0.9s ease-in-out infinite;color:#ff6b6b;border-color:#ff6b6b;}
-@keyframes dpulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,160,51,.6);}50%{opacity:.6;box-shadow:0 0 6px 2px rgba(245,160,51,.5);}}
-@keyframes dpulseUrgent{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,107,107,.7);transform:translateY(-50%) scale(1);}50%{opacity:.7;box-shadow:0 0 8px 3px rgba(255,107,107,.7);transform:translateY(-50%) scale(1.08);}}
+.dday-tag.pulse{animation:dpulse 2.4s ease-in-out infinite;}
+.dday-tag.pulse-urgent{animation:dpulseUrgent 1.8s ease-in-out infinite;color:#ff6b6b;border-color:#ff6b6b;}
+@keyframes dpulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,160,51,.5);}50%{opacity:.7;box-shadow:0 0 5px 1px rgba(245,160,51,.4);}}
+@keyframes dpulseUrgent{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(255,107,107,.6);transform:translateY(-50%) scale(1);}50%{opacity:.8;box-shadow:0 0 7px 2px rgba(255,107,107,.6);transform:translateY(-50%) scale(1.05);}}
 
 .tip{position:fixed;background:var(--sur3);border:1px solid var(--bd2);border-radius:8px;padding:10px 13px;font-size:11px;max-width:240px;pointer-events:none;z-index:999;box-shadow:var(--sh);display:none;}
 .tip.show{display:block;}
@@ -283,6 +284,9 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .lcell.today-cell{background:rgba(245,160,51,.06);box-shadow:inset 0 0 0 1.5px var(--orange);}
 .lcell.busy{background:rgba(240,101,101,.06);}
 .lcell.busy::before{content:'⚠';position:absolute;top:4px;right:6px;font-size:10px;color:var(--red);font-weight:700;}
+.lcell.holiday{background:rgba(240,101,101,.05);}
+.lcell.holiday.busy{background:rgba(240,101,101,.09);}
+.l-holiday{font-size:9px;color:#f06565;font-weight:700;background:rgba(240,101,101,.13);padding:1px 4px;border-radius:3px;display:block;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .l-day{font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:2px;}
 .l-day.sun{color:#f06565;}
 .l-day.sat{color:#5b9cf6;}
@@ -377,7 +381,99 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
   .kw-meta{gap:12px;}
   .kw-header{flex-direction:column;align-items:flex-start;}
 }
-/* ── 거래명세서 뷰 ───────────────────────────── */
+/* ── 직방/호갱노노 ─────────────────────────── */
+.zb-sum-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.zb-sum-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;}
+.zb-sum-lbl{font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.5px;display:block;margin-bottom:4px;}
+.zb-sum-val{font-size:20px;font-weight:800;color:var(--tx);display:block;}
+.zb-sum-sub{font-size:11px;color:var(--tx3);display:block;margin-top:2px;}
+.zb-sum-card.warn-card{border-color:rgba(240,101,101,.3);background:rgba(240,101,101,.03);}
+.zb-sum-card.warn-card .zb-sum-val{color:var(--orange);}
+
+/* 선계약 차수 카드 */
+.zb-contract-list{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.zb-contract-card{background:var(--sur);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;min-width:130px;}
+.zb-contract-card.done{opacity:.6;}
+.zb-contract-card.active{border-color:var(--pri);background:rgba(79,110,247,.06);}
+.zb-contract-title{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:4px;}
+.zb-contract-amt{font-size:13px;font-weight:800;color:var(--tx);}
+.zb-contract-badge{font-size:10px;padding:2px 7px;border-radius:10px;margin-top:4px;display:inline-block;}
+.zb-contract-badge.done{background:rgba(45,217,143,.12);color:var(--green);}
+.zb-contract-badge.active{background:rgba(79,110,247,.14);color:#99aaff;}
+.zb-contract-pct{width:100%;height:4px;background:var(--sur2);border-radius:2px;margin-top:6px;overflow:hidden;}
+.zb-contract-pct-fill{height:100%;border-radius:2px;background:var(--pri);}
+
+/* 섹션 공통 */
+.zb-section{background:var(--sur);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;overflow:hidden;}
+.zb-section-hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--sur2);border-bottom:1px solid var(--bd);}
+.zb-section-title{font-size:13px;font-weight:700;color:var(--tx);flex:1;}
+.zb-section-badge{font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600;}
+
+/* 오차/미매칭 테이블 */
+.zb-table{width:100%;border-collapse:collapse;font-size:11px;}
+.zb-table th{padding:7px 12px;text-align:left;color:var(--tx3);font-weight:600;border-bottom:1px solid var(--bd);white-space:nowrap;}
+.zb-table td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.zb-table tr:last-child td{border-bottom:none;}
+.zb-table tr:hover td{background:var(--sur2);}
+.zb-diff-pos{color:var(--orange);font-weight:700;}
+.zb-diff-neg{color:var(--red);font-weight:700;}
+.zb-match-ok{color:var(--green);}
+.zb-only-tag{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.zb-only-brin{background:rgba(79,110,247,.15);color:#99aaff;}
+.zb-only-zb{background:rgba(245,160,51,.15);color:var(--orange);}
+
+/* 집행내역 상태 뱃지 */
+.zb-status-badge{font-size:10px;padding:3px 7px;border-radius:10px;font-weight:600;white-space:nowrap;display:inline-block;}
+.zb-status-match{background:rgba(45,217,143,.13);color:var(--green);}
+.zb-status-estimated{background:rgba(91,163,245,.14);color:var(--blue);}
+.zb-status-diff{background:rgba(245,160,51,.16);color:var(--orange);}
+.zb-status-brin{background:rgba(91,163,245,.14);color:var(--blue);}
+.zb-status-zb{background:rgba(167,139,250,.16);color:#c4b5fd;}
+
+/* 현장별/월별 */
+.zb-pjt-row{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bd);font-size:11px;}
+.zb-pjt-row:last-child{border-bottom:none;}
+.zb-pjt-name{flex:1;font-weight:600;color:var(--tx);}
+.zb-pjt-types{color:var(--tx3);font-size:10px;}
+.zb-month-row{display:grid;grid-template-columns:60px 1fr 90px;align-items:center;gap:10px;padding:7px 16px;border-bottom:1px solid var(--bd);font-size:11px;}
+.zb-month-row:last-child{border-bottom:none;}
+.zb-month-bar-wrap{background:var(--sur2);border-radius:3px;height:12px;overflow:hidden;position:relative;}
+.zb-month-bar{height:100%;border-radius:3px;background:var(--pri);transition:.3s;}
+.zb-month-bar.current{background:var(--orange);}
+
+/* 계산서/입금 - grid로 줄맞춤 */
+.zb-payment-row{display:grid;grid-template-columns:1fr 140px 170px 170px;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:11px;}
+.zb-payment-row:last-child{border-bottom:none;}
+.zb-payment-title{font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.zb-payment-amt{font-weight:800;color:var(--tx);text-align:right;font-variant-numeric:tabular-nums;}
+.zb-tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap;text-align:center;justify-self:end;}
+.zb-tag.pending{background:rgba(245,160,51,.15);color:var(--orange);}
+.zb-tag.done{background:rgba(45,217,143,.12);color:var(--green);}
+.zb-tag.overdue{background:rgba(240,101,101,.15);color:var(--red);}
+
+/* 인센티브 / 이월정산 row */
+.zb-extra-row{display:grid;grid-template-columns:1fr 100px 100px 120px 1fr;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--bd);font-size:11px;}
+.zb-extra-row:last-child{border-bottom:none;}
+.zb-extra-name{font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.zb-extra-amt{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;}
+.zb-extra-amt.plus{color:var(--green);}
+.zb-extra-amt.minus{color:var(--orange);}
+.zb-extra-memo{color:var(--tx3);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+@media(max-width:768px){
+  .zb-payment-row{grid-template-columns:1fr auto;grid-auto-rows:auto;}
+  .zb-payment-amt,.zb-tag{grid-column:2;justify-self:end;}
+  .zb-extra-row{grid-template-columns:1fr auto;}
+  .zb-extra-row .zb-extra-meta,.zb-extra-row .zb-extra-memo{grid-column:1/-1;color:var(--tx3);font-size:10px;}
+}
+
+@media(max-width:768px){
+  .zb-sum-cards{grid-template-columns:1fr 1fr;}
+  .zb-contract-list{gap:6px;}
+  .zb-contract-card{min-width:110px;}
+  .zb-table th:nth-child(3),.zb-table td:nth-child(3),
+  .zb-table th:nth-child(4),.zb-table td:nth-child(4),
+  .zb-table th:nth-child(5),.zb-table td:nth-child(5){display:none;}
+}
 .inv-top{margin-bottom:16px;}
 .inv-sum-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
 .inv-sum-card{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;}
@@ -448,6 +544,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .dp-prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--tx3);margin-bottom:5px;}
 .dp-prog-bar{height:5px;background:var(--sur3);border-radius:3px;overflow:hidden;}
 .dp-prog-fill{height:100%;border-radius:3px;transition:width .5s;}
+.dp-prog-sublbl{font-size:10px;color:var(--tx3);margin-top:4px;text-align:right;}
 
 .hide{display:none!important;}
 
@@ -523,6 +620,7 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   /* HEADER */
   .hdr{height:50px;padding:0 12px;gap:6px;}
   .logo{font-size:12px;}
+  .logo .ver{display:none;}
   .tabs{margin-left:6px;gap:0;flex:1;justify-content:flex-end;}
   .tab{padding:5px 8px;font-size:12px;}
   .tab .tab-text{display:none;}
@@ -590,9 +688,19 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   /* TIP TOOLTIP - 모바일에서 hover 없음 → 자동 비활성화 */
   .tip{display:none!important;}
 
-  /* OFFLINE BANNER */
-  .offline-bar{position:fixed;top:50px;left:0;right:0;background:var(--orange);color:#1a0d00;text-align:center;padding:5px 10px;font-size:11px;font-weight:600;z-index:99;display:none;}
-  body.offline .offline-bar{display:block;}
+  /* === 모바일 추가 개선 === */
+  /* iOS 입력 자동 줌 방지 (font-size>=16px) */
+  .sw input,.fi2,select.fi,.inv-search,input[type="text"],input[type="number"],input[type="search"],input[type="email"],textarea,select{font-size:16px!important;}
+  /* 터치 영역 확장 - 아이콘 버튼 */
+  .btn-ic{width:36px;height:36px;font-size:16px;}
+  /* today-ln 보이는 폭은 유지하되, 보이지 않는 8px 터치 영역 추가 */
+  .today-ln::before{content:'';position:absolute;top:0;bottom:0;left:-4px;right:-4px;}
+  /* 검색바 padding 보정 */
+  .sw input{padding:8px 10px 8px 30px;}
+  /* dp-close 터치 키움 */
+  .dp-close{width:36px;height:36px;font-size:16px;}
+  /* 오프라인 배너 - 모바일에선 헤더 50px 아래 */
+  .offline-bar{top:50px;}
 }
 
 /* ─── PC에서는 m-only 숨김 (이미 처리됨) ─── */
@@ -612,17 +720,186 @@ body.offline .offline-bar{display:block;}
 .ptr-ind.refreshing{animation:ptrSpin 1s linear infinite;}
 @keyframes ptrSpin{to{transform:translateX(-50%) translateY(60px) rotate(360deg);}}
 
+/* ═══════════════════════════════════════
+   매체안내 탭
+═══════════════════════════════════════ */
+.mi-view{padding:18px;overflow-y:auto;height:var(--view-h);}
+@media(max-width:768px){.mi-view{padding:10px;height:calc(100vh - 50px - 50px);}}
+
+/* SMS TOOL - BRIN 테마 토글 자동 추종 */
+.sms-tool{
+  /* 다크 테마 기본값 (BRIN의 변수로 매핑) */
+  --sms-bg: var(--sur);
+  --sms-card: var(--sur2);
+  --sms-card2: var(--sur3);
+  --sms-header: var(--sur2);
+  --sms-primary: var(--pri);
+  --sms-primary-light: rgba(79,110,247,.12);
+  --sms-primary-deep: #6383ff;
+  --sms-purple: #a78bfa;
+  --sms-purple-light: rgba(167,139,250,.13);
+  --sms-green: var(--green);
+  --sms-green-light: rgba(45,217,143,.13);
+  --sms-red: var(--red);
+  --sms-red-light: rgba(240,101,101,.13);
+  --sms-amber: var(--orange);
+  --sms-amber-light: rgba(245,160,51,.13);
+  --sms-blue-deep: var(--blue);
+  --sms-gray: var(--tx3);
+  --sms-gray-light: var(--sur3);
+  --sms-border: var(--bd);
+  --sms-text: var(--tx);
+  --sms-text2: var(--tx2);
+  --sms-text3: var(--tx3);
+  --sms-shadow: var(--sh);
+  font-size:13px;
+  color:var(--sms-text);
+  background:transparent;
+  border-radius:10px;
+  overflow:hidden;
+}
+/* 라이트 테마에선 더 밝게 */
+body.light .sms-tool{
+  --sms-primary-light: #EFF6FF;
+  --sms-purple-light: #EDE9FE;
+  --sms-green-light: #ECFDF5;
+  --sms-red-light: #FEF2F2;
+  --sms-amber-light: #FFFBEB;
+}
+
+.sms-tool .sms-header{background:var(--sms-header);color:var(--sms-text);padding:18px 20px 0;border-radius:10px 10px 0 0;border-bottom:1px solid var(--sms-border);}
+.sms-tool .sms-header-label{font-size:10px;font-weight:600;color:var(--sms-text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px;}
+.sms-tool .sms-h1{font-size:18px;font-weight:900;margin:0;color:var(--sms-text);}
+.sms-tool .sms-sub{font-size:11px;color:var(--sms-text3);margin:2px 0 14px;}
+.sms-tool .sms-tabs{display:flex;gap:0;}
+.sms-tool .sms-tab-btn{padding:9px 18px;border:none;background:transparent;color:var(--sms-text3);font-weight:700;font-size:12px;cursor:pointer;border-radius:7px 7px 0 0;transition:all .2s;font-family:inherit;}
+.sms-tool .sms-tab-btn.active{background:var(--sms-bg);color:var(--sms-text);}
+
+.sms-tool .sms-tab-panel{display:none;}
+.sms-tool .sms-tab-panel.active{display:block;animation:smsFadeUp .25s ease-out forwards;}
+.sms-tool .sms-content{padding:18px 16px;background:var(--sms-bg);}
+.sms-tool .sms-card{background:var(--sms-card);border-radius:10px;padding:18px;box-shadow:var(--sms-shadow);border:1px solid var(--sms-border);}
+
+.sms-tool .sms-field-label{display:block;font-size:11px;font-weight:700;color:var(--sms-text2);margin-bottom:6px;}
+.sms-tool .sms-btn-group{display:flex;gap:6px;flex-wrap:wrap;}
+.sms-tool .sms-toggle-btn{padding:6px 13px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:12px;font-weight:700;transition:all .15s;font-family:inherit;cursor:pointer;}
+.sms-tool .sms-toggle-btn:hover{border-color:var(--sms-primary);}
+.sms-tool .sms-toggle-btn.active{border-color:var(--sms-primary);background:var(--sms-primary-light);color:var(--sms-primary);border-width:2px;}
+.sms-tool .sms-toggle-btn.active-purple{border-color:var(--sms-purple);background:var(--sms-purple-light);color:var(--sms-purple);border-width:2px;}
+.sms-tool .sms-input-wrap{position:relative;}
+.sms-tool .sms-search-input{width:100%;padding:10px 14px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:14px;font-weight:500;background:var(--sms-card2);color:var(--sms-text);transition:all .15s;font-family:inherit;}
+.sms-tool .sms-search-input:focus{outline:none;border-color:var(--sms-primary);box-shadow:0 0 0 3px rgba(79,110,247,.13);}
+.sms-tool .sms-rank-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--sms-primary);color:#fff;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:800;}
+.sms-tool .sms-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sms-card);border-radius:9px;border:1.5px solid var(--sms-border);box-shadow:0 8px 24px rgba(0,0,0,.32);z-index:200;max-height:280px;overflow-y:auto;}
+.sms-tool .sms-dd-item{padding:9px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--sms-border);}
+.sms-tool .sms-dd-item:last-child{border-bottom:none;}
+.sms-tool .sms-dd-item:hover{background:var(--sms-primary-light);}
+.sms-tool .sms-dd-item-name{font-weight:600;font-size:13px;color:var(--sms-text);}
+.sms-tool .sms-dd-item-rank{background:var(--sms-gray-light);padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;color:var(--sms-primary);}
+.sms-tool .sms-dd-empty{padding:14px;color:var(--sms-text3);font-size:12px;}
+.sms-tool .sms-main-btn{width:100%;padding:11px;border-radius:9px;border:none;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--sms-primary),var(--sms-primary-deep));transition:all .2s;font-family:inherit;cursor:pointer;}
+.sms-tool .sms-main-btn:disabled{background:var(--sms-gray);cursor:not-allowed;opacity:.5;}
+.sms-tool .sms-main-btn.purple{background:linear-gradient(135deg,var(--sms-purple),#8b6dee);}
+
+.sms-tool .sms-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;white-space:nowrap;}
+.sms-tool .sms-badge-status-available{background:var(--sms-green);color:#fff;border-radius:999px;padding:2px 8px;font-size:10px;}
+.sms-tool .sms-badge-status-review{background:var(--sms-amber);color:#fff;border-radius:999px;padding:2px 8px;font-size:10px;}
+.sms-tool .sms-badge-status-unavailable{background:var(--sms-red);color:#fff;border-radius:999px;padding:2px 8px;font-size:10px;}
+.sms-tool .sms-badge-status-unknown{background:var(--sms-gray);color:#fff;border-radius:999px;padding:2px 8px;font-size:10px;}
+.sms-tool .sms-badge-cat-card{background:rgba(91,163,245,.18);color:var(--sms-primary);}
+.sms-tool .sms-badge-cat-tel{background:rgba(167,139,250,.18);color:var(--sms-purple);}
+.sms-tool .sms-badge-cat-member{background:rgba(251,191,36,.18);color:var(--sms-amber);}
+.sms-tool .sms-badge-cat-mobility{background:rgba(251,146,60,.18);color:#fb923c;}
+.sms-tool .sms-badge-cat-etc{background:var(--sms-gray-light);color:var(--sms-text2);}
+.sms-tool .sms-badge-type-lms{background:rgba(91,163,245,.18);color:var(--sms-primary);}
+.sms-tool .sms-badge-type-mms{background:rgba(167,139,250,.18);color:var(--sms-purple);}
+.sms-tool .sms-badge-type-push{background:rgba(251,146,60,.18);color:#fb923c;}
+.sms-tool .sms-badge-type-kakao{background:rgba(251,191,36,.18);color:var(--sms-amber);}
+.sms-tool .sms-badge-agency-biz{background:rgba(251,191,36,.13);color:var(--sms-amber);border:1px solid rgba(251,191,36,.32);}
+.sms-tool .sms-badge-agency-dc{background:rgba(91,163,245,.13);color:var(--sms-primary);border:1px solid rgba(91,163,245,.32);}
+.sms-tool .sms-badge-agency-dh{background:rgba(240,101,101,.13);color:var(--sms-red);border:1px solid rgba(240,101,101,.32);}
+
+.sms-tool .sms-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+@media(max-width:600px){.sms-tool .sms-summary-grid{grid-template-columns:repeat(2,1fr);}}
+.sms-tool .sms-summary-card{border-radius:9px;padding:12px 10px;text-align:center;background:var(--sms-card);border:1px solid var(--sms-border);}
+.sms-tool .sms-summary-card .sms-num{font-size:22px;font-weight:800;display:block;}
+.sms-tool .sms-summary-card .sms-lbl{font-size:10px;font-weight:600;display:block;margin-top:2px;}
+
+.sms-tool .sms-info-bar{background:var(--sms-header);color:var(--sms-text);border-radius:9px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border:1px solid var(--sms-border);}
+.sms-tool .sms-info-bar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;}
+
+.sms-tool .sms-table-wrap{background:var(--sms-card);border-radius:10px;box-shadow:var(--sms-shadow);overflow-x:auto;border:1px solid var(--sms-border);}
+.sms-tool table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px;}
+.sms-tool thead tr{background:var(--sms-card2);}
+.sms-tool th{padding:10px 6px;font-weight:700;color:var(--sms-text2);font-size:9px;border-bottom:2px solid var(--sms-border);white-space:nowrap;text-align:left;}
+.sms-tool td{padding:7px 6px;border-bottom:1px solid var(--sms-border);vertical-align:middle;color:var(--sms-text);}
+.sms-tool tr.sms-unavailable{opacity:0.45;background:rgba(0,0,0,.06);}
+.sms-tool .sms-type-list{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;}
+.sms-tool .sms-price-list{display:flex;flex-direction:column;align-items:center;gap:2px;}
+
+.sms-tool .sms-johab-banner{margin-bottom:14px;padding:12px 16px;border-radius:9px;font-size:12px;font-weight:800;}
+.sms-tool .sms-notice-box{margin-top:12px;padding:10px 14px;background:var(--sms-amber-light);border-radius:7px;border:1px solid rgba(251,191,36,.32);}
+.sms-tool .sms-notice-box li{font-size:10px;color:var(--sms-text2);line-height:1.7;margin-left:14px;}
+
+.sms-tool .sms-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:700px){.sms-tool .sms-editor-grid{grid-template-columns:1fr;}}
+.sms-tool .sms-guide-preview{margin-bottom:14px;padding:10px 12px;background:var(--sms-card2);border-radius:9px;border:1px solid var(--sms-border);}
+.sms-tool .sms-guide-preview .sms-title{font-size:10px;font-weight:700;color:var(--sms-text2);margin-bottom:6px;}
+.sms-tool .sms-guide-preview .sms-row{font-size:10px;color:var(--sms-text2);line-height:1.8;}
+.sms-tool textarea.sms-msg-input{width:100%;height:180px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:12px;line-height:1.7;resize:vertical;background:var(--sms-card2);color:var(--sms-text);font-family:inherit;}
+.sms-tool textarea.sms-msg-input:focus{outline:none;border-color:var(--sms-primary);box-shadow:0 0 0 3px rgba(79,110,247,.13);}
+.sms-tool .sms-result-area-inner{min-height:320px;}
+.sms-tool .sms-result-block{margin-bottom:12px;}
+.sms-tool .sms-result-block .sms-blabel{font-size:10px;font-weight:700;color:var(--sms-text2);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.sms-tool .sms-result-title-box{padding:10px 12px;background:rgba(91,163,245,.07);border-radius:8px;border:1.5px solid rgba(91,163,245,.32);font-size:12px;line-height:1.6;white-space:pre-wrap;color:var(--sms-text);}
+.sms-tool .sms-result-body-box{padding:10px 12px;background:var(--sms-card2);border-radius:8px;border:1.5px solid var(--sms-border);font-size:12px;line-height:1.8;white-space:pre-wrap;max-height:360px;overflow-y:auto;color:var(--sms-text);}
+.sms-tool .sms-byte-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
+.sms-tool .sms-byte-tag{font-size:10px;background:var(--sms-card2);color:var(--sms-text2);padding:2px 8px;border-radius:5px;}
+.sms-tool .sms-byte-tag.ok{background:var(--sms-green-light);color:var(--sms-green);font-weight:600;}
+.sms-tool .sms-byte-tag.over{background:var(--sms-red-light);color:var(--sms-red);font-weight:600;}
+.sms-tool .sms-empty-state{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sms-text3);gap:10px;text-align:center;}
+.sms-tool .sms-empty-state .sms-icon{font-size:36px;}
+.sms-tool .sms-loading-state{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sms-text3);gap:12px;}
+.sms-tool .sms-spinner{width:36px;height:36px;border:3px solid var(--sms-border);border-top-color:var(--sms-purple);border-radius:50%;animation:smsSpin .7s linear infinite;}
+
+.sms-tool .sms-guide-detail{margin-top:16px;background:var(--sms-card);border-radius:10px;padding:16px 20px;box-shadow:var(--sms-shadow);border:1px solid var(--sms-border);}
+.sms-tool .sms-guide-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+@media(max-width:600px){.sms-tool .sms-guide-detail-grid{grid-template-columns:1fr;}}
+.sms-tool .sms-guide-rule{font-size:11px;color:var(--sms-text2);line-height:1.7;display:flex;gap:6px;margin-bottom:2px;}
+.sms-tool .sms-rule-num{color:var(--sms-red);font-weight:700;flex-shrink:0;}
+.sms-tool .sms-required-box{padding:8px 10px;background:var(--sms-amber-light);border-radius:7px;border:1px solid rgba(251,191,36,.32);font-size:10px;color:var(--sms-text2);line-height:1.8;white-space:pre-wrap;}
+
+.sms-tool .sms-copy-btn{padding:5px 12px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;}
+.sms-tool .sms-copy-btn.copied{background:var(--sms-green-light);color:var(--sms-green);border-color:var(--sms-green);}
+
+.sms-tool .sms-johab-type-btn{flex:1;padding:8px 10px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);cursor:pointer;text-align:left;font-family:inherit;}
+.sms-tool .sms-johab-type-btn.red{border-color:var(--sms-red);background:var(--sms-red-light);border-width:2px;}
+.sms-tool .sms-johab-type-btn.green{border-color:var(--sms-green);background:var(--sms-green-light);border-width:2px;}
+
+.sms-tool .sms-sigo-section{margin-top:14px;padding:14px;background:rgba(91,163,245,.07);border-radius:10px;border:1.5px solid rgba(91,163,245,.28);position:relative;}
+
+.sms-tool .sms-error-box{margin-top:8px;padding:8px 12px;background:var(--sms-red-light);border-radius:7px;font-size:11px;color:var(--sms-red);}
+
+.sms-tool .sms-manual-box{margin-top:12px;padding:12px;background:var(--sms-amber-light);border-radius:9px;border:1px solid rgba(251,191,36,.32);}
+
+.sms-tool .sms-result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+
+@keyframes smsSpin{to{transform:rotate(360deg);}}
+@keyframes smsFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.sms-tool .sms-fade-up{animation:smsFadeUp .3s ease-out forwards;}
+
 </style>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER</div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.12</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
     <button class="tab" onclick="switchView('leave')"><span class="tab-ic">🏖</span><span class="tab-text">🏖 연차현황</span></button>
-    <button class="tab" onclick="switchView('keyword')"><span class="tab-ic">💳</span><span class="tab-text">💳 키워드광고</span></button>
+    <button class="tab" onclick="switchView('keyword')"><span class="tab-ic">📊</span><span class="tab-text">📊 광고현황</span></button>
+    <button class="tab hide" id="mediaInfoTab" onclick="switchView('media')"><span class="tab-ic">📡</span><span class="tab-text">📡 매체안내</span></button>
   </nav>
   <div class="hdr-r">
     <div class="user-info hide" id="userInfo"><span id="userEmail"></span><span class="ub" id="userBadge"></span></div>
@@ -766,7 +1043,7 @@ body.offline .offline-bar{display:block;}
     <!-- 서브탭 (관리자만 연차현황 탭 표시) -->
     <div class="sub-tabs" id="leaveSubTabs">
       <button class="sub-tab on" id="subTabCalendar" onclick="switchLeaveTab('calendar')">📅 달력</button>
-      <button class="sub-tab hide" id="subTabLeaveSummary" onclick="switchLeaveTab('summary')">📊 연차현황</button>
+      <button class="sub-tab hide" id="subTabLeaveSummary" onclick="switchLeaveTab('summary')">📊 연차소진현황</button>
     </div>
     <!-- 달력 서브페이지 -->
     <div id="subLeaveCalendar">
@@ -789,29 +1066,213 @@ body.offline .offline-bar{display:block;}
     </div>
   </div>
 
-  <!-- 키워드광고 잔액 탭 -->
+  <!-- 광고현황 탭 -->
   <div class="kw-view hide" id="keywordView">
-    <div class="kw-header">
-      <div class="kw-header-l">
-        <span class="kw-title">💳 네이버 키워드광고 잔액</span>
-        <span class="kw-sync" id="kwSync">—</span>
-      </div>
-      <div class="kw-header-r">
-        <div class="kw-total-wrap">
-          <span class="kw-total-lbl">전체 잔액</span>
-          <span class="kw-total-val" id="kwTotal">—</span>
+    <!-- 서브탭 -->
+    <div class="sub-tabs">
+      <button class="sub-tab on" id="adSubTabNaver" onclick="switchAdTab('naver')">💳 네이버 키워드광고</button>
+      <button class="sub-tab" id="adSubTabZigbang" onclick="switchAdTab('zigbang')">🏢 직방/호갱노노</button>
+    </div>
+    <!-- 네이버 키워드광고 -->
+    <div id="adNaverView">
+      <div class="kw-header">
+        <div class="kw-header-l">
+          <span class="kw-title">💳 네이버 키워드광고 잔액</span>
+          <span class="kw-sync" id="kwSync">—</span>
         </div>
-        <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()" title="키워드광고 잔액만 새로고침 (Apps Script 실행은 별도)">↻ 잔액 새로고침</button>
+        <div class="kw-header-r">
+          <div class="kw-total-wrap">
+            <span class="kw-total-lbl">전체 잔액</span>
+            <span class="kw-total-val" id="kwTotal">—</span>
+          </div>
+          <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()" title="키워드광고 잔액만 새로고침">↻ 잔액 새로고침</button>
+        </div>
+      </div>
+      <div class="kw-legend">
+        <span class="kw-legend-item ok">✅ 10만원 이상 · 잔액 충분</span>
+        <span class="kw-legend-item warn">⚠ 10만원 미만 · 잔액 주의</span>
+        <span class="kw-legend-item danger">⚠ 3만원 미만 · 잔액 부족</span>
+        <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
+      </div>
+      <div class="kw-grid" id="kwGrid"></div>
+    </div>
+    <!-- 직방/호갱노노 -->
+    <div id="adZigbangView" class="hide">
+      <div id="zbContent"><div style="padding:40px;text-align:center;color:var(--tx3)">데이터 로딩 중...</div></div>
+    </div>
+  </div>
+
+  <!-- 매체안내 탭 -->
+  <div class="mi-view hide" id="mediaInfoView">
+    <!-- 서브탭 -->
+    <div class="sub-tabs">
+      <button class="sub-tab on" id="miSubTabSms" onclick="switchMediaTab('sms')">💬 문자광고</button>
+      <!-- 향후 추가 예정: 디스플레이/검색/영상 등 -->
+    </div>
+
+    <!-- 💬 문자광고 (SMS Checker) -->
+    <div id="miSmsView">
+      <div class="sms-tool">
+        <div class="sms-header">
+          <div class="sms-header-label">SMS AD Management Tool</div>
+          <h2 class="sms-h1">문자광고 집행 관리 시스템</h2>
+          <p class="sms-sub" id="smsSub">비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회</p>
+          <div class="sms-tabs">
+            <button class="sms-tab-btn active" onclick="SmsTool.switchTab('check')">① 집행 가능여부 조회</button>
+            <button class="sms-tab-btn hide" id="smsTabEditBtn" onclick="SmsTool.switchTab('edit')">② 매체 가이드 문구 수정</button>
+          </div>
+        </div>
+
+        <!-- TAB 1: FEASIBILITY CHECK -->
+        <div id="sms-tab-check" class="sms-tab-panel active">
+          <div class="sms-content">
+          <div class="sms-card">
+
+            <div style="margin-bottom:14px">
+              <span class="sms-field-label">대행사 선택</span>
+              <div class="sms-btn-group" id="sms-agency-group">
+                <button class="sms-toggle-btn active" onclick="SmsTool.setAgency('all',this)">전체 비교</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setAgency('biz',this)">비즈그리다</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setAgency('dc',this)">디지털캠프</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setAgency('dh',this)">대홍기획</button>
+              </div>
+            </div>
+
+            <div style="position:relative; margin-bottom:4px">
+              <label class="sms-field-label" id="sms-search-label">건설사 검색</label>
+              <div class="sms-input-wrap">
+                <input type="text" id="sms-company-input" class="sms-search-input"
+                  placeholder="예) 현대건설, 황학동청계지역주택조합..."
+                  oninput="SmsTool.onCompanyInput(this.value)"
+                  onfocus="SmsTool.onCompanyFocus()"
+                  autocomplete="off">
+                <span id="sms-rank-badge-main" class="sms-rank-badge" style="display:none"></span>
+              </div>
+              <div id="sms-company-dropdown" class="sms-dropdown" style="display:none"></div>
+            </div>
+
+            <div id="sms-manual-box" class="sms-manual-box" style="display:none">
+              <input type="number" id="sms-manual-rank" placeholder="도급순위 직접 입력 (위)" min="1"
+                oninput="SmsTool.onManualRank(this.value)"
+                style="width:100%;padding:8px 12px;border-radius:7px;border:1.5px solid var(--sms-amber);font-size:13px;background:var(--sms-card)">
+            </div>
+
+            <div id="sms-sigo-section" class="sms-sigo-section" style="display:none">
+              <label class="sms-field-label" style="color:var(--sms-blue-deep);margin-bottom:5px">② 시공사 검색 <span id="sms-sigo-match" style="color:var(--sms-green);font-size:10px"></span></label>
+              <div class="sms-input-wrap" style="position:relative">
+                <input type="text" id="sms-sigo-input" class="sms-search-input"
+                  placeholder="시공사명 (예: 현대건설...)"
+                  oninput="SmsTool.onSigoInput(this.value)"
+                  onfocus="SmsTool.onSigoFocus()"
+                  autocomplete="off">
+                <span id="sms-rank-badge-sigo" class="sms-rank-badge" style="display:none"></span>
+              </div>
+              <div id="sms-sigo-dropdown" class="sms-dropdown" style="display:none"></div>
+              <div id="sms-sigo-manual-box" style="display:none;margin-top:8px">
+                <input type="number" id="sms-sigo-manual-rank" placeholder="시공사 도급순위 (위)" min="1"
+                  oninput="SmsTool.onSigoManual(this.value)"
+                  style="width:100%;padding:8px 12px;border-radius:7px;border:1.5px solid var(--sms-amber);font-size:13px;background:var(--sms-amber-light)">
+              </div>
+            </div>
+
+            <div id="sms-johab-type-section" style="display:none;margin-top:14px;padding:12px;background:var(--sms-amber-light);border-radius:9px;border:1.5px solid var(--sms-amber)">
+              <span class="sms-field-label" style="color:#92400E;margin-bottom:6px;display:block">③ 분양 유형</span>
+              <div style="display:flex;gap:8px">
+                <button class="sms-johab-type-btn red" onclick="SmsTool.setJohabType('recruit',this)">
+                  <div style="font-size:12px;font-weight:700;color:var(--sms-red)">조합원 모집</div>
+                  <div style="font-size:10px;color:var(--sms-text3);margin-top:1px">전매체 불가</div>
+                </button>
+                <button class="sms-johab-type-btn" onclick="SmsTool.setJohabType('ilban',this)">
+                  <div style="font-size:12px;font-weight:700;color:var(--sms-text2)">일반분양</div>
+                  <div style="font-size:10px;color:var(--sms-text3);margin-top:1px">KB국민카드외 지정매체 가능</div>
+                </button>
+              </div>
+            </div>
+
+            <div style="margin-top:14px">
+              <span class="sms-field-label" id="sms-region-label">지역</span>
+              <div class="sms-btn-group" id="sms-region-group">
+                <button class="sms-toggle-btn active" onclick="SmsTool.setRegion('수도권',this)">수도권</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setRegion('광역시',this)">광역시</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setRegion('세종시',this)">세종시</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setRegion('지방',this)">지방</button>
+              </div>
+            </div>
+
+            <button class="sms-main-btn" id="sms-check-btn" onclick="SmsTool.doCheck()" disabled style="margin-top:16px">조회하기</button>
+          </div>
+
+          <div id="sms-result-area" style="margin-top:20px;display:none" class="sms-fade-up">
+            <div id="sms-johab-banner"></div>
+            <div class="sms-summary-grid" id="sms-summary-grid"></div>
+            <div class="sms-info-bar" id="sms-info-bar"></div>
+            <div class="sms-table-wrap"><table id="sms-result-table">
+              <thead id="sms-result-thead"></thead>
+              <tbody id="sms-result-tbody"></tbody>
+            </table></div>
+            <div class="sms-notice-box"><ul id="sms-notice-list"></ul></div>
+          </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 2: MESSAGE EDITOR -->
+        <div id="sms-tab-edit" class="sms-tab-panel">
+          <div class="sms-content">
+          <div class="sms-editor-grid">
+            <div class="sms-card">
+              <div style="margin-bottom:14px">
+                <span class="sms-field-label">매체사 선택</span>
+                <div class="sms-btn-group" id="sms-media-group">
+                  <button class="sms-toggle-btn active" onclick="SmsTool.setMedia('신한카드',this)">신한카드</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMedia('삼성카드',this)">삼성카드</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMedia('롯데카드',this)">롯데카드</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMedia('BC카드',this)">BC카드</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMedia('KB국민카드',this)">KB국민카드</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMedia('하나카드',this)">하나카드</button>
+                </div>
+              </div>
+
+              <div style="margin-bottom:14px">
+                <span class="sms-field-label">발송 유형</span>
+                <div class="sms-btn-group" id="sms-msgtype-group">
+                  <button class="sms-toggle-btn active-purple" onclick="SmsTool.setMsgType('LMS',this)">LMS</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMsgType('MMS',this)">MMS</button>
+                  <button class="sms-toggle-btn" onclick="SmsTool.setMsgType('PUSH',this)">PUSH</button>
+                </div>
+              </div>
+
+              <div id="sms-guide-preview" class="sms-guide-preview"></div>
+
+              <span class="sms-field-label">원본 문구 입력</span>
+              <textarea id="sms-msg-input" class="sms-msg-input"
+                placeholder="수정이 필요한 원본 문자 문구를 붙여넣기 해주세요."></textarea>
+
+              <button class="sms-main-btn purple" id="sms-edit-btn" onclick="SmsTool.doEdit()" style="margin-top:12px">✨ 매체 가이드에 맞게 문구 수정</button>
+              <div id="sms-edit-error" class="sms-error-box" style="display:none"></div>
+            </div>
+
+            <div class="sms-card">
+              <div class="sms-result-header">
+                <div style="font-size:13px;font-weight:700">수정된 문구</div>
+                <button class="sms-copy-btn" id="sms-copy-btn" onclick="SmsTool.copyResult()" style="display:none">전체 복사</button>
+              </div>
+              <div id="sms-edit-result" class="sms-result-area-inner">
+                <div class="sms-empty-state">
+                  <div class="sms-icon">📝</div>
+                  <div style="font-size:12px">원본 문구를 입력하고 수정 버튼을 눌러주세요</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="sms-guide-detail" class="sms-guide-detail" style="display:none"></div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- 상태 범례 -->
-    <div class="kw-legend">
-      <span class="kw-legend-item ok">✅ 10만원 이상 · 잔액 충분</span>
-      <span class="kw-legend-item warn">⚠ 10만원 미만 · 잔액 주의</span>
-      <span class="kw-legend-item danger">⚠ 3만원 미만 · 잔액 부족</span>
-      <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
-    </div>
-    <div class="kw-grid" id="kwGrid"></div>
+
+    <!-- 향후 추가 영역 -->
   </div>
 </div>
 
@@ -837,6 +1298,11 @@ body.offline .offline-bar{display:block;}
       <div class="dp-row"><span class="dp-k">시작일</span><span class="dp-v" id="dpSdate"></span></div>
       <div class="dp-row"><span class="dp-k">종료일</span><span class="dp-v" id="dpEdate"></span></div>
       <div class="dp-row"><span class="dp-k">기간</span><span class="dp-v" id="dpPeriod"></span></div>
+      <div class="dp-progress-wrap">
+        <div class="dp-prog-lbl"><span>기간 진행률</span><span id="dpDatePct"></span></div>
+        <div class="dp-prog-bar"><div class="dp-prog-fill" id="dpDateProgFill"></div></div>
+        <div class="dp-prog-sublbl" id="dpDateSub"></div>
+      </div>
     </div>
     <div class="dp-divider"></div>
     <div class="dp-section">
@@ -844,7 +1310,7 @@ body.offline .offline-bar{display:block;}
       <div class="dp-row"><span class="dp-k">집행</span><span class="dp-v dp-money green" id="dpSpent"></span></div>
       <div class="dp-row"><span class="dp-k">잔여</span><span class="dp-v dp-money blue" id="dpRemain"></span></div>
       <div class="dp-progress-wrap">
-        <div class="dp-prog-lbl"><span>집행률</span><span id="dpPct"></span></div>
+        <div class="dp-prog-lbl"><span>예산 집행률</span><span id="dpPct"></span></div>
         <div class="dp-prog-bar"><div class="dp-prog-fill" id="dpProgFill"></div></div>
       </div>
     </div>
@@ -899,6 +1365,16 @@ body.offline .offline-bar{display:block;}
       <div class="fg"><label class="fl">견적 K</label><input class="fi2" id="c10" type="number"></div>
       <div class="fg"><label class="fl">집행 L</label><input class="fi2" id="c11" type="number"></div>
     </div>
+    <div class="fsec">매체안내 - 문구 수정 (Groq API)</div>
+    <div class="fg">
+      <label class="fl">Groq API Key</label>
+      <input class="fi2" id="cfgGroqKey" type="password" placeholder="gsk_... (선택 / 비워두면 ② 탭 비활성)" autocomplete="off">
+    </div>
+    <div class="fg">
+      <label class="fl">모델</label>
+      <input class="fi2" id="cfgGroqModel" placeholder="llama-3.3-70b-versatile (기본)">
+    </div>
+    <p class="msub" style="font-size:10px;margin-top:-4px;color:var(--tx3)">키는 본인 브라우저(localStorage)에만 저장됩니다. console.groq.com에서 무료 발급 가능.</p>
     <div class="fsec">자동 새로고침</div>
     <div class="fg"><label class="fl">주기 (분)</label><input class="fi2" id="cfgPoll" type="number"></div>
     <div class="mfoot">
@@ -910,6 +1386,43 @@ body.offline .offline-bar{display:block;}
 </div>
 
 <script>
+// ── safeStorage / safeSession: localStorage/sessionStorage 안전 래퍼 ──
+// 시크릿 모드, iOS 권한 차단 등에서 throw 방지
+const safeStorage={
+  get(k){try{return localStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}},
+  remove(k){try{localStorage.removeItem(k);}catch(e){}},
+};
+const safeSession={
+  get(k){try{return sessionStorage.getItem(k);}catch(e){return null;}},
+  set(k,v){try{sessionStorage.setItem(k,v);return true;}catch(e){return false;}},
+  remove(k){try{sessionStorage.removeItem(k);}catch(e){}},
+};
+
+// ── 전역 에러 캐처 (운영 중 에러 가시화) ──
+let _lastErrorAt=0;
+function setupErrorTracking(){
+  window.addEventListener('error',(e)=>{
+    const now=Date.now();
+    if(now-_lastErrorAt<5000)return; // 5초 cooldown
+    _lastErrorAt=now;
+    const msg=(e&&e.message)||'알 수 없는 오류';
+    console.error('[BRIN-error]',msg,e&&e.error);
+    // 외부 리소스 로딩 실패는 토스트 띄우지 않음
+    if(e&&e.target&&e.target!==window&&(e.target.tagName==='SCRIPT'||e.target.tagName==='LINK'||e.target.tagName==='IMG'))return;
+    try{if(typeof showToast==='function')showToast('일시적인 오류가 발생했습니다: '+msg,'err');}catch(_){}
+  });
+  window.addEventListener('unhandledrejection',(e)=>{
+    const now=Date.now();
+    if(now-_lastErrorAt<5000)return;
+    _lastErrorAt=now;
+    const reason=(e&&e.reason);
+    const msg=reason&&reason.message?reason.message:String(reason||'').slice(0,200);
+    console.error('[BRIN-rejection]',msg,reason);
+    try{if(typeof showToast==='function')showToast('비동기 작업 중 오류가 발생했습니다.','err');}catch(_){}
+  });
+}
+
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
 
@@ -977,7 +1490,7 @@ let CFG={...DEFAULTS, cols:{...DEFAULTS.cols}};
 // 기존 저장값 강제 리셋 (v3 신규 키 사용)
 function loadCFG(){
   try{
-    const s=localStorage.getItem('brin_cfg_v4');
+    const s=safeStorage.get('brin_cfg_v4');
     if(s){const saved=JSON.parse(s);CFG={...DEFAULTS,...saved,cols:{...DEFAULTS.cols,...(saved.cols||{})}};}
     else CFG={...DEFAULTS, cols:{...DEFAULTS.cols}};
   }catch(e){CFG={...DEFAULTS, cols:{...DEFAULTS.cols}};}
@@ -996,29 +1509,35 @@ function saveCFG(){
     edate:+document.getElementById('c6').value,period:+document.getElementById('c7').value,
     memo:+document.getElementById('c8').value,assignee:+document.getElementById('c9').value,
     budget:+document.getElementById('c10').value,spent:+document.getElementById('c11').value};
-  localStorage.setItem('brin_cfg_v4',JSON.stringify(CFG));
+  safeStorage.set('brin_cfg_v4',JSON.stringify(CFG));
+  // Groq API 키 / 모델 (관리자만 해당 영역에 접근)
+  const groqKey=document.getElementById('cfgGroqKey').value.trim();
+  const groqModel=document.getElementById('cfgGroqModel').value.trim()||'llama-3.3-70b-versatile';
+  if(groqKey)safeStorage.set('brin_groq_key',groqKey);
+  else safeStorage.remove('brin_groq_key');
+  safeStorage.set('brin_groq_model',groqModel);
 }
 function resetDefaults(){
   if(!confirm('설정값을 기본값으로 복원하시겠습니까?'))return;
   CFG={...DEFAULTS, cols:{...DEFAULTS.cols}};
-  localStorage.removeItem('brin_cfg_v4');
+  safeStorage.remove('brin_cfg_v4');
   fillSettingsForm();
-  alert('기본값으로 복원되었습니다.');
+  showToast('기본값으로 복원되었습니다.','ok');
 }
 
 // ── TOKEN ──────────────────────────────────────
 // 토큰 - 새로고침까지만 유지 (sessionStorage)
 function saveToken(t,exp,email){
-  sessionStorage.setItem('brin_tk',JSON.stringify({t,exp:Date.now()+(exp-120)*1000,email}));
+  safeSession.set('brin_tk',JSON.stringify({t,exp:Date.now()+(exp-120)*1000,email}));
 }
 function loadTokenData(){
-  try{const s=sessionStorage.getItem('brin_tk');if(!s)return null;
+  try{const s=safeSession.get('brin_tk');if(!s)return null;
     const o=JSON.parse(s);
-    if(Date.now()>o.exp){sessionStorage.removeItem('brin_tk');return null;}
+    if(Date.now()>o.exp){safeSession.remove('brin_tk');return null;}
     return o;}
   catch{return null;}
 }
-function clearToken(){sessionStorage.removeItem('brin_tk');localStorage.removeItem('brin_tk');}
+function clearToken(){safeSession.remove('brin_tk');safeStorage.remove('brin_tk');}
 
 // ── STATE ──────────────────────────────────────
 let token=null,userEmail='',rows=[],groups=[],filtered=[],pollTimer=null,view='gantt';
@@ -1028,22 +1547,26 @@ let TODAY=getTodayKST();
 
 // 자정이 지나면 TODAY 갱신 + 데이터 재로드
 function scheduleMidnightRefresh(){
-  const now=new Date();
-  const kstNow=new Date(now.getTime()+9*60*60*1000);
-  const msUntilMidnight=(
-    (23-kstNow.getUTCHours())*3600000+
-    (59-kstNow.getUTCMinutes())*60000+
-    (60-kstNow.getUTCSeconds())*1000
-  );
+  // KST 다음 자정까지 남은 ms를 안전하게 계산 (브라우저 timezone 무관)
+  const nowMs=Date.now();
+  const KST_OFFSET=9*60*60*1000;
+  const kstNow=new Date(nowMs+KST_OFFSET);
+  // kstNow의 다음 KST 자정 (UTC 시각으로 계산 후 KST 오프셋 차감)
+  const kstMidnight=Date.UTC(kstNow.getUTCFullYear(),kstNow.getUTCMonth(),kstNow.getUTCDate()+1);
+  const targetEpoch=kstMidnight-KST_OFFSET;
+  let msUntilMidnight=targetEpoch-nowMs;
+  // 안전 fallback: 비정상 값이면 1시간 뒤 재시도
+  if(msUntilMidnight<=0||msUntilMidnight>26*60*60*1000)msUntilMidnight=60*60*1000;
   setTimeout(()=>{
     TODAY=getTodayKST();
-    if(token){fetchData();fetchLeaveData();}
+    if(token)fetchData(); // batchGet으로 매체일정+연차+키워드 한 번에
     scheduleMidnightRefresh(); // 다음 자정 예약
   },msUntilMidnight);
 }
 let tlStart=null;
 
-const COLORS=['#4f6ef7','#2dd98f','#f5a033','#f06565','#a78bfa','#f472b6','#22d3ee','#fb923c','#84cc16','#e879f9','#06b6d4','#fbbf24'];
+// hue 간격을 둬서 인접 PJT 색상이 잘 구분되도록 재배치
+const COLORS=['#4f6ef7','#f5a033','#2dd98f','#f472b6','#22d3ee','#fbbf24','#a78bfa','#84cc16','#f06565','#06b6d4','#e879f9','#fb923c'];
 const pjtMap={};let pjtIdx=0;
 function getPjtColor(n){if(!pjtMap[n])pjtMap[n]=COLORS[pjtIdx++%COLORS.length];return pjtMap[n];}
 
@@ -1098,7 +1621,7 @@ function initGIS(){
     client_id:CFG.clientId,
     scope:'https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/userinfo.email',
     callback:async(resp)=>{
-      if(resp.error){alert('로그인 실패: '+resp.error);return;}
+      if(resp.error){showToast('로그인 실패: '+resp.error,'err');return;}
       token=resp.access_token;
       // 사용자 이메일 가져오기
       try{
@@ -1112,14 +1635,14 @@ function initGIS(){
   });
 }
 function handleLogin(){
-  if(!CFG.clientId){alert('Client ID가 설정되지 않았습니다.');return;}
+  if(!CFG.clientId){showToast('Client ID가 설정되지 않았습니다.','warn');return;}
   if(!tokenClient)initGIS();
   if(tokenClient)tokenClient.requestAccessToken();
 }
 function handleLogout(){
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();
-  ['ganttView','budgetView','leaveView','keywordView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo'].forEach(id=>document.getElementById(id).classList.add('hide'));
+  ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
@@ -1127,10 +1650,14 @@ function handleLogout(){
   currentSubTab='budget';
   currentLeaveTab='calendar';
   selectedInvYear=TODAY.getFullYear();
+  currentAdTab='naver';
+  zbLoaded=false;zbBrinRows=[];zbZbContracts=[];zbZbDetails=[];
+  // 매체안내 탭에 있었다면 타임라인으로 이동
+  if(view==='media')view='gantt';
 }
 function onLoggedIn(){
   document.getElementById('loginBtn').classList.add('hide');
-  ['logoutBtn','refBtn','syncWrap','fbar','userInfo','themeBtn'].forEach(id=>document.getElementById(id).classList.remove('hide'));
+  ['logoutBtn','refBtn','syncWrap','fbar','userInfo','themeBtn','mediaInfoTab'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hide');});
   // 관리자만 설정버튼 보이기
   const isAdmin=userEmail===ADMIN_EMAIL;
   document.getElementById('settingsBtn').classList.toggle('hide',!isAdmin);
@@ -1143,6 +1670,13 @@ function onLoggedIn(){
   document.getElementById('budgetTab').classList.toggle('hide',!canAccessBudget());
   // 연차현황 서브탭 - 관리자만
   document.getElementById('subTabLeaveSummary').classList.toggle('hide',!isAdmin);
+  // 매체안내 - ② 문구수정 탭은 관리자만 (Groq API 키 필요한 기능)
+  const smsEditBtn=document.getElementById('smsTabEditBtn');
+  if(smsEditBtn)smsEditBtn.classList.toggle('hide',!isAdmin);
+  const smsSub=document.getElementById('smsSub');
+  if(smsSub)smsSub.textContent=isAdmin
+    ?'비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회 + 매체 가이드 문구 수정'
+    :'비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회';
 
   showLoading('데이터를 불러오는 중...');
   fetchData().finally(hideLoading);
@@ -1170,45 +1704,80 @@ function showToast(msg,type){
 
 // ── FETCH ─────────────────────────────────────
 let fetchFailures=0;
+let isFetching=false;
+let lastFailToastAt=0;
 async function fetchData(isManual){
   if(!token||!CFG.sheetId)return;
+  if(isFetching){
+    if(isManual)showToast('이미 새로고침 중입니다.','info');
+    return;
+  }
+  isFetching=true;
   if(isManual)showLoading('새로고침 중...');
   try{
-    const rng=encodeURIComponent(`${CFG.sheetName}!${CFG.range}`);
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${rng}?valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING`;
+    // batchGet으로 3개 시트(매체집행일정 + 연차일정 + 키워드광고잔액) 한 번에
+    const ranges=[
+      `${CFG.sheetName}!${CFG.range}`,
+      '연차일정!A4:P30',
+      '키워드광고_잔액!A1:G50',
+    ];
+    const rangeParams=ranges.map(r=>`ranges=${encodeURIComponent(r)}`).join('&');
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values:batchGet?${rangeParams}&valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING`;
     const res=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(res.status===401){handleLogout();showToast('로그인이 만료되어 다시 로그인해주세요.','warn');return;}
     if(!res.ok){
       fetchFailures++;
-      if(fetchFailures>=3)showToast(`자동 새로고침이 ${fetchFailures}회 실패했습니다. 네트워크를 확인해주세요.`,'err');
-      else if(isManual)showToast(`데이터 로드 실패 (${res.status})`,'err');
+      const now=Date.now();
+      if(fetchFailures>=3&&(now-lastFailToastAt)>60000){
+        showToast(`자동 새로고침 실패가 반복되고 있습니다 (${fetchFailures}회). 네트워크를 확인해주세요.`,'err');
+        lastFailToastAt=now;
+      } else if(isManual){
+        showToast(`데이터 로드 실패 (${res.status})`,'err');
+      }
       return;
     }
     fetchFailures=0;
     const data=await res.json();
-    parseSheet(data.values||[]);
-    // 필터가 비어있을 때만 기본값 진행중 적용 (사용자가 직접 변경한 경우 유지)
+    const valueRanges=data.valueRanges||[];
+    // [0] 매체집행일정 - 주력
+    parseSheet((valueRanges[0]&&valueRanges[0].values)||[]);
+    // 필터가 비어있을 때만 기본값 진행중 적용
     const stFi=document.getElementById('statusFi');
     if(!stFi.value)stFi.value='진행중';
     buildFilters();
     applyFilter();
     updateSyncTime();
-    // 연차 + 키워드 데이터도 같이 fetch
-    fetchLeaveData();
-    fetchKeywordData();
+    // [1] 연차 - 일부 시트 없을 수 있음
+    try{
+      parseLeaveSheet((valueRanges[1]&&valueRanges[1].values)||[]);
+      if(view==='leave'){if(currentLeaveTab==='summary')renderLeaveSummary();else renderLeave();}
+      updateLeaveBanner();
+    }catch(e){console.warn('[BRIN-leave] parse',e);}
+    // [2] 키워드광고 잔액
+    try{
+      parseKeywordSheet((valueRanges[2]&&valueRanges[2].values)||[]);
+      if(view==='keyword')renderKeyword();
+    }catch(e){console.warn('[BRIN-kw] parse',e);}
     if(isManual)showToast('새로고침 완료','ok');
   }catch(e){
     console.error(e);
     fetchFailures++;
-    if(fetchFailures>=3)showToast('네트워크 오류가 반복되고 있습니다.','err');
-    else if(isManual)showToast('네트워크 오류가 발생했습니다.','err');
+    const now=Date.now();
+    if(fetchFailures>=3&&(now-lastFailToastAt)>60000){
+      showToast('네트워크 오류가 반복되고 있습니다.','err');
+      lastFailToastAt=now;
+    } else if(isManual){
+      showToast('네트워크 오류가 발생했습니다.','err');
+    }
   }finally{
+    isFetching=false;
     if(isManual)hideLoading();
   }
 }
 function manualRefresh(){
   const b=document.getElementById('refBtn');b.style.opacity='0.4';
-  Promise.all([fetchData(true),fetchLeaveData(),fetchKeywordData()]).finally(()=>{b.style.opacity='1';});
+  // batchGet으로 통합됐으므로 단일 fetchData 호출만 필요
+  fetchData(true).finally(()=>{b.style.opacity='1';});
 }
 
 // ── PARSE ─────────────────────────────────────
@@ -1267,16 +1836,16 @@ function buildFilters(){
   mfi.innerHTML='<option value="">랩사 전체</option>'+bsas.map(m=>`<option>${m}</option>`).join('');
 
   // PJT 진행중/종료 분류 (거래명세서 제외 후 판단)
-  const pjtMap={};
+  const pjtStatus={};
   rows.forEach(r=>{
     if(!r.pjt)return;
-    if(!pjtMap[r.pjt])pjtMap[r.pjt]={active:false,done:true};
+    if(!pjtStatus[r.pjt])pjtStatus[r.pjt]={active:false,done:true};
     if(isInvoice(r))return; // 거래명세서는 상태 판단에서 제외
-    if(!isDoneStatus(r.status))pjtMap[r.pjt].active=true;
-    else pjtMap[r.pjt].done=pjtMap[r.pjt].done&&true;
+    if(!isDoneStatus(r.status))pjtStatus[r.pjt].active=true;
+    else pjtStatus[r.pjt].done=pjtStatus[r.pjt].done&&true;
   });
-  const activePjts=Object.keys(pjtMap).filter(p=>pjtMap[p].active).sort();
-  const donePjts=Object.keys(pjtMap).filter(p=>!pjtMap[p].active).sort();
+  const activePjts=Object.keys(pjtStatus).filter(p=>pjtStatus[p].active).sort();
+  const donePjts=Object.keys(pjtStatus).filter(p=>!pjtStatus[p].active).sort();
 
   let pjtHtml='<option value="">PJT 전체</option>';
   if(activePjts.length){
@@ -1346,20 +1915,22 @@ function renderGantt(){
       const st=window._brinStats;
       const sampleS=st.sampleSdate===null||st.sampleSdate===undefined?'(빈값)':`"${st.sampleSdate}"`;
       const sampleE=st.sampleEdate===null||st.sampleEdate===undefined?'(빈값)':`"${st.sampleEdate}"`;
-      gl.innerHTML=`<div style="padding:30px 20px;color:var(--tx2);font-size:11px;line-height:1.8">
-        <div style="font-weight:700;color:var(--orange);margin-bottom:10px">⚠ 데이터를 표시할 수 없습니다</div>
-        <div>시트 전체 행: <strong>${st.total}</strong></div>
-        <div>날짜 파싱 실패: <strong style="color:var(--red)">${st.skippedDate}</strong></div>
-        <div>데이터 누락 스킵: <strong>${st.skippedData}</strong></div>
-        <div>정상 파싱: <strong style="color:var(--green)">${st.parsed}</strong></div>
-        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);font-size:10px;color:var(--tx3)">
-          첫 데이터 샘플:<br>
-          시작일 셀: ${sampleS}<br>
-          종료일 셀: ${sampleE}<br>
-          <br>날짜 형식이 <code>26.4.28</code> 또는 <code>2026-04-28</code> 같은 형식인지 확인해주세요.
-        </div></div>`;
+      const isAdminUser=userEmail===ADMIN_EMAIL;
+      gl.innerHTML=`<div style="padding:30px 20px;color:var(--tx2);font-size:12px;line-height:1.8">
+        <div style="font-weight:700;color:var(--orange);margin-bottom:10px;font-size:13px">⚠ 데이터를 표시할 수 없습니다</div>
+        <div style="color:var(--tx2);margin-bottom:8px">시트에 데이터가 없거나 날짜 형식이 맞지 않습니다.</div>
+        <div style="color:var(--tx3);font-size:11px">날짜는 <code style="background:var(--sur2);padding:1px 5px;border-radius:3px">26.4.28</code> 또는 <code style="background:var(--sur2);padding:1px 5px;border-radius:3px">2026-04-28</code> 형식으로 입력해주세요.</div>
+        ${isAdminUser?`<details style="margin-top:14px;padding-top:10px;border-top:1px solid var(--bd);font-size:10px;color:var(--tx3)">
+          <summary style="cursor:pointer;color:var(--tx2);font-weight:600;margin-bottom:6px">디버그 정보 (관리자)</summary>
+          <div>시트 전체 행: <strong>${st.total}</strong></div>
+          <div>날짜 파싱 실패: <strong style="color:var(--red)">${st.skippedDate}</strong></div>
+          <div>데이터 누락 스킵: <strong>${st.skippedData}</strong></div>
+          <div>정상 파싱: <strong style="color:var(--green)">${st.parsed}</strong></div>
+          <div style="margin-top:6px">첫 데이터 샘플:<br>시작일 셀: ${sampleS}<br>종료일 셀: ${sampleE}</div>
+        </details>`:''}
+      </div>`;
     } else {
-      gl.innerHTML='<div style="padding:40px 20px;text-align:center;color:var(--tx3);font-size:12px">필터에 해당하는 데이터가 없습니다</div>';
+      gl.innerHTML='<div style="padding:40px 20px;text-align:center;color:var(--tx3);font-size:12px"><div style="margin-bottom:14px">필터에 해당하는 데이터가 없습니다</div><button class="btn btn-g" onclick="resetAllFilters()" style="font-size:11px">↻ 필터 초기화</button></div>';
     }
     return;
   }
@@ -1480,7 +2051,7 @@ let selectedInvYear=TODAY.getFullYear(); // 기본값: 현재 연도
 
 function switchSubTab(tab){
   if(tab==='invoice'&&!canAccessInvoice()){
-    alert('거래명세서는 권한이 부여된 사용자만 접근 가능합니다.');return;
+    showToast('거래명세서는 권한이 부여된 사용자만 접근 가능합니다.','warn');return;
   }
   currentSubTab=tab;
   document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
@@ -1752,6 +2323,31 @@ function openDetailPanel(r){
   const ddColor=dd<0?'var(--gray)':dd<=7?'#ff6b6b':dd<=15?'var(--orange)':'var(--tx2)';
   document.getElementById('dpPeriod').innerHTML=`${r.period||'—'} <span style="font-size:10px;color:${ddColor};font-weight:700;margin-left:4px">${ddTxt}</span>`;
 
+  // 기간 진행률 (시작일~종료일 대비 오늘 위치)
+  const totalDays=dayDiff(r.sdate,r.edate)+1; // inclusive
+  const elapsed=dayDiff(r.sdate,TODAY); // 시작일 기준 경과일수 (음수=시작 전, 0=시작일, totalDays-1=종료일)
+  let datePct;
+  let dateSub;
+  if(elapsed<0){
+    datePct=0;
+    dateSub=`시작 ${-elapsed}일 전`;
+  } else if(elapsed>=totalDays-1){
+    datePct=100;
+    dateSub=dd<0?`종료 ${-dd}일 경과`:'오늘 종료';
+  } else {
+    datePct=Math.round((elapsed+1)/totalDays*100);
+    dateSub=`${totalDays}일 중 ${elapsed+1}일째`;
+  }
+  document.getElementById('dpDatePct').textContent=`${datePct}%`;
+  const dfill=document.getElementById('dpDateProgFill');
+  dfill.style.width=datePct+'%';
+  // 색상: 시작 전(회색) / 진행중 진행률에 따라 / 종료(빨강)
+  if(elapsed<0)dfill.style.background='var(--sur3)';
+  else if(datePct>=100)dfill.style.background='#f06565';
+  else if(datePct>=80)dfill.style.background='#f5a033';
+  else dfill.style.background='var(--pri)';
+  document.getElementById('dpDateSub').textContent=dateSub;
+
   // 예산
   const remain=r.budget-r.spent;
   const pct=r.budget?Math.min(100,Math.round(r.spent/r.budget*100)):0;
@@ -1808,6 +2404,7 @@ document.addEventListener('keydown',e=>{
   if(e.ctrlKey&&e.key==='2'){e.preventDefault();switchView('budget');}
   if(e.ctrlKey&&e.key==='3'){e.preventDefault();switchView('leave');}
   if(e.ctrlKey&&e.key==='4'){e.preventDefault();switchView('keyword');}
+  if(e.ctrlKey&&e.key==='5'){e.preventDefault();switchView('media');}
 });
 
 // ── NAV ──────────────────────────────────────
@@ -1828,7 +2425,10 @@ function updateMonthLabel(){
 
 function switchView(v){
   if(v==='budget'&&!canAccessBudget()){
-    alert('예산 요약 페이지는 권한이 부여된 사용자만 접근 가능합니다.');return;
+    showToast('예산 요약 페이지는 권한이 부여된 사용자만 접근 가능합니다.','warn');return;
+  }
+  if(v==='media'&&!token){
+    showToast('매체안내는 로그인한 임직원만 접근 가능합니다.','warn');return;
   }
   view=v;
   document.querySelectorAll('.tab').forEach((t,i)=>{
@@ -1837,24 +2437,742 @@ function switchView(v){
     else if(i===1&&v==='budget')on=true;
     else if(i===2&&v==='leave')on=true;
     else if(i===3&&v==='keyword')on=true;
+    else if(i===4&&v==='media')on=true;
     t.classList.toggle('on',on);
   });
   document.getElementById('ganttView').classList.toggle('hide',v!=='gantt');
   document.getElementById('budgetView').classList.toggle('hide',v!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',v!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',v!=='keyword');
+  document.getElementById('mediaInfoView').classList.toggle('hide',v!=='media');
   document.getElementById('navG').style.display=v==='gantt'?'flex':'none';
   document.getElementById('fbar').style.display=(v==='gantt'||v==='budget')?'flex':'none';
   if(v==='gantt'&&groups.length){if(isMobile())applyMobilePjtMode();else renderGantt();}
   else if(v==='budget'&&groups.length)renderBudget();
   else if(v==='leave')renderLeave();
-  else if(v==='keyword')renderKeyword();
+  else if(v==='keyword'){
+    if(currentAdTab==='zigbang'&&!zbLoaded)fetchZigbangData();
+    else renderKeyword();
+  }
+  haptic(8);
+}
+
+// ── 매체안내 서브탭 전환 ─────────────────────
+function switchMediaTab(tab){
+  ['sms'].forEach(t=>{
+    const btn=document.getElementById('miSubTab'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(btn)btn.classList.toggle('on',t===tab);
+    const view=document.getElementById('mi'+t.charAt(0).toUpperCase()+t.slice(1)+'View');
+    if(view)view.classList.toggle('hide',t!==tab);
+  });
   haptic(8);
 }
 
 // ─── 연차 ───────────────────────────────────────
 let leaveData=[]; // [{name, dates:[Date,...]}]
+// ── 한국 공휴일 (2024~2027) ──────────────────
+// 형식: 'MM-DD':'이름'  (연도별로 분리하여 대체공휴일 처리)
+const KR_HOLIDAYS={
+  2024:{
+    '01-01':'신정','02-09':'설날 연휴','02-10':'설날','02-11':'설날 연휴','02-12':'대체공휴일',
+    '03-01':'삼일절','04-10':'국회의원선거','05-05':'어린이날','05-06':'대체공휴일','05-15':'부처님오신날',
+    '06-06':'현충일','08-15':'광복절','09-16':'추석 연휴','09-17':'추석','09-18':'추석 연휴',
+    '10-01':'국군의 날','10-03':'개천절','10-09':'한글날','12-25':'성탄절',
+  },
+  2025:{
+    '01-01':'신정','01-28':'설날 연휴','01-29':'설날','01-30':'설날 연휴',
+    '03-01':'삼일절','03-03':'대체공휴일','05-05':'어린이날·부처님오신날','05-06':'대체공휴일',
+    '06-03':'대통령선거','06-06':'현충일','08-15':'광복절',
+    '10-03':'개천절','10-05':'추석 연휴','10-06':'추석','10-07':'추석 연휴','10-08':'대체공휴일','10-09':'한글날',
+    '12-25':'성탄절',
+  },
+  2026:{
+    '01-01':'신정','02-16':'설날 연휴','02-17':'설날','02-18':'설날 연휴',
+    '03-01':'삼일절','03-02':'대체공휴일','05-05':'어린이날','05-24':'부처님오신날','05-25':'대체공휴일',
+    '06-06':'현충일','08-15':'광복절','08-17':'대체공휴일',
+    '09-24':'추석 연휴','09-25':'추석','09-26':'추석 연휴','10-03':'개천절','10-05':'대체공휴일',
+    '10-09':'한글날','12-25':'성탄절',
+  },
+  2027:{
+    '01-01':'신정','02-06':'설날 연휴','02-07':'설날','02-08':'설날 연휴','02-09':'대체공휴일',
+    '03-01':'삼일절','05-05':'어린이날','05-13':'부처님오신날','06-06':'현충일','06-07':'대체공휴일',
+    '08-15':'광복절','08-16':'대체공휴일','09-14':'추석 연휴','09-15':'추석','09-16':'추석 연휴',
+    '10-03':'개천절','10-04':'대체공휴일','10-09':'한글날','10-11':'대체공휴일','12-25':'성탄절',
+  },
+};
+function getHoliday(date){
+  if(!date)return null;
+  const y=date.getFullYear();
+  const key=`${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+  return (KR_HOLIDAYS[y]&&KR_HOLIDAYS[y][key])||null;
+}
 let leaveCalDate=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
+
+// ─── 광고현황 서브탭 ─────────────────────────
+let currentAdTab='naver';
+function switchAdTab(tab){
+  currentAdTab=tab;
+  document.getElementById('adSubTabNaver').classList.toggle('on',tab==='naver');
+  document.getElementById('adSubTabZigbang').classList.toggle('on',tab==='zigbang');
+  document.getElementById('adNaverView').classList.toggle('hide',tab!=='naver');
+  document.getElementById('adZigbangView').classList.toggle('hide',tab!=='zigbang');
+  if(tab==='zigbang'){
+    if(!zbLoaded)fetchZigbangData();
+    else renderZigbang();
+  }
+  haptic(8);
+}
+
+// 직방/호갱노노 데이터
+let zbLoaded=false;
+let zbBrinRows=[];   // 직방/호갱노노(브릿지) 시트 파싱 결과
+let zbZbContracts=[]; // 직방(선계약 목록)
+let zbZbDetails=[];   // 직방(상품 차감내역)
+
+async function fetchZigbangData(){
+  const el=document.getElementById('zbContent');
+  if(!token||!CFG.sheetId){el.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3)">로그인 후 이용 가능합니다</div>';return;}
+  el.innerHTML='<div style="padding:40px;text-align:center;color:var(--tx3)">데이터 로딩 중...</div>';
+  try{
+    // 두 시트 병렬 fetch
+    const [brinRes,zbRes]=await Promise.all([
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent('직방/호갱노노(브릿지)!A:K')}?valueRenderOption=FORMATTED_VALUE`,{headers:{Authorization:`Bearer ${token}`}}),
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent('직방/호갱노노(직방)!A:K')}?valueRenderOption=FORMATTED_VALUE`,{headers:{Authorization:`Bearer ${token}`}})
+    ]);
+    const [brinData,zbData]=await Promise.all([brinRes.json(),zbRes.json()]);
+    parseZbBrin(brinData.values||[]);
+    parseZbZb(zbData.values||[]);
+    zbLoaded=true;
+    renderZigbang();
+  }catch(e){
+    console.warn('[BRIN-zb]',e);
+    el.innerHTML=`<div style="padding:40px;text-align:center;color:var(--red)">데이터 로드 실패: ${e.message}</div>`;
+  }
+}
+
+// ── 브릿지 시트 파싱 ────────────────────────
+// 컬럼: 구분|매체|캠페인|유형|발송/게재일|단가|건수/기간|세팅금액|잔여금액|누적사용|비고
+function parseZbBrin(values){
+  zbBrinRows=[];
+  if(!values||values.length<2)return;
+  // 헤더 행 찾기 (구분 키워드)
+  let hdrIdx=values.findIndex(r=>r[0]==='구분'||r[0]==='선계약');
+  if(hdrIdx<0)hdrIdx=0;
+  for(let i=hdrIdx+1;i<values.length;i++){
+    const r=values[i];
+    if(!r||!r[0])continue;
+    zbBrinRows.push({
+      type:   r[0]||'',     // 선계약/차감/인센티브
+      media:  r[1]||'',     // 직방/호갱노노/혼합
+      campaign:r[2]||'',    // 현장명
+      adType: r[3]||'',     // 채널톡/단지마커/배너패키지/앱푸시
+      date:   r[4]||'',     // 발송일
+      unitPrice:parseMoney(r[5]),
+      count:  r[6]||'',
+      amount: parseMoney(r[7]),  // 세팅 금액
+      remain: parseMoney(r[8]),  // 잔여
+      cumul:  parseMoney(r[9]),  // 누적 사용
+      memo:   r[10]||'',
+    });
+  }
+}
+
+// ── 직방 시트 파싱 (헤더 자동 감지) ────────
+// 선계약 테이블: "타이틀" 헤더로 시작
+// 상품 차감내역: "상품제목" 헤더로 시작
+function parseZbZb(values){
+  zbZbContracts=[];zbZbDetails=[];
+  if(!values||values.length<2)return;
+
+  let contractHdr=-1,detailHdr=-1;
+  for(let i=0;i<values.length;i++){
+    const first=String(values[i][0]||'').trim();
+    if(first==='타이틀'&&contractHdr<0)contractHdr=i;
+    if(first==='상품제목'&&detailHdr<0)detailHdr=i;
+  }
+
+  // 선계약 목록 파싱
+  // 컬럼: 타이틀[0]|캠페인일정(원본)[1]|시작일[2]|종료일[3]|계산서발행일[4]|입금예정일[5]|입금날짜[6]|공급가액[7]|사용금액[8]|잔여[9]|광고사[10]
+  if(contractHdr>=0){
+    const end=detailHdr>contractHdr?detailHdr:values.length;
+    let contractIdx=0;
+    for(let i=contractHdr+1;i<end;i++){
+      const r=values[i];
+      if(!r||!r[0])continue;
+      const title=String(r[0]||'').trim();
+      // 헤더/장식/합계 행 제외
+      if(title==='타이틀'||title==='상품제목'||title==='합계'||title==='소계'||title==='총계')continue;
+      const supply=parseMoney(r[7]);
+      // 공급가액이 0 이하면 합계행/메모행으로 간주하고 제외
+      if(supply<=0)continue;
+      const used=parseMoney(r[8]);
+      const remain=parseMoney(r[9]);
+      // ✅ 소진 판단: 잔여===0 OR 사용>=공급 (타이틀 텍스트 의존 제거)
+      const isDone=remain===0||(supply>0&&used>=supply);
+      zbZbContracts.push({
+        num:         contractIdx+1,  // ✅ 인덱스 기반 차수 (타이틀 파싱 제거)
+        title,
+        origDate:    r[1]||'',
+        sdate:       r[2]||'',
+        edate:       r[3]||'',
+        invoiceDate: r[4]||'',
+        payDue:      r[5]||'',
+        payDate:     r[6]||'',
+        supply,used,remain,
+        company:     r[10]||'',
+        isDone,
+        pct:         supply?Math.min(100,Math.round(used/supply*100)):0,
+      });
+      contractIdx++;
+    }
+  }
+
+  // 상품 차감내역 파싱
+  // 컬럼: 상품제목[0]|출처캠페인[1]|일정(원본)[2]|시작일[3]|종료일[4]|광고지면[5]|판매단가[6]|수량[7]|상품상세금액[8]|광고사[9]
+  if(detailHdr>=0){
+    for(let i=detailHdr+1;i<values.length;i++){
+      const r=values[i];if(!r||!r[0])continue;
+      const amt=parseMoney(r[8]);
+      if(!r[0])continue;
+      zbZbDetails.push({
+        product:  r[0]||'',
+        contract: r[1]||'',
+        origDate: r[2]||'',
+        sdate:    r[3]||'',
+        edate:    r[4]||'',
+        surface:  r[5]||'',
+        unitPrice:parseMoney(r[6]),
+        qty:      r[7]||'',
+        amount:   amt,
+        company:  r[9]||'',
+        _matched: false,  // 매칭 추적용
+      });
+    }
+  }
+}
+
+// ── 날짜 정규화 (YYYY-MM-DD 문자열 반환) ────
+function normDateStr(s){
+  if(!s)return '';
+  const c=String(s).replace(/\./g,'-').replace(/\s/g,'').replace(/\(.*?\)/g,'').replace(/-{2,}/g,'-').replace(/-$/,'');
+  const d=new Date(c);
+  if(isNaN(d.getTime()))return '';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ── 매체 매핑: 브릿지 ↔ 직방시트 ────────────
+function mediaMatch(brinMedia,zbSurface){
+  const m=String(brinMedia||'').toLowerCase().replace(/\s/g,'');
+  const s=String(zbSurface||'').toLowerCase().replace(/\s/g,'');
+  // 직방/호갱노노 키워드 다양한 표기 모두 인식
+  const sIsHgnn=s.startsWith('hgnn')||s.includes('호갱')||/[_-]hgnn/.test(s);
+  const sIsZb  =s.startsWith('zb')  ||s.includes('직방')||/[_-]zb[_-]/.test(s)||/zb_/.test(s);
+  if(m.includes('호갱')&&!m.includes('직방'))return sIsHgnn;
+  if(m.includes('직방')&&!m.includes('호갱'))return sIsZb;
+  if(m.includes('혼합'))return sIsHgnn||sIsZb;
+  return true; // 매체 미지정이면 허용
+}
+
+// ── 유형 매핑: 브릿지 adType ↔ 직방 surface ─
+// 인수인계 문서 기준:
+//   채널톡 → 카카오톡 채널 메시지
+//   단지마커 → 프리미엄 단지마커
+//   배너패키지 → 배너 패키지 (DA배너 포함)
+//   앱푸시/푸시 → 푸시메시지
+//   원데이 → 원데이브랜드패키지
+function adTypeMatch(adType,surface){
+  const t=String(adType||'').replace(/\s/g,'').toLowerCase();
+  const s=String(surface||'').replace(/\s/g,'').toLowerCase();
+  if(!t)return true; // 유형 미지정이면 허용
+  // 채널톡 / 카카오톡 채널 메시지 / 채널메시지
+  if(t.includes('채널톡')||t.includes('채널메시지')||t.includes('카카오톡'))
+    return s.includes('채널')||s.includes('카카오톡')||s.includes('카톡');
+  // 단지마커 / 프리미엄 단지마커
+  if(t.includes('단지마커'))return s.includes('단지마커');
+  // 배너패키지 / 배너 / DA배너 / 프리미엄배너
+  if(t.includes('배너'))return s.includes('배너')||s.includes('da');
+  // 앱푸시 / 푸시메시지 / 푸시
+  if(t.includes('푸시'))return s.includes('푸시');
+  // 원데이 / 브랜드패키지 / 원데이브랜드패키지
+  if(t.includes('원데이')||t.includes('브랜드'))return s.includes('원데이')||s.includes('브랜드');
+  return true; // 기타 매핑 정의 없는 유형은 허용
+}
+
+// ── 현장명 매칭: 한글/영문/숫자만 추출 후 양방향 부분 일치 ─
+function campaignMatch(brCampaign,zbProduct){
+  const clean=(s)=>String(s||'').replace(/[^가-힣a-zA-Z0-9]/g,'').toLowerCase();
+  const a=clean(brCampaign);
+  const b=clean(zbProduct);
+  if(!a||!b||a.length<2)return false;
+  // 양방향 포함 (긴 쪽이 짧은 쪽 전체 포함)
+  if(a.includes(b)||b.includes(a))return true;
+  // 공통 부분 문자열 3자 이상 (슬라이딩 윈도우)
+  const shorter=a.length<=b.length?a:b;
+  const longer =a.length>b.length?a:b;
+  const WIN=3;
+  for(let i=0;i<=shorter.length-WIN;i++){
+    if(longer.includes(shorter.substr(i,WIN)))return true;
+  }
+  // 직방 product는 "PJT_매체_유형_..." 형식 - 첫 토큰만 따로 검사
+  const firstToken=clean(String(zbProduct||'').split(/[_\s\[\]]/)[0]);
+  if(firstToken.length>=3&&(a.includes(firstToken)||firstToken.includes(a)))return true;
+  return false;
+}
+
+// ── 날짜 범위 매칭: 브릿지 발송일이 직방 sdate~edate 범위 안인지 ─
+function dateInRange(brDateStr,zbSdate,zbEdate){
+  const b=normDateStr(brDateStr);
+  const s=normDateStr(zbSdate);
+  const e=normDateStr(zbEdate);
+  if(!b||!s)return false;
+  if(!e)return b===s;
+  // ISO YYYY-MM-DD 문자열 사전식 비교 = 시간순 비교
+  return b>=s&&b<=e;
+}
+
+// ── 선계약 필터 상태 ─────────────────────────
+let zbContractFilter='all'; // all | active | done
+function switchZbContractFilter(f){
+  zbContractFilter=f;
+  ['all','active','done'].forEach(k=>{
+    const btn=document.getElementById('zbCF_'+k);
+    if(btn)btn.classList.toggle('on',k===f);
+  });
+  const cards=document.querySelectorAll('.zb-contract-card');
+  cards.forEach(card=>{
+    const isDone=card.dataset.done==='1';
+    if(f==='all')card.style.display='';
+    else if(f==='active')card.style.display=isDone?'none':'';
+    else if(f==='done')card.style.display=isDone?'':'none';
+  });
+}
+
+// ── 월별 집행 연도 필터 ─────────────────────
+let zbYearFilter='all';
+function switchZbYearFilter(y){
+  zbYearFilter=y;
+  // 모든 연도 버튼에서 .on 제거 후 선택 버튼만 추가
+  document.querySelectorAll('[id^="zbYF_"]').forEach(b=>b.classList.remove('on'));
+  const tgt=document.getElementById('zbYF_'+y);
+  if(tgt)tgt.classList.add('on');
+  // 월별 row, 연도 라벨 표시/숨김
+  document.querySelectorAll('.zb-month-row').forEach(row=>{
+    row.style.display=(y==='all'||row.dataset.year===y)?'':'none';
+  });
+  document.querySelectorAll('.zb-month-year-label').forEach(lbl=>{
+    lbl.style.display=(y==='all'||lbl.dataset.year===y)?'':'none';
+  });
+}
+
+// ── 집행 내역 필터 상태 ──────────────────────
+let zbExecFilter='all'; // all | match | estimated | diff | unmatched
+function switchZbExecFilter(f){
+  zbExecFilter=f;
+  ['all','match','estimated','diff','unmatched'].forEach(k=>{
+    const btn=document.getElementById('zbEF_'+k);
+    if(btn)btn.classList.toggle('on',k===f);
+  });
+  document.querySelectorAll('.zb-exec-row').forEach(row=>{
+    const st=row.dataset.status;
+    let show=true;
+    if(f==='match')show=st==='match';
+    else if(f==='estimated')show=st==='estimated';
+    else if(f==='diff')show=st==='diff';
+    else if(f==='unmatched')show=st==='brin_only'||st==='zb_only';
+    row.style.display=show?'':'none';
+  });
+}
+
+// ── 직방/호갱노노 렌더 메인 ──────────────────
+// ── 직방/호갱노노 매칭 엔진 (Stage 1/2/3) ──────
+// 분리 이유: renderZigbang에서 매칭/페이지 렌더를 분리해 가독성 ↑
+function runZbMatching(matchTargets, zbDetails){
+  // _matched 플래그 초기화
+  zbDetails.forEach(z=>z._matched=false);
+  const executions=[];
+
+  const matchByStage=(br,stage)=>{
+    return zbDetails.filter(zb=>{
+      if(zb._matched)return false;
+      if(stage===1){
+        // 정확: 날짜 == + 매체 + 유형 + 현장명
+        const dOk=normDateStr(br.date)&&normDateStr(zb.sdate)&&normDateStr(br.date)===normDateStr(zb.sdate);
+        if(!dOk)return false;
+        if(!mediaMatch(br.media,zb.surface))return false;
+        if(!adTypeMatch(br.adType,zb.surface))return false;
+        if(!campaignMatch(br.campaign,zb.product))return false;
+        return true;
+      } else if(stage===2){
+        // 기간: 브릿지 발송일 ∈ [sdate, edate] + 매체 + 유형 + 현장명
+        if(!dateInRange(br.date,zb.sdate,zb.edate))return false;
+        if(!mediaMatch(br.media,zb.surface))return false;
+        if(!adTypeMatch(br.adType,zb.surface))return false;
+        if(!campaignMatch(br.campaign,zb.product))return false;
+        return true;
+      } else if(stage===3){
+        // 추정: 금액 정확 일치(≤1원) + 현장명 (날짜/매체/유형 무시)
+        if(br.amount<=0)return false;
+        const amtDiff=Math.abs(Math.abs(zb.amount)-br.amount);
+        if(amtDiff>1)return false;
+        if(!campaignMatch(br.campaign,zb.product))return false;
+        return true;
+      }
+      return false;
+    });
+  };
+
+  matchTargets.forEach(br=>{
+    let candidates=matchByStage(br,1);
+    let matchedStage=1;
+    if(candidates.length===0){candidates=matchByStage(br,2);matchedStage=2;}
+    if(candidates.length===0){candidates=matchByStage(br,3);matchedStage=3;}
+
+    if(candidates.length===0){
+      const brDate=normDateStr(br.date);
+      executions.push({
+        status:'brin_only',
+        campaign:br.campaign,media:br.media,adType:br.adType,date:br.date,
+        brinAmt:br.amount,brinQty:br.count,brinUnit:br.unitPrice,
+        zbAmt:0,zbQty:'',zbUnit:0,zbSurface:'',
+        diff:0,
+        reason:brDate?'직방 기록 없음':'날짜 형식 오류',
+      });
+    } else {
+      // 금액이 가장 가까운 후보 1개 선택
+      candidates.sort((a,b)=>Math.abs(Math.abs(a.amount)-br.amount)-Math.abs(Math.abs(b.amount)-br.amount));
+      const zb=candidates[0];
+      zb._matched=true;
+      const zbAbs=Math.abs(zb.amount);
+      // 부호 보존: +면 직방이 큼, -면 브릿지가 큼
+      const diff=zbAbs-br.amount;
+      const absDiff=Math.abs(diff);
+      let status;
+      if(matchedStage===3)status='estimated';
+      else status=absDiff>1000?'diff':'match';
+      executions.push({
+        status,
+        campaign:br.campaign,media:br.media,adType:br.adType,date:br.date,
+        brinAmt:br.amount,brinQty:br.count,brinUnit:br.unitPrice,
+        zbAmt:zbAbs,zbQty:zb.qty,zbUnit:zb.unitPrice,zbSurface:zb.surface,
+        diff,
+        matchedStage,
+      });
+    }
+  });
+
+  // 직방에만 있는 항목
+  zbDetails.filter(zb=>!zb._matched&&Math.abs(zb.amount)>0).forEach(zb=>{
+    executions.push({
+      status:'zb_only',
+      campaign:zb.product,media:'',adType:zb.surface,date:zb.sdate,
+      brinAmt:0,brinQty:'',brinUnit:0,
+      zbAmt:Math.abs(zb.amount),zbQty:zb.qty,zbUnit:zb.unitPrice,zbSurface:zb.surface,
+      diff:0,
+      reason:'브릿지 기록 없음',
+    });
+  });
+
+  // 날짜 내림차순 정렬
+  executions.sort((a,b)=>{
+    const da=normDateStr(a.date)||'';
+    const db=normDateStr(b.date)||'';
+    return db.localeCompare(da);
+  });
+  return executions;
+}
+
+// ── 직방 계산서/입금 행 빌드 ─────────────────
+function buildZbPaymentRows(contracts, todayStr){
+  const rows=contracts.filter(c=>c.supply>0).map(c=>{
+    const dueDate=normDateStr(c.payDue);
+    const paid=!!c.payDate;
+    let invStatus,payStatus;
+    if(c.invoiceDate){invStatus={cls:'done',label:'발행완료',date:c.invoiceDate};}
+    else{invStatus={cls:'pending',label:'미발행',date:''};}
+    if(paid){payStatus={cls:'done',label:'입금완료',date:c.payDate};}
+    else if(dueDate&&dueDate<todayStr){payStatus={cls:'overdue',label:'연체',date:c.payDue};}
+    else{payStatus={cls:'pending',label:'입금예정',date:c.payDue};}
+    return {title:c.title,supply:c.supply,invStatus,payStatus,paid};
+  });
+  // 정렬: 연체 → 미입금 → 입금완료
+  rows.sort((a,b)=>{
+    const order=(r)=>r.payStatus.cls==='overdue'?0:(r.payStatus.cls==='pending'?1:2);
+    return order(a)-order(b);
+  });
+  return rows;
+}
+
+function renderZigbang(){
+  const el=document.getElementById('zbContent');
+  if(!el)return;
+
+  const contracts=zbBrinRows.filter(r=>r.type==='선계약');
+  const deductions=zbBrinRows.filter(r=>r.type==='차감');
+  const incentives=zbBrinRows.filter(r=>r.type==='인센티브');
+  // 이월정산: type이 '이월', '이월정산', '정산'으로 시작하는 행
+  const carryovers=zbBrinRows.filter(r=>/^(이월|정산)/.test(String(r.type||'').trim()));
+  // "그 외" (선계약/차감/인센티브/이월정산이 아닌 모든 유형) - 매칭 대상에 포함
+  const otherRows=zbBrinRows.filter(r=>!['선계약','차감','인센티브'].includes(r.type)&&!/^(이월|정산)/.test(String(r.type||'').trim()));
+  const totalContract=contracts.reduce((s,r)=>s+r.amount,0);
+  const totalUsed=deductions.reduce((s,r)=>s+r.amount,0)-incentives.reduce((s,r)=>s+r.amount,0);
+  const lastRow=[...zbBrinRows].reverse().find(r=>r.remain>=0&&r.type==='차감');
+  const currentRemain=lastRow?lastRow.remain:0;
+
+  // ⑤ 현장별 집행 합계
+  const pjtMap={};
+  deductions.forEach(r=>{
+    if(!r.campaign)return;
+    if(!pjtMap[r.campaign])pjtMap[r.campaign]={brin:0,types:new Set(),media:new Set()};
+    pjtMap[r.campaign].brin+=r.amount;
+    pjtMap[r.campaign].types.add(r.adType);
+    pjtMap[r.campaign].media.add(r.media);
+  });
+  const pjtList=Object.entries(pjtMap).sort(([,a],[,b])=>b.brin-a.brin).slice(0,10);
+
+  // ⑥ 월별 소진
+  const monthMap={};
+  deductions.forEach(r=>{
+    if(!r.date)return;
+    const ds=normDateStr(r.date);
+    if(!ds)return;
+    const key=ds.slice(0,7).replace('-','.');
+    if(!monthMap[key])monthMap[key]=0;
+    monthMap[key]+=r.amount;
+  });
+  const monthList=Object.entries(monthMap).sort(([a],[b])=>a.localeCompare(b));
+  const maxMonth=Math.max(...monthList.map(([,v])=>v),1);
+  const curMonthKey=`${TODAY.getFullYear()}.${String(TODAY.getMonth()+1).padStart(2,'0')}`;
+
+  // 통합 집행내역 매칭 (Stage 1/2/3) - runZbMatching 헬퍼 사용
+  // 매칭 대상: 차감 + 기타(인센티브/이월정산 외 모든 행)
+  const matchTargets=[...deductions,...otherRows];
+  const executions=runZbMatching(matchTargets, zbZbDetails);
+
+  // 통계
+  const exMatch=executions.filter(e=>e.status==='match').length;
+  const exDiff =executions.filter(e=>e.status==='diff').length;
+  const exEstimated=executions.filter(e=>e.status==='estimated').length;
+  const exUnmatched=executions.filter(e=>e.status==='brin_only'||e.status==='zb_only').length;
+
+  // ② 계산서/입금 현황 - 전체 계약 (입금완료 + 미처리)
+  const todayStr=`${TODAY.getFullYear()}-${String(TODAY.getMonth()+1).padStart(2,'0')}-${String(TODAY.getDate()).padStart(2,'0')}`;
+  const paymentRows=buildZbPaymentRows(zbZbContracts, todayStr);
+
+  // ─── 렌더 ────────────────────────────────
+  el.innerHTML=`
+    <!-- ① 요약 카드 -->
+    <div class="zb-sum-cards">
+      <div class="zb-sum-card">
+        <span class="zb-sum-lbl">현재 잔여금액</span>
+        <span class="zb-sum-val">${fmtMoney(currentRemain)}</span>
+        <span class="zb-sum-sub">선계약 잔여</span>
+      </div>
+      <div class="zb-sum-card">
+        <span class="zb-sum-lbl">총 계약금액</span>
+        <span class="zb-sum-val">${fmtMoney(totalContract)}</span>
+        <span class="zb-sum-sub">${contracts.length}차 선계약</span>
+      </div>
+      <div class="zb-sum-card">
+        <span class="zb-sum-lbl">누적 사용금액</span>
+        <span class="zb-sum-val">${fmtMoney(totalUsed)}</span>
+        <span class="zb-sum-sub">차감 ${deductions.length}건</span>
+      </div>
+      <div class="zb-sum-card${paymentRows.filter(p=>!p.paid).length>0?' warn-card':''}">
+        <span class="zb-sum-lbl">입금 미확인</span>
+        <span class="zb-sum-val">${paymentRows.filter(p=>!p.paid).length}건</span>
+        <span class="zb-sum-sub">${fmtMoney(paymentRows.filter(p=>!p.paid).reduce((s,c)=>s+c.supply,0))}</span>
+      </div>
+    </div>
+
+    <!-- ④ 선계약 차수 카드 -->
+    <div class="zb-section" style="margin-bottom:14px">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">📋 선계약 차수별 현황</span>
+        <div style="display:flex;gap:4px;margin-left:auto">
+          <button id="zbCF_all"   class="btn on" style="font-size:10px;padding:3px 8px" onclick="switchZbContractFilter('all')">전체</button>
+          <button id="zbCF_active" class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbContractFilter('active')">진행중</button>
+          <button id="zbCF_done"  class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbContractFilter('done')">소진완료</button>
+        </div>
+      </div>
+      <div style="padding:12px 16px">
+        <div class="zb-contract-list">
+          ${zbZbContracts.map(c=>`
+            <div class="zb-contract-card ${c.isDone?'done':'active'}" data-done="${c.isDone?1:0}">
+              <div class="zb-contract-title">${c.num}차 선계약</div>
+              <div class="zb-contract-amt">${fmtMoney(c.supply)}</div>
+              <span class="zb-contract-badge ${c.isDone?'done':'active'}">${c.isDone?'✅ 소진완료':'진행중'}</span>
+              <div class="zb-contract-pct"><div class="zb-contract-pct-fill" style="width:${c.pct}%"></div></div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- 📋 집행 내역 (통합: 일치/오차/추정/미매칭) -->
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">📋 집행 내역</span>
+        <span class="zb-section-badge" style="background:var(--sur3);color:var(--tx2)">${executions.length}건</span>
+        <div style="display:flex;gap:4px;margin-left:auto;flex-wrap:wrap">
+          <button id="zbEF_all"       class="btn on" style="font-size:10px;padding:3px 8px" onclick="switchZbExecFilter('all')">전체 ${executions.length}</button>
+          <button id="zbEF_match"     class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbExecFilter('match')">✅ 일치 ${exMatch}</button>
+          <button id="zbEF_estimated" class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbExecFilter('estimated')">🔗 추정 ${exEstimated}</button>
+          <button id="zbEF_diff"      class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbExecFilter('diff')">⚠ 오차 ${exDiff}</button>
+          <button id="zbEF_unmatched" class="btn"   style="font-size:10px;padding:3px 8px" onclick="switchZbExecFilter('unmatched')">🔍 미매칭 ${exUnmatched}</button>
+        </div>
+      </div>
+      ${executions.length===0?'<div style="padding:20px;text-align:center;color:var(--tx3);font-size:11px">집행 내역이 없습니다</div>':`
+      <table class="zb-table">
+        <thead><tr>
+          <th style="width:90px">날짜</th><th style="width:90px">상태</th><th>현장명</th><th>매체/유형</th>
+          <th>브릿지 수량/단가</th><th>직방 수량/단가</th>
+          <th>브릿지 금액</th><th>직방 금액</th><th>차이</th>
+        </tr></thead>
+        <tbody>
+          ${executions.map(e=>{
+            const statusInfo={
+              match:    {cls:'zb-status-match',     label:'✅ 일치'},
+              estimated:{cls:'zb-status-estimated', label:'🔗 추정'},
+              diff:     {cls:'zb-status-diff',      label:'⚠ 오차'},
+              brin_only:{cls:'zb-status-brin',      label:'🔵 브릿지만'},
+              zb_only:  {cls:'zb-status-zb',        label:'🟣 직방만'},
+            }[e.status]||{cls:'',label:e.status};
+            let diffCell;
+            if(e.status==='diff'){
+              // diff > 0: 직방이 더 비쌈 (브릿지 측에 부족 청구) → +로 표시
+              // diff < 0: 브릿지가 더 비쌈 (브릿지가 과청구) → -로 표시
+              if(e.diff>0)diffCell=`<span class="zb-diff-pos" title="직방이 ${fmtMoney(Math.abs(e.diff))} 더 큼">+${fmtMoney(e.diff)}</span>`;
+              else diffCell=`<span class="zb-diff-neg" title="브릿지가 ${fmtMoney(Math.abs(e.diff))} 더 큼">−${fmtMoney(Math.abs(e.diff))}</span>`;
+            }
+            else if(e.status==='match')diffCell='<span style="color:var(--green)">—</span>';
+            else if(e.status==='estimated')diffCell='<span style="color:var(--blue);font-size:10px" title="금액 일치로 추정 매칭됨">금액일치</span>';
+            else diffCell=`<span style="color:var(--tx3);font-size:10px">${e.reason||''}</span>`;
+            return `<tr class="zb-exec-row" data-status="${e.status}">
+              <td style="color:var(--tx3)">${e.date||'<span style="color:var(--tx3)">—</span>'}</td>
+              <td><span class="zb-status-badge ${statusInfo.cls}">${statusInfo.label}</span></td>
+              <td style="font-weight:600">${e.campaign}</td>
+              <td>
+                ${e.media?`<span class="zb-only-tag zb-only-brin">${e.media}</span>`:''}
+                <span class="zb-only-tag" style="background:var(--sur3);color:var(--tx2);margin-left:3px">${e.adType||''}</span>
+                ${e.zbSurface?`<br><span style="font-size:9px;color:var(--tx3)">${e.zbSurface}</span>`:''}
+              </td>
+              <td style="color:var(--tx2)">${e.brinAmt>0?`${e.brinQty||'—'} / ${e.brinUnit?fmtMoney(e.brinUnit):'—'}`:'—'}</td>
+              <td style="color:var(--tx2)">${e.zbAmt>0?`${e.zbQty||'—'} / ${e.zbUnit?fmtMoney(e.zbUnit):'—'}`:'—'}</td>
+              <td style="font-weight:600">${e.brinAmt>0?fmtMoney(e.brinAmt):'<span style="color:var(--tx3)">—</span>'}</td>
+              <td style="font-weight:600">${e.zbAmt>0?fmtMoney(e.zbAmt):'<span style="color:var(--tx3)">—</span>'}</td>
+              <td>${diffCell}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`}
+    </div>
+
+    <!-- 🎁 인센티브 -->
+    ${incentives.length>0?`
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">🎁 인센티브</span>
+        <span class="zb-section-badge" style="background:rgba(45,217,143,.13);color:var(--green)">${incentives.length}건 · ${fmtMoney(incentives.reduce((s,r)=>s+r.amount,0))}</span>
+      </div>
+      ${incentives.map(r=>`
+        <div class="zb-extra-row">
+          <span class="zb-extra-name">${r.campaign||r.adType||'(이름없음)'}</span>
+          <span class="zb-extra-meta" style="color:var(--tx3);font-size:10px">${r.media||''} ${r.adType?'· '+r.adType:''}</span>
+          <span class="zb-extra-meta" style="color:var(--tx3);font-size:10px">${r.date||''}</span>
+          <span class="zb-extra-amt plus">${fmtMoney(r.amount)}</span>
+          <span class="zb-extra-memo">${r.memo||''}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <!-- 🔄 이월정산 -->
+    ${carryovers.length>0?`
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">🔄 이월정산</span>
+        <span class="zb-section-badge" style="background:rgba(167,139,250,.16);color:#c4b5fd">${carryovers.length}건 · ${fmtMoney(carryovers.reduce((s,r)=>s+r.amount,0))}</span>
+      </div>
+      ${carryovers.map(r=>`
+        <div class="zb-extra-row">
+          <span class="zb-extra-name">${r.campaign||r.adType||'(이름없음)'}</span>
+          <span class="zb-extra-meta" style="color:var(--tx3);font-size:10px">${r.media||''} ${r.adType?'· '+r.adType:''}</span>
+          <span class="zb-extra-meta" style="color:var(--tx3);font-size:10px">${r.date||''}</span>
+          <span class="zb-extra-amt minus">${fmtMoney(r.amount)}</span>
+          <span class="zb-extra-memo">${r.memo||''}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <!-- ⑤ 현장별 집행 합계 -->
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">🏗 현장별 누적 집행금액</span>
+        <span class="zb-section-badge" style="background:var(--sur3);color:var(--tx2)">TOP ${pjtList.length}</span>
+      </div>
+      ${pjtList.map(([name,info])=>`
+        <div class="zb-pjt-row">
+          <span class="zb-pjt-name">${name}</span>
+          <span class="zb-pjt-types">${[...info.media].join('·')} / ${[...info.types].join('·')}</span>
+          <span style="font-weight:700;color:var(--tx)">${fmtMoney(info.brin)}</span>
+        </div>`).join('')}
+    </div>
+
+    <!-- ⑥ 월별 집행 현황 (년도 포함) -->
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">📅 월별 집행 현황</span>
+        ${(()=>{
+          const years=[...new Set(monthList.map(([k])=>k.split('.')[0]))].sort();
+          if(years.length<=1)return '';
+          return `<div style="display:flex;gap:4px;margin-left:auto;flex-wrap:wrap">
+            <button id="zbYF_all" class="btn on" style="font-size:10px;padding:3px 8px" onclick="switchZbYearFilter('all')">전체</button>
+            ${years.map(y=>`<button id="zbYF_${y}" class="btn" style="font-size:10px;padding:3px 8px" onclick="switchZbYearFilter('${y}')">${y}년</button>`).join('')}
+          </div>`;
+        })()}
+      </div>
+      <div style="padding:8px 0">
+        ${(()=>{
+          let prevYear='';
+          return monthList.map(([key,amt])=>{
+            const [y,m]=key.split('.');
+            const isCur=key===curMonthKey;
+            const pct=Math.round(amt/maxMonth*100);
+            const yearLabel=y!==prevYear?`<div class="zb-month-year-label" data-year="${y}" style="padding:6px 16px 2px;font-size:10px;font-weight:700;color:var(--tx3);letter-spacing:.5px">${y}년</div>`:'';
+            prevYear=y;
+            return`${yearLabel}<div class="zb-month-row" data-year="${y}">
+              <span style="font-weight:600;color:${isCur?'var(--orange)':'var(--tx2)'}">${parseInt(m)}월${isCur?' ◀':''}</span>
+              <div class="zb-month-bar-wrap"><div class="zb-month-bar${isCur?' current':''}" style="width:${pct}%"></div></div>
+              <span style="text-align:right;color:var(--tx);font-weight:600">${fmtMoney(amt)}</span>
+            </div>`;
+          }).join('');
+        })()}
+      </div>
+    </div>
+
+    <!-- 💳 계산서/입금 현황 (전체 계약, 맨 아래) -->
+    ${paymentRows.length>0?`
+    <div class="zb-section">
+      <div class="zb-section-hd">
+        <span class="zb-section-title">💳 계산서/입금 현황</span>
+        <span class="zb-section-badge" style="background:var(--sur3);color:var(--tx2)">${paymentRows.length}건</span>
+      </div>
+      ${paymentRows.map(p=>{
+        const shortTitle=String(p.title||'').replace(/분양PJ[^_]*_브릿지인사이트_/,'').replace(/_?\[.*?\]/g,'');
+        return`<div class="zb-payment-row">
+          <span class="zb-payment-title" title="${p.title}">${shortTitle||p.title}</span>
+          <span class="zb-payment-amt">${fmtMoney(p.supply)}</span>
+          <span class="zb-tag ${p.invStatus.cls}">계산서 ${p.invStatus.date||p.invStatus.label}</span>
+          <span class="zb-tag ${p.payStatus.cls}">${p.payStatus.label} ${p.payStatus.date||''}</span>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    <div style="text-align:right;margin-top:10px">
+      <button class="btn btn-g" style="font-size:11px;padding:5px 12px" onclick="zbLoaded=false;fetchZigbangData()">↻ 새로고침</button>
+    </div>`;
+
+  // 필터 상태 복원
+  if(zbContractFilter!=='all')switchZbContractFilter(zbContractFilter);
+  if(zbExecFilter!=='all')switchZbExecFilter(zbExecFilter);
+  if(zbYearFilter!=='all')switchZbYearFilter(zbYearFilter);
+}
 
 // ─── 키워드광고 잔액 ────────────────────────────
 // 계정별 비고(사업자정보) 매핑
@@ -2230,16 +3548,21 @@ function renderLeave(){
     const cellDate=inMonth?new Date(y,m,dayNum):null;
     const dow=i%7;
     const isToday=cellDate&&cellDate.getTime()===TODAY.getTime();
+    const holiday=cellDate?getHoliday(cellDate):null;
     const names=inMonth?(dayMap[dayNum]||[]):[];
     const busy=names.length>=2;
     let cls='lcell';
     if(!inMonth)cls+=' other';
     if(isToday)cls+=' today-cell';
     if(busy)cls+=' busy';
-    const dCls='l-day'+(dow===0?' sun':dow===6?' sat':'')+(isToday?' today':'');
+    if(holiday)cls+=' holiday';
+    const dCls='l-day'+(dow===0||holiday?' sun':dow===6?' sat':'')+(isToday?' today':'');
     html+=`<div class="${cls}">`;
     if(inMonth){
       html+=`<div class="${dCls}">${dayNum}</div>`;
+      if(holiday){
+        html+=`<span class="l-holiday" title="${holiday}">${holiday}</span>`;
+      }
       names.forEach(n=>{
         const todayCls=isToday?' is-today':'';
         const safe=n.replace(/"/g,'&quot;');
@@ -2345,9 +3668,12 @@ function fillSettingsForm(){
   document.getElementById('c9').value=C.assignee;
   document.getElementById('c10').value=C.budget;
   document.getElementById('c11').value=C.spent;
+  // Groq API
+  document.getElementById('cfgGroqKey').value=safeStorage.get('brin_groq_key')||'';
+  document.getElementById('cfgGroqModel').value=safeStorage.get('brin_groq_model')||'llama-3.3-70b-versatile';
 }
 function openSettings(){
-  if(userEmail&&userEmail!==ADMIN_EMAIL){alert('관리자만 설정에 접근할 수 있습니다.');return;}
+  if(userEmail&&userEmail!==ADMIN_EMAIL){showToast('관리자만 설정에 접근할 수 있습니다.','warn');return;}
   fillSettingsForm();
   document.getElementById('settingsMo').classList.remove('hide');
 }
@@ -2370,6 +3696,7 @@ function updateSyncTime(){
   document.getElementById('budgetView').classList.toggle('hide',view!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',view!=='leave');
   document.getElementById('keywordView').classList.toggle('hide',view!=='keyword');
+  document.getElementById('mediaInfoView').classList.toggle('hide',view!=='media');
   if(view==='leave'){if(currentLeaveTab==='summary')renderLeaveSummary();else renderLeave();}
   if(view==='keyword')renderKeyword();
 }
@@ -2381,19 +3708,51 @@ function isMobile(){return window.innerWidth<=768;}
 function haptic(ms){try{if(navigator.vibrate)navigator.vibrate(ms||10);}catch(e){}}
 
 // ── 테마 토글 ─────────────────────────────────
+// 'auto' | 'dark' | 'light'. auto는 시스템 prefers-color-scheme 따라감.
+function getSystemTheme(){
+  try{return window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}
+  catch(e){return 'dark';}
+}
 function applyTheme(t){
-  if(t==='light'){
+  const effective=(t==='auto')?getSystemTheme():t;
+  const btn=document.getElementById('themeBtn');
+  if(effective==='light'){
     document.body.classList.add('light');
-    document.getElementById('themeBtn').textContent='☀️';
   } else {
     document.body.classList.remove('light');
-    document.getElementById('themeBtn').textContent='🌙';
+  }
+  if(btn){
+    // 표시: auto → 🖥️ / dark → 🌙 / light → ☀️
+    btn.textContent=t==='auto'?'🖥️':(effective==='light'?'☀️':'🌙');
+    btn.title='테마: '+(t==='auto'?'시스템':(effective==='light'?'라이트':'다크'));
   }
 }
 function toggleTheme(){
-  const cur=localStorage.getItem('brin_theme')==='light'?'dark':'light';
-  localStorage.setItem('brin_theme',cur);
-  applyTheme(cur);
+  // 순환: dark → light → auto → dark
+  const cur=safeStorage.get('brin_theme')||'dark';
+  const next=cur==='dark'?'light':(cur==='light'?'auto':'dark');
+  safeStorage.set('brin_theme',next);
+  applyTheme(next);
+  haptic(8);
+}
+// 시스템 테마 변경 시 auto 모드면 즉시 반영
+try{
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{
+    if((safeStorage.get('brin_theme')||'dark')==='auto')applyTheme('auto');
+  });
+}catch(e){}
+
+// ── 모든 필터 초기화 ──────────────────────────
+function resetAllFilters(){
+  ['searchQ','advertiserFi','mediaFi','statusFi','pjtFi','assigneeFi'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  // 모바일 드로어 값도 초기화
+  ['mAdvFi','mMediaFi','mStatusFi','mPjtFi','mAssignFi'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+  applyFilter();
+  if(typeof updateMobileFilterBadge==='function')updateMobileFilterBadge();
   haptic(8);
 }
 
@@ -2585,7 +3944,7 @@ function setupPullToRefresh(){
       ind.classList.add('refreshing');
       ind.textContent='↻';
       haptic(15);
-      Promise.all([fetchData(true),fetchLeaveData()]).finally(()=>{
+      fetchData(true).finally(()=>{
         setTimeout(()=>{
           ind.classList.remove('show','refreshing');
           ind.textContent='↓';
@@ -2645,12 +4004,13 @@ window.addEventListener('resize',()=>{
 
 
 window.addEventListener('load',()=>{
+  setupErrorTracking();
   // 이전 버전 잔여 데이터 정리
-  try{localStorage.removeItem('brin_budget_wl');}catch(e){}
-  try{localStorage.removeItem('brin_tk');}catch(e){} // 이전 1일유지 방식 잔재
+  safeStorage.remove('brin_budget_wl');
+  safeStorage.remove('brin_tk'); // 이전 1일유지 방식 잔재
   loadCFG();
   // 테마 적용
-  applyTheme(localStorage.getItem('brin_theme')||'dark');
+  applyTheme(safeStorage.get('brin_theme')||'dark');
   // 자정 날짜 갱신 예약
   scheduleMidnightRefresh();
   // 모바일 기능 셋업
@@ -2669,6 +4029,788 @@ window.addEventListener('load',()=>{
   };
   doInit();
 });
+
+/* ═══════════════════════════════════════
+   매체안내 - 문자광고 도구 v2 (완전 변환)
+═══════════════════════════════════════ */
+window.SmsTool = (function(){
+'use strict';
+
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const RANK_DB = [
+  {name:"삼성물산",rank:1},{name:"현대건설",rank:2},{name:"대우건설",rank:3},
+  {name:"DL이앤씨",aliases:["디엘이앤씨","DL E&C"],rank:4},
+  {name:"GS건설",aliases:["지에스건설"],rank:5},
+  {name:"현대엔지니어링",rank:6},{name:"포스코이앤씨",aliases:["포스코E&C"],rank:7},
+  {name:"롯데건설",rank:8},{name:"SK에코플랜트",rank:9},
+  {name:"HDC현대산업개발",aliases:["현대산업개발"],rank:10},
+  {name:"한화",aliases:["한화건설"],rank:11},{name:"호반건설",rank:12},
+  {name:"DL건설",rank:13},{name:"두산에너빌리티",rank:14},
+  {name:"계룡건설산업",aliases:["계룡건설"],rank:15},{name:"서희건설",rank:16},
+  {name:"제일건설",rank:17},{name:"코오롱글로벌",rank:18},
+  {name:"태영건설",rank:19},{name:"KCC건설",rank:20},
+  {name:"우미건설",rank:21},{name:"대방건설",rank:22},{name:"쌍용건설",rank:23},
+  {name:"금호건설",rank:24},{name:"두산건설",rank:25},{name:"한신공영",rank:26},
+  {name:"효성중공업",rank:27},{name:"동부건설",rank:28},
+  {name:"HL디앤아이한라",aliases:["한라"],rank:29},
+  {name:"반도건설",rank:30},{name:"호반산업",rank:31},{name:"동원개발",rank:32},
+  {name:"신세계건설",rank:33},{name:"HJ중공업",rank:34},
+  {name:"자이씨앤에이",rank:35},{name:"삼성E&A",aliases:["삼성엔지니어링"],rank:36},
+  {name:"비에스한양",rank:37},{name:"금강주택",rank:38},
+  {name:"CJ대한통운",rank:39},{name:"동양건설산업",rank:40},
+  {name:"SGC이앤씨",rank:41},{name:"중흥토건",rank:42},
+  {name:"대광건영",rank:43},{name:"진흥기업",rank:44},
+  {name:"동일토건",rank:45},{name:"라인건설",rank:46},
+  {name:"HDC화성",rank:47},{name:"SK에코에너지니어링",rank:48},
+  {name:"성도이엔씨",aliases:["성도건설"],rank:49},{name:"서한",aliases:["서한건설"],rank:50},
+  {name:"남광토건",rank:51},{name:"대보건설",rank:52},{name:"동문건설",rank:53},
+  {name:"태영이앤씨",rank:54},{name:"국동건설",rank:55},
+  {name:"일성건설",rank:56},{name:"케이알산업",rank:57},
+  {name:"IS동서",rank:58},{name:"강릉기업",rank:59},
+  {name:"양우건설",rank:60},{name:"시티건설",rank:61},{name:"중흥건설",rank:62},
+  {name:"모아종합건설",rank:63},{name:"우미개발",rank:64},
+  {name:"대우건설산업",rank:65},{name:"대명건설",rank:66},{name:"일신건영",rank:67},
+  {name:"신도아건설",rank:68},{name:"자이에스앤디",rank:69},
+  {name:"금성백조건설",rank:70},{name:"대림",aliases:["대림건설"],rank:71},
+  {name:"대원",aliases:["대원건설"],rank:72},{name:"대규건설",rank:73},
+  {name:"LT삼보",rank:74},{name:"금성백조주택",rank:75},
+  {name:"미래도건설",rank:76},{name:"금광건업",rank:77},{name:"삼부토건",rank:78},
+  {name:"원건설",rank:79},{name:"강산건설",rank:80},
+  {name:"에이스건설",rank:81},{name:"풍림산업",rank:82},
+  {name:"한화산업",rank:83},{name:"서해종합건설",rank:84},
+  {name:"전주종합건설",rank:85},{name:"DB부동산",rank:86},
+  {name:"이수건설",rank:87},{name:"동아건설산업",rank:88},
+  {name:"하이츠이앤씨",rank:89},{name:"요진건설산업",rank:90},
+  {name:"삼환기업",rank:91},{name:"화성산업",rank:92},
+  {name:"신우종합개발",rank:93},{name:"비에스건설",rank:94},
+  {name:"모에스종합건설",rank:95},{name:"영진종합건설",rank:96},
+  {name:"우암건설",rank:97},{name:"한양건설",rank:98},
+  {name:"이아르앤씨",rank:99},{name:"위본건설",rank:100},
+];
+
+const MEDIA = [
+  {name:"KB국민카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:false,johabNote:"지역주택조합 전체 불가",
+    biz:{types:["LMS 100","MMS 150"],min:"3만건",note:"CTR및로그분석제공"},
+    dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:""}},
+  {name:"신한카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",extra2:"신한카드고객만을위한이벤트필요",
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
+    dc:{types:["LMS 100","MMS 160","PUSH 60"],min:"5만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 70"],min:"500만원",note:""}},
+  {name:"삼성카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:true,
+    biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
+    dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
+    dh:{types:["LMS 100"],min:"300만원",note:""}},
+  {name:"롯데카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"도급순위 상위50위",ilbanOk:true,
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR데이터제공"},
+    dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 60"],min:"500만원",note:""}},
+  {name:"우리카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:{types:["LMS 100"],min:"5만건",note:""},
+    dh:{types:["LMS 100"],min:"500만원",note:""}},
+  {name:"하나카드",cat:"카드사",rankRule:(r,reg)=>{if(!["수도권","광역시","세종시"].includes(reg))return"unavailable";return r<=50?"available":"unavailable";},rankDesc:"수도권+광역시+세종시/50위",ilbanOk:true,extra:"회사채등급B0이상",
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:{types:["LMS 100","MMS 150","PUSH 25"],min:"5만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"500만원",note:""}},
+  {name:"BC카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",
+    biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
+    dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 협의"],min:"300만원",note:""}},
+  {name:"SKT",cat:"통신사",rankRule:(r,reg)=>{if(reg==="수도권"&&r<=100)return"available";if(reg!=="수도권"&&r<=150)return"review";return"unavailable";},rankDesc:"수도권100위/지방150위",ilbanOk:true,
+    biz:{types:["LMS 100","MMS 120*"],min:"2만건",note:"버튼CTR로그분석"},
+    dc:{types:["LMS(RCS) 100","MMS(RCS) 120"],min:"500만원",note:""},
+    dh:{types:["LMS 100","MMS 120"],min:"200만원",note:""}},
+  {name:"KT",cat:"통신사",rankRule:()=>"available",rankDesc:"순위무관(분양1년이내)",ilbanOk:true,extra:"분양1년이내",
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR로그분석제공"},
+    dc:{types:["LMS 100","MMS(RCS) 150"],min:"100만원",note:"CTR로그분석제공"},
+    dh:{types:["LMS 100","MMS 150"],min:"100만원",note:""}},
+  {name:"LG U+",cat:"통신사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"발송수5~10%서비스"},
+    dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
+    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:""}},
+  {name:"엘포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,
+    dc:{types:["LMS 80","MMS 120"],min:"500만원",note:""},
+    dh:{types:["LMS 80","MMS 120","PUSH 50","KAKAO 100"],min:"200만원",note:""}},
+  {name:"CJ ONE",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:""}},
+  {name:"OK캐쉬백",cat:"멤버십",rankRule:(r)=>r<=100?"available":"review",rankDesc:"100위이내(이외검토)",ilbanOk:true,johabNote:"지주택일반분양만가능",
+    biz:{types:["LMS 100","MMS 120*"],min:"3만건",note:""},
+    dc:null,
+    dh:{types:["LMS 100","MMS 150"],min:"300만원",note:""}},
+  {name:"신세계포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
+    dc:null,
+    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:""}},
+  {name:"롯데멤버스",cat:"멤버십",rankRule:(r)=>r<=100?"available":"unavailable",rankDesc:"도급순위100위이내",ilbanOk:true,
+    biz:{types:["LMS 80"],min:"5만건",note:""},dc:null,dh:null},
+  {name:"카카오페이",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
+    biz:{types:["카플친 100"],min:"5만건",note:""},
+    dc:{types:["PUSH 60","KAKAO 100"],min:"17만건",note:""},
+    dh:{types:["PUSH 60","KAKAO 100"],min:"500만원",note:""}},
+  {name:"나이스(NICE)",cat:"기타",rankRule:(r)=>{if(r<=100)return"available";if(r<=200)return"review";return"unavailable";},rankDesc:"100위이내(최대200위검토)",ilbanOk:true,johabNote:"조합원모집불가/일반분양가능",
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:{types:["LMS 100"],min:"5만건",note:"타겟할증"},
+    dh:{types:["LMS 100","MMS 250"],min:"300만원",note:""}},
+  {name:"호갱노노",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
+    biz:{types:["카플친 150"],min:"3.3만",note:"최소500만원"},
+    dc:{types:["KAKAO 170"],min:"1만건",note:""},
+    dh:{types:["PUSH 100","KAKAO 200"],min:"500만원",note:""}},
+  {name:"직방",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
+    biz:null,
+    dc:{types:["KAKAO 120"],min:"1만건",note:""},
+    dh:{types:["PUSH 100","KAKAO 150*"],min:"500만원",note:""}},
+  {name:"T맵(TMAP)",cat:"모빌리티",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"3만건",note:""},
+    dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"300만원",note:""}},
+  {name:"스마트스코어",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,
+    dc:{types:["LMS 100","PUSH 100"],min:"5만건",note:""},
+    dh:{types:["LMS 100","PUSH 100","KAKAO 100"],min:"300만원",note:""}},
+  {name:"사람인",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS(개인) 100","LMS(기업) 200"],min:"5만건",note:""},
+    dc:null,
+    dh:{types:["LMS 100"],min:"500만원",note:""}},
+  {name:"H.POINT",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,dh:null,
+    dc:{types:["LMS 100","MMS 150","PUSH 80"],min:"5만건",note:""}},
+  {name:"SSG PAY",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,dh:null,
+    dc:{types:["LMS 100","PUSH 50"],min:"5만건",note:""}},
+  {name:"롯데온",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
+    dc:{types:["LMS 80","MMS 120","KAKAO 80"],min:"5만건",note:""},dh:null},
+  {name:"엑스골프",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,dh:null,
+    dc:{types:["LMS 100","PUSH 40","KAKAO 100"],min:"500만원",note:""}},
+  {name:"LG라이프케어",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:null,dh:null,
+    dc:{types:["LMS 120","MMS 150","PUSH 80","KAKAO 120"],min:"200만원",note:""}},
+];
+
+const AGENCIES_INFO = {
+  biz:{label:"비즈그리다",cls:"badge-agency-biz"},
+  dc:{label:"디지털캠프",cls:"sms-badge-agency-dc"},
+  dh:{label:"대홍기획",cls:"badge-agency-dh"},
+};
+
+const MEDIA_GUIDES = {
+  "신한카드":{
+    header:"(광고)[신한카드 제휴마케팅]",headerAlt:"(광고)[신한카드]",maxBytes:1800,titleMaxBytes:28,
+    required:"＊본 문자메세지는 신한카드 마케팅 및 광고성 정보 수신 동의를 하신 고객님께 발송되었습니다.\n＊구체적인 내용은 상품 및 서비스를 제공하는 해당업체를 통해 반드시 확인하시기 바랍니다\n※ 수신거부: 080-800-8114(무료)",
+    eventRequired:"신한카드 고객님께 드리는 특별 혜택 등 신한카드 고객 전용임을 명시하는 문구 필요",
+    rules:["제목 앞에 '(광고)[신한카드 제휴마케팅]' 또는 '(광고)[신한카드]' 고정","신한카드 고객만을 위한 전용 이벤트 문구 필수 포함","본문 최하단에 필수문구(마케팅동의·구체적내용확인·수신거부) 반드시 포함","전체 본문 1800 Bytes 이내","제목 28 Bytes 이내 (헤더 제외)","MMS 이미지: 480×720, 1MB이하, JPG"],
+  },
+  "삼성카드":{
+    header:"(광고)[삼성카드]",
+    required:"삼성카드 대표전화 1588-8700\n무료수신거부 0803008700",
+    eventRequired:"■ 삼성카드 고객 한정 이벤트 형식으로 삼성카드 고객 전용 이벤트 반드시 포함",
+    rules:["제목은 반드시 '(광고)[삼성카드]'로만 기재 (변경불가)","본문 시작: '(광고) [삼성카드] {이벤트명}' 형식","회원명 변수: <*회원명*> 사용","삼성카드 고객 한정 이벤트(모델하우스 방문 등) 명시 필수","본문 하단 '삼성카드는 광고만을 대행하며...' 문구 필수","MMS 이미지: 240×450 (최대 240×575), 60KB 이하"],
+  },
+  "롯데카드":{
+    header:"(광고)[롯데카드]",
+    required:"※ 무료수신거부: 080-920-9400",
+    rules:["제목: '(광고)[롯데카드]' 고정 + 내용 (40byte 이내)","본문에 혜택·기간(*필수) 반드시 기재","기간 형식: ■ 기간 YYYY.MM.DD(요일)~MM.DD(요일)","유의사항(■ 꼭 알아두세요) 포함 권장","수신거부: ※ 무료수신거부: 080-920-9400 필수","전체 본문 2000 bytes 이내","MMS 이미지: 640×480, 60KB 이하 JPG"],
+  },
+  "BC카드":{
+    header:"(광고)[BC카드]",
+    required:"※ BC카드는 광고만을 대행하며, 자세한 사항은 광고 문의전화 또는 URL을 통해 확인해 주세요.\n▶준법감시인 심의필 0000-0000호 (2026.00.00~2026.00.00)\n-무료수신거부: 080-780-9548",
+    rules:["제목: '(광고)[BC카드]' 시작, 필수문구 포함 58bytes 이내","본문: '(광고)[BC카드]'로 시작, 전체 1800bytes 이내","'비씨카드 회원을 대상으로 함' 표기 불가 → '본 문자를 수신한 회원'으로 대체","경품 제공 시 수량 및 조건 반드시 기재 (선착순 OO명 / 전원 증정)","확정적·단정적·최상급 표현 금지 ('마지막', '무조건')","'계약금 0원/zero' 표현 금지 (분양광고)","일반 전화번호 필수 포함 (개인 휴대폰번호만 기재 불가)"],
+  },
+  "KB국민카드":{
+    header:"(광고)[국민카드]",
+    rules:["지역주택조합 전체 불가 (조합원 모집 및 일반분양 모두)","도급순위 50위 이내 건설사만 집행 가능"],
+  },
+  "하나카드":{
+    header:"(광고)[하나카드]",
+    rules:["수도권·광역시·세종시만 집행 가능","도급순위 50위 이내 건설사만 집행 가능","회사채 등급 B0 이상 요건 확인 필요"],
+  },
+};
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let state = {
+  agency: 'all',
+  region: '수도권',
+  selectedCompany: null,
+  useManual: false,
+  manualRank: 0,
+  isJohab: false,
+  johabType: 'recruit',
+  selectedSigo: null,
+  sigoUseManual: false,
+  sigoManualRank: 0,
+  // editor
+  selectedMedia: '신한카드',
+  msgType: 'LMS',
+  editResult: null,
+};
+
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
+function searchCompany(q){
+  if(!q||!q.trim()) return [];
+  const s=q.trim().toLowerCase();
+  return RANK_DB.filter(c=>c.name.toLowerCase().includes(s)||(c.aliases&&c.aliases.some(a=>a.toLowerCase().includes(s)))).slice(0,8);
+}
+function detectJohab(q){ return q&&(q.includes('조합')||q.includes('지주택')||q.endsWith('주택조합')); }
+function getRankNum(){
+  if(state.isJohab){ if(state.selectedSigo) return state.selectedSigo.rank; if(state.sigoUseManual) return state.sigoManualRank||0; return 0; }
+  if(state.selectedCompany) return state.selectedCompany.rank;
+  if(state.useManual) return state.manualRank||0;
+  return 0;
+}
+function getAgencyKeys(){ return state.agency==='all'?['biz','dc','dh']:[state.agency]; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function parseType(str){
+  const p=str.split(' '); const name=p.slice(0,-1).join(' '); const pr=p[p.length-1];
+  const isPromo=pr.endsWith('*'); const clean=pr.replace('*','');
+  const price=isNaN(parseInt(clean))?clean:parseInt(clean)+'원';
+  return{name,price,isPromo};
+}
+
+function typeBadge(name){
+  let cls='sms-badge-type-lms';
+  if(name.includes('MMS')) cls='sms-badge-type-mms';
+  else if(name.includes('KAKAO')||name.includes('카플친')) cls='sms-badge-type-kakao';
+  else if(name.includes('PUSH')) cls='sms-badge-type-push';
+  return `<span class="sms-badge ${cls}">${esc(name)}</span>`;
+}
+function catBadge(cat){
+  const map={'카드사':'sms-badge-cat-card','통신사':'sms-badge-cat-tel','멤버십':'sms-badge-cat-member','모빌리티':'sms-badge-cat-mobility'};
+  return `<span class="sms-badge ${map[cat]||'sms-badge-cat-etc'}">${esc(cat)}</span>`;
+}
+function statusBadge(s){
+  const map={available:'가능',review:'검토',unavailable:'불가',unknown:'확인'};
+  return `<span class="sms-badge-status-${s}">${map[s]||'확인'}</span>`;
+}
+function johabBadge(media,johabType){
+  const blocked=johabType==='recruit'||!media.ilbanOk;
+  return `<span class="badge" style="background:${blocked?'#FEE2E2':'#D1FAE5'};color:${blocked?'#DC2626':'#065F46'}">${blocked?'불가':'가능'}</span>`;
+}
+
+/* ═══════════════════════════════════════
+   TAB SWITCH
+═══════════════════════════════════════ */
+function switchTab(tab){
+  document.querySelectorAll('.sms-tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sms-tab-btn').forEach(b=>b.classList.remove('active'));
+  const panel=document.getElementById('sms-tab-'+tab);
+  if(panel)panel.classList.add('active');
+  // 해당 탭 버튼 활성화 (onclick의 인자값으로 일치하는 버튼 찾기)
+  document.querySelectorAll('.sms-tab-btn').forEach(b=>{
+    const oc=b.getAttribute('onclick')||'';
+    if(oc.indexOf("'"+tab+"'")>=0)b.classList.add('active');
+  });
+  if(tab==='edit') renderGuidePreview();
+}
+
+/* ═══════════════════════════════════════
+   FEASIBILITY: UI HANDLERS
+═══════════════════════════════════════ */
+function setAgency(val,btn){
+  state.agency=val;
+  document.querySelectorAll('#sms-agency-group .sms-toggle-btn').forEach(b=>{b.classList.remove('active');});
+  btn.classList.add('active');
+  hideResult();
+}
+function setRegion(val,btn){
+  state.region=val;
+  document.querySelectorAll('#sms-region-group .sms-toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  hideResult();
+}
+function setJohabType(val,btn){
+  state.johabType=val;
+  document.querySelectorAll('.sms-johab-type-btn').forEach(b=>{b.classList.remove('red','green');});
+  btn.classList.add(val==='recruit'?'red':'green');
+  const label=btn.querySelector('div:first-child');
+  document.querySelectorAll('.sms-johab-type-btn div:first-child').forEach(d=>{
+    d.style.color=d.parentElement===btn?(val==='recruit'?'var(--red)':'var(--green)'):'var(--text2)';
+  });
+  hideResult();
+}
+
+function onCompanyInput(val){
+  state.selectedCompany=null; state.useManual=false;
+  document.getElementById('sms-rank-badge-main').style.display='none';
+  document.getElementById('sms-manual-box').style.display='none';
+  const johab=detectJohab(val);
+  state.isJohab=johab;
+  updateJohabUI();
+  if(johab){ hideDropdown('sms-company-dropdown'); return; }
+  const sugg=searchCompany(val);
+  renderDropdown('sms-company-dropdown',sugg,handleSelectCompany);
+  updateCheckBtn();
+}
+function onCompanyFocus(){
+  const val=document.getElementById('sms-company-input').value;
+  if(val&&!state.isJohab) renderDropdown('sms-company-dropdown',searchCompany(val),handleSelectCompany);
+}
+function handleSelectCompany(c){
+  state.selectedCompany=c; state.useManual=false;
+  document.getElementById('sms-company-input').value=c.name;
+  const rb=document.getElementById('sms-rank-badge-main');
+  rb.textContent=c.rank+'위'; rb.style.display='';
+  document.getElementById('sms-company-input').style.borderColor='var(--green)';
+  document.getElementById('sms-company-input').style.background='#F0FDF9';
+  hideDropdown('sms-company-dropdown');
+  updateCheckBtn(); hideResult();
+}
+function onManualRank(val){ state.manualRank=parseInt(val)||0; updateCheckBtn(); hideResult(); }
+
+function onSigoInput(val){
+  state.selectedSigo=null; state.sigoUseManual=false;
+  document.getElementById('sms-rank-badge-sigo').style.display='none';
+  const sugg=searchCompany(val);
+  renderDropdown('sms-sigo-dropdown',sugg,handleSelectSigo);
+  updateCheckBtn();
+}
+function onSigoFocus(){
+  const val=document.getElementById('sms-sigo-input').value;
+  if(val) renderDropdown('sms-sigo-dropdown',searchCompany(val),handleSelectSigo);
+}
+function handleSelectSigo(c){
+  state.selectedSigo=c;
+  document.getElementById('sms-sigo-input').value=c.name;
+  const rb=document.getElementById('sms-rank-badge-sigo');
+  rb.textContent=c.rank+'위'; rb.style.display='';
+  document.getElementById('sms-sigo-match').textContent=c.rank+'위 매칭';
+  document.getElementById('sms-sigo-input').style.borderColor='var(--green)';
+  hideDropdown('sms-sigo-dropdown');
+  updateCheckBtn(); hideResult();
+}
+function onSigoManual(val){ state.sigoManualRank=parseInt(val)||0; updateCheckBtn(); hideResult(); }
+
+function updateJohabUI(){
+  const isJ=state.isJohab;
+  document.getElementById('sms-sigo-section').style.display=isJ?'':'none';
+  document.getElementById('sms-johab-type-section').style.display=isJ?'':'none';
+  document.getElementById('sms-search-label').textContent=isJ?'① 조합명':'건설사 검색';
+  document.getElementById('sms-region-label').textContent=isJ?'④ 지역':'지역';
+  const inp=document.getElementById('sms-company-input');
+  inp.style.borderColor=isJ?'var(--amber)':'var(--border)';
+  inp.style.background=isJ?'#FFFBEB':'#F8FAFC';
+  updateCheckBtn();
+}
+
+function renderDropdown(id,sugg,onSelect){
+  const el=document.getElementById(id);
+  if(!sugg.length){ el.style.display='none'; return; }
+  el.innerHTML=sugg.map(c=>{
+    // 회사명에 따옴표가 있을 수 있어 attribute로 안전 전달
+    const safeName=String(c.name).replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    return `<div class="sms-dd-item" onclick='SmsTool.selectFromDropdown("${id}","${safeName}",${c.rank})'><span class="sms-dd-item-name">${esc(c.name)}</span><span class="sms-dd-item-rank">${c.rank}위</span></div>`;
+  }).join('');
+  el.style.display='';
+  // store callback
+  el._onSelect=onSelect;
+}
+function selectFromDropdown(ddId,name,rank){
+  const c=RANK_DB.find(x=>x.name===name&&x.rank===rank);
+  if(!c) return;
+  const dd=document.getElementById(ddId);
+  if(dd._onSelect) dd._onSelect(c);
+}
+function hideDropdown(id){ document.getElementById(id).style.display='none'; }
+
+document.addEventListener('click',e=>{
+  ['sms-company-dropdown','sms-sigo-dropdown'].forEach(id=>{
+    const dd=document.getElementById(id);
+    const inp=document.getElementById(id==='sms-company-dropdown'?'sms-company-input':'sms-sigo-input');
+    if(!dd.contains(e.target)&&!inp.contains(e.target)) dd.style.display='none';
+  });
+});
+
+// No result in DB → show manual
+document.getElementById('sms-company-input').addEventListener('input',function(){
+  const val=this.value;
+  if(detectJohab(val)) return;
+  const sugg=searchCompany(val);
+  if(val.length>0&&sugg.length===0&&!state.selectedCompany){
+    const dd=document.getElementById('sms-company-dropdown');
+    dd.innerHTML=`<div class="sms-dd-empty"><div style="font-size:12px;color:#92400E;margin-bottom:8px">DB(100위)에 없음</div><button onclick="SmsTool.showManualInput()" style="padding:6px 14px;border-radius:7px;border:1.5px solid var(--sms-amber);background:var(--sms-amber-light);color:#92400E;font-size:12px;font-weight:600;cursor:pointer">직접 입력</button></div>`;
+    dd.style.display='';
+  }
+});
+document.getElementById('sms-sigo-input').addEventListener('input',function(){
+  const val=this.value;
+  const sugg=searchCompany(val);
+  if(val.length>0&&sugg.length===0&&!state.selectedSigo){
+    const dd=document.getElementById('sms-sigo-dropdown');
+    dd.innerHTML=`<div class="sms-dd-empty"><div style="font-size:12px;color:#92400E;margin-bottom:6px">DB에 없음</div><button onclick="SmsTool.showSigoManual()" style="padding:6px 14px;border-radius:7px;border:1.5px solid var(--sms-amber);background:var(--sms-amber-light);color:#92400E;font-size:12px;font-weight:600;cursor:pointer">직접 입력</button></div>`;
+    dd.style.display='';
+  }
+});
+function showManualInput(){ document.getElementById('sms-manual-box').style.display=''; hideDropdown('sms-company-dropdown'); state.useManual=true; }
+function showSigoManual(){ document.getElementById('sms-sigo-manual-box').style.display=''; hideDropdown('sms-sigo-dropdown'); state.sigoUseManual=true; }
+
+function updateCheckBtn(){
+  const rank=getRankNum();
+  const btn=document.getElementById('sms-check-btn');
+  btn.disabled=rank<1;
+}
+function hideResult(){ document.getElementById('sms-result-area').style.display='none'; }
+
+/* ═══════════════════════════════════════
+   FEASIBILITY: DO CHECK
+═══════════════════════════════════════ */
+function doCheck(){
+  const rankNum=getRankNum();
+  if(rankNum<1) return;
+  const agencyKeys=getAgencyKeys();
+  const filtered=MEDIA.filter(m=>agencyKeys.some(k=>m[k]!=null));
+
+  const results=filtered.map(m=>{
+    let status=m.rankRule(rankNum,state.region);
+    if(state.isJohab){
+      if(state.johabType==='recruit') status='unavailable';
+      else if(!m.ilbanOk) status='unavailable';
+    }
+    return{...m,status};
+  });
+
+  const order={available:0,review:1,unknown:2,unavailable:3};
+  const sorted=[...results].sort((a,b)=>(order[a.status]||4)-(order[b.status]||4));
+
+  const counts={available:0,review:0,unknown:0,unavailable:0};
+  results.forEach(r=>{counts[r.status]=(counts[r.status]||0)+1;});
+
+  renderResult(sorted,counts,rankNum,agencyKeys);
+}
+
+function renderResult(sorted,counts,rankNum,agencyKeys){
+  // johab banner
+  const banner=document.getElementById('sms-johab-banner');
+  if(state.isJohab){
+    const isRecruit=state.johabType==='recruit';
+    banner.innerHTML=`<div class="sms-johab-banner" style="background:${isRecruit?'#FEE2E2':'#D1FAE5'};border:1.5px solid ${isRecruit?'#EF4444':'#0D9F6E'};color:${isRecruit?'#991B1B':'#065F46'}">${isRecruit?'🚫 조합원 모집 — 전 매체 집행 불가 (참고용)':'✅ 일반분양 — KB국민카드 제외 지정매체 가능'}</div>`;
+  } else banner.innerHTML='';
+
+  // summary
+  document.getElementById('sms-summary-grid').innerHTML=[
+    {l:'가능',c:counts.available,co:'var(--green)',bg:'var(--green-light)'},
+    {l:'검토',c:counts.review,co:'var(--amber)',bg:'var(--amber-light)'},
+    {l:'확인',c:counts.unknown,co:'var(--gray)',bg:'var(--gray-light)'},
+    {l:'불가',c:counts.unavailable,co:'var(--red)',bg:'var(--red-light)'},
+  ].map(s=>`<div class="sms-summary-card" style="background:${s.bg}"><div class="sms-num" style="color:${s.co}">${s.c}</div><div class="sms-lbl" style="color:${s.co}">${s.l}</div></div>`).join('');
+
+  // info bar
+  const compName=state.isJohab?document.getElementById('sms-company-input').value:(state.selectedCompany?state.selectedCompany.name:document.getElementById('sms-company-input').value||'직접');
+  const sigoName=state.selectedSigo?state.selectedSigo.name:(document.getElementById('sms-sigo-input').value||'직접');
+  document.getElementById('sms-info-bar').innerHTML=`
+    <div class="sms-info-bar-left">
+      <span style="color:var(--text3);font-size:10px">${state.isJohab?'조합':'건설사'}</span>
+      <span style="color:#fff;font-weight:800">${esc(compName)}</span>
+      ${state.isJohab?`<span style="background:${state.johabType==='recruit'?'var(--red)':'var(--green)'};color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700">${state.johabType==='recruit'?'조합원모집':'일반분양'}</span><span style="color:var(--text3);font-size:10px">시공사</span><span style="color:#60A5FA;font-weight:800">${esc(sigoName)}</span>`:''}
+    </div>
+    <div style="display:flex;gap:16px">
+      <div><span style="color:var(--text3);font-size:10px">순위 </span><span style="color:#60A5FA;font-weight:800">${rankNum}위</span><span style="color:#475569;font-size:9px"> ('25)</span></div>
+      <div><span style="color:var(--text3);font-size:10px">지역 </span><span style="color:#60A5FA;font-weight:800">${state.region}</span></div>
+    </div>`;
+
+  // table head
+  const isJ=state.isJohab;
+  document.getElementById('sms-result-thead').innerHTML=`<tr>${['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','비고'].map((h,i)=>`<th style="text-align:${i===0||i===(['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','비고'].length-1)===i?'left':'center'}">${h}</th>`).join('')}</tr>`;
+
+  // table body
+  let tbody='';
+  sorted.forEach(m=>{
+    const activeKeys=agencyKeys.filter(k=>m[k]!=null);
+    if(!activeKeys.length) return;
+    activeKeys.forEach((ak,idx)=>{
+      const data=m[ak];
+      const info=AGENCIES_INFO[ak];
+      const parsed=data.types.map(parseType);
+      const isFirst=idx===0;
+      const span=activeKeys.length;
+      const unavail=m.status==='unavailable';
+      tbody+=`<tr class="${unavail?'unavailable':''}">`;
+      if(isFirst){
+        tbody+=`<td rowspan="${span}" style="font-weight:700;font-size:11px;white-space:nowrap;border-right:1px solid #F1F5F9">${esc(m.name)}</td>`;
+        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${catBadge(m.cat)}</td>`;
+        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${statusBadge(m.status)}</td>`;
+        if(isJ) tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${johabBadge(m,state.johabType)}</td>`;
+      }
+      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><span class="sms-badge ${info.cls}">${info.label}</span></td>`;
+      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><div class="sms-type-list">${parsed.map(p=>typeBadge(p.name)).join('')}</div></td>`;
+      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><div class="sms-price-list">${parsed.map(p=>`<span style="font-size:11px;font-weight:600;white-space:nowrap">${esc(p.price)}${p.isPromo?'<span style="color:var(--red);font-size:8px;margin-left:2px">*프로모션</span>':''}</span>`).join('')}</div></td>`;
+      tbody+=`<td style="text-align:center;font-weight:600;font-size:11px;border-right:1px solid #F1F5F9;white-space:nowrap">${esc(data.min)}</td>`;
+      tbody+=`<td style="font-size:9px;color:var(--text2);line-height:1.4;max-width:180px">`;
+      if(isFirst){
+        tbody+=`<div>${esc(m.rankDesc)}</div>`;
+        if(isJ&&m.johabNote) tbody+=`<div style="color:var(--red);font-weight:700;margin-top:1px">${esc(m.johabNote)}</div>`;
+        if(m.extra) tbody+=`<div style="color:var(--red);font-weight:600;margin-top:1px">${esc(m.extra)}</div>`;
+        if(m.extra2) tbody+=`<div style="color:var(--red);font-weight:700;margin-top:1px">${esc(m.extra2)}</div>`;
+      }
+      if(data.note) tbody+=`<div style="color:var(--sms-primary);margin-top:1px">${esc(data.note)}</div>`;
+      tbody+=`</td></tr>`;
+    });
+  });
+  document.getElementById('sms-result-tbody').innerHTML=tbody;
+
+  // notice
+  let notices=['도급순위: 2025년 국토교통부 시공능력평가 기준','단가 VAT 별도. 대행사별 동일 매체도 단가/최소집행/상품이 다를 수 있음'];
+  if(state.isJohab&&state.johabType==='recruit') notices.push('<span style="color:var(--red);font-weight:700">조합원 모집 시 전 매체 집행 불가</span>');
+  if(state.isJohab&&state.johabType==='ilban') notices.push('<span style="color:var(--red);font-weight:700">KB국민카드는 지역주택조합 전체 불가</span>');
+  document.getElementById('sms-notice-list').innerHTML=notices.map(n=>`<li>${n}</li>`).join('');
+
+  const ra=document.getElementById('sms-result-area');
+  ra.style.display='';
+  ra.classList.remove('fade-up');
+  void ra.offsetWidth;
+  ra.classList.add('fade-up');
+}
+
+/* ═══════════════════════════════════════
+   MESSAGE EDITOR
+═══════════════════════════════════════ */
+function setMedia(val,btn){
+  state.selectedMedia=val;
+  document.querySelectorAll('#sms-media-group .sms-toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state.editResult=null;
+  renderGuidePreview();
+  renderEditResult(null);
+  renderGuideDetail();
+}
+function setMsgType(val,btn){
+  state.msgType=val;
+  document.querySelectorAll('#sms-msgtype-group .sms-toggle-btn').forEach(b=>{b.classList.remove('active','active-purple');});
+  btn.classList.add('active-purple');
+  state.editResult=null;
+  renderEditResult(null);
+}
+
+function renderGuidePreview(){
+  const g=MEDIA_GUIDES[state.selectedMedia];
+  if(!g){ document.getElementById('sms-guide-preview').innerHTML=''; return; }
+  let html=`<div class="sms-title">📋 ${esc(state.selectedMedia)} 가이드 요약</div>`;
+  html+=`<div class="sms-row"><b>헤더:</b> <span style="color:var(--sms-primary);font-weight:600">${esc(g.header)}</span></div>`;
+  if(g.maxBytes) html+=`<div class="sms-row"><b>최대 용량:</b> ${g.maxBytes} Bytes</div>`;
+  if(g.eventRequired) html+=`<div class="sms-row" style="color:var(--sms-red);font-weight:600;margin-top:3px">⚠ ${esc(g.eventRequired)}</div>`;
+  (g.rules||[]).slice(0,3).forEach(r=>{ html+=`<div class="sms-row">• ${esc(r)}</div>`; });
+  document.getElementById('sms-guide-preview').innerHTML=html;
+  renderGuideDetail();
+}
+
+function renderGuideDetail(){
+  const g=MEDIA_GUIDES[state.selectedMedia];
+  const el=document.getElementById('sms-guide-detail');
+  if(!g){ el.style.display='none'; return; }
+  let html=`<div style="font-size:12px;font-weight:700;color:var(--sms-text)">📌 ${esc(state.selectedMedia)} 상세 가이드</div>`;
+  html+=`<div class="sms-guide-detail-grid">`;
+  html+=`<div><div class="sms-field-label" style="margin-bottom:6px">준수 규칙</div>`;
+  (g.rules||[]).forEach((r,i)=>{ html+=`<div class="sms-guide-rule"><span class="sms-rule-num">${i+1}.</span>${esc(r)}</div>`; });
+  html+=`</div>`;
+  if(g.required){
+    html+=`<div><div class="sms-field-label" style="margin-bottom:6px">필수 하단 문구</div><div class="sms-required-box">${esc(g.required)}</div></div>`;
+  }
+  html+=`</div>`;
+  el.innerHTML=html;
+  el.style.display='';
+}
+
+function renderEditResult(data){
+  const el=document.getElementById('sms-edit-result');
+  const copyBtn=document.getElementById('sms-copy-btn');
+  if(!data){
+    el.innerHTML=`<div class="sms-empty-state"><div class="sms-icon">📝</div><div style="font-size:12px">원본 문구를 입력하고 수정 버튼을 눌러주세요</div></div>`;
+    copyBtn.style.display='none';
+    return;
+  }
+  if(data==='loading'){
+    el.innerHTML=`<div class="sms-loading-state"><div class="sms-spinner"></div><div style="font-size:12px">${esc(state.selectedMedia)} 가이드 분석 중...</div></div>`;
+    copyBtn.style.display='none';
+    return;
+  }
+  const g=MEDIA_GUIDES[state.selectedMedia];
+  const bodyBytes=new Blob([data.body]).size;
+  const overLimit=g&&g.maxBytes&&bodyBytes>g.maxBytes;
+  let html=`<div class="sms-fade-up">`;
+  html+=`<div class="sms-result-block"><div class="sms-blabel">제목 <span class="sms-badge sms-badge-agency-dc" style="font-size:9px">${esc(state.selectedMedia)} 헤더 포함</span></div><div class="sms-result-title-box">${esc(data.title||'(제목 없음)')}</div></div>`;
+  html+=`<div class="sms-result-block"><div class="sms-blabel">본문 (필수문구 포함)</div><div class="sms-result-body-box">${esc(data.body)}</div></div>`;
+  html+=`<div class="sms-byte-row"><span class="sms-byte-tag">본문 약 ${bodyBytes} bytes</span>`;
+  if(g&&g.maxBytes) html+=`<span class="sms-byte-tag ${overLimit?'over':'ok'}">${overLimit?`⚠ 제한 초과 (${g.maxBytes}B)`:`✓ 용량 정상 (${g.maxBytes}B 이내)`}</span>`;
+  html+=`</div></div>`;
+  el.innerHTML=html;
+  copyBtn.style.display='';
+  state.editResult=data;
+}
+
+async function doEdit(){
+  const input=document.getElementById('sms-msg-input').value.trim();
+  if(!input) return;
+  document.getElementById('sms-edit-error').style.display='none';
+  renderEditResult('loading');
+
+  const g=MEDIA_GUIDES[state.selectedMedia];
+  const guideText=g?`
+매체: ${state.selectedMedia}
+발송 유형: ${state.msgType}
+헤더(제목 고정): ${g.header||''}
+${g.headerAlt?'대체 헤더: '+g.headerAlt:''}
+${g.maxBytes?'최대 Bytes: '+g.maxBytes:''}
+${g.titleMaxBytes?'제목 최대 Bytes: '+g.titleMaxBytes:''}
+필수 하단 문구: ${g.required||'없음'}
+${g.eventRequired?'이벤트 필수조건: '+g.eventRequired:''}
+준수 규칙:
+${(g.rules||[]).map((r,i)=>`${i+1}. ${r}`).join('\n')}`:`매체: ${state.selectedMedia}\n발송 유형: ${state.msgType}`;
+
+  const prompt=`당신은 문자광고 문구 전문가입니다. 아래 매체 가이드에 맞게 원본 문구를 수정해주세요.
+
+[매체 가이드]
+${guideText}
+
+[원본 문구]
+${input}
+
+[수정 지침]
+1. 원본 내용(단지명, 혜택, 연락처 등 핵심 정보)은 최대한 유지
+2. 매체 가이드의 헤더/필수문구/규칙을 반드시 반영
+3. 분양 광고이므로 "OOO 고객님" 형식의 수신자 호칭 포함
+4. 가이드에서 요구하는 이벤트 문구나 카드사 전용 혜택 문구 추가
+5. 수정된 최종 문구만 출력 (설명 없이)
+6. 반드시 아래 형식으로 출력:
+
+[제목]
+(수정된 제목)
+
+[본문]
+(수정된 본문 전체, 필수문구 포함)`;
+
+  try{
+    // 관리자가 설정에서 입력한 Groq API 키 가져오기
+    const groqKey=(typeof safeStorage!=='undefined'?safeStorage.get('brin_groq_key'):null)||'';
+    const groqModel=(typeof safeStorage!=='undefined'?safeStorage.get('brin_groq_model'):null)||'llama-3.3-70b-versatile';
+    if(!groqKey){
+      renderEditResult(null);
+      const err=document.getElementById('sms-edit-error');
+      err.textContent='Groq API 키가 설정되지 않았습니다. ⚙ 설정 → "매체안내 - 문구 수정 (Groq API)" 섹션에서 키를 입력해주세요. (console.groq.com 에서 무료 발급)';
+      err.style.display='';
+      return;
+    }
+    const res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+groqKey,
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        model:groqModel,
+        max_tokens:1000,
+        temperature:0.4,
+        messages:[
+          {role:'system',content:'당신은 한국어 광고 문구 수정 전문가입니다. 매체 가이드를 엄격히 따르면서 자연스러운 한국어로 작성하세요. 응답은 반드시 [제목]\\n제목내용\\n\\n[본문]\\n본문내용 형식으로만 출력하세요. 다른 설명이나 부가 텍스트는 절대 포함하지 마세요.'},
+          {role:'user',content:prompt}
+        ]
+      })
+    });
+    let data;
+    try{data=await res.json();}catch(_){data={};}
+    if(!res.ok||data.error){
+      renderEditResult(null);
+      const err=document.getElementById('sms-edit-error');
+      const msg=(data.error&&(data.error.message||data.error))||`API 호출 실패 (${res.status})`;
+      let hint='';
+      if(res.status===401)hint=' — API 키가 유효하지 않습니다. ⚙ 설정에서 다시 확인해주세요.';
+      else if(res.status===429)hint=' — 사용량 한도 초과. 잠시 후 다시 시도해주세요.';
+      else if(res.status===404)hint=' — 모델명이 잘못되었을 수 있습니다.';
+      err.textContent='API 호출 실패: '+msg+hint;
+      err.style.display='';
+      return;
+    }
+    // Groq 응답 (OpenAI 호환): choices[0].message.content
+    const text=(data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content)||'';
+    if(!text.trim()){
+      renderEditResult(null);
+      const err=document.getElementById('sms-edit-error');
+      err.textContent='AI 응답이 비어있습니다. 다시 시도해주세요.';
+      err.style.display='';
+      return;
+    }
+    const titleMatch=text.match(/\[제목\]\s*([\s\S]*?)(?=\[본문\])/);
+    const bodyMatch=text.match(/\[본문\]\s*([\s\S]*)/);
+    renderEditResult({
+      title:titleMatch?titleMatch[1].trim():'',
+      body:bodyMatch?bodyMatch[1].trim():text.trim()
+    });
+  } catch(e){
+    renderEditResult(null);
+    const err=document.getElementById('sms-edit-error');
+    err.textContent='네트워크 오류 또는 API 호출 실패: '+e.message;
+    err.style.display='';
+  }
+}
+
+function copyResult(){
+  if(!state.editResult) return;
+  const txt=`[제목]\n${state.editResult.title}\n\n[본문]\n${state.editResult.body}`;
+  const onSuccess=()=>{
+    const btn=document.getElementById('sms-copy-btn');
+    if(!btn)return;
+    btn.textContent='✓ 복사됨';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='전체 복사'; btn.classList.remove('copied'); },2000);
+  };
+  const onFail=()=>{
+    // execCommand fallback
+    try{
+      const ta=document.createElement('textarea');
+      ta.value=txt;ta.style.position='fixed';ta.style.top='-1000px';
+      document.body.appendChild(ta);ta.focus();ta.select();
+      const ok=document.execCommand('copy');
+      document.body.removeChild(ta);
+      if(ok)onSuccess(); else alert('복사 실패 - 텍스트를 직접 선택해서 복사해주세요.');
+    }catch(e){
+      alert('복사 실패 - 텍스트를 직접 선택해서 복사해주세요.');
+    }
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(onSuccess).catch(onFail);
+  } else {
+    onFail();
+  }
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+renderGuidePreview();
+renderGuideDetail();
+
+return {
+    switchTab: switchTab,
+    setAgency: setAgency,
+    setRegion: setRegion,
+    setJohabType: setJohabType,
+    onCompanyInput: onCompanyInput,
+    onCompanyFocus: onCompanyFocus,
+    onManualRank: onManualRank,
+    onSigoInput: onSigoInput,
+    onSigoFocus: onSigoFocus,
+    onSigoManual: onSigoManual,
+    doCheck: doCheck,
+    setMedia: setMedia,
+    setMsgType: setMsgType,
+    doEdit: doEdit,
+    copyResult: copyResult,
+    selectFromDropdown: selectFromDropdown,
+    showManualInput: showManualInput,
+    showSigoManual: showSigoManual
+};
+})();
+
+
 </script>
 </body>
 </html>
