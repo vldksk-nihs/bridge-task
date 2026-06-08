@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.16.3">
+<meta name="version" content="v4.17">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -116,6 +116,13 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .grow-l:hover{background:var(--sur2);}
 .grow-l.done-row{opacity:.55;border-left:2px solid var(--gray);}
 .grow-r.done-row{opacity:.6;}
+/* 일정 조정중 (확인 중 + 날짜 없음) */
+.grow-l.pending-row{border-left:2px dashed var(--orange);background:rgba(245,160,51,.04);}
+.grow-r.pending-row{background:rgba(245,160,51,.03);cursor:pointer;}
+.grow-r.pending-row:hover{background:rgba(245,160,51,.08);}
+.rbadge.r-pending{background:rgba(245,160,51,.18);color:var(--orange);font-weight:700;border:1px dashed var(--orange);}
+.gbar-pending{display:inline-flex;align-items:center;padding:5px 12px;font-size:11px;font-weight:600;color:var(--orange);background:rgba(245,160,51,.10);border:1px dashed rgba(245,160,51,.5);border-radius:6px;margin:6px;cursor:pointer;}
+.gbar-pending:hover{background:rgba(245,160,51,.18);}
 .rname{font-size:11px;color:var(--tx);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .rbadge{font-size:10px;padding:2px 5px;border-radius:3px;white-space:nowrap;flex-shrink:0;font-weight:500;}
 .m-nas{background:rgba(91,163,245,.14);color:#5ba3f5;}
@@ -927,7 +934,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.16.3</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.17</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1841,16 +1848,22 @@ function parseSheet(values){
     if(pjt.startsWith('PJT:')||pjt.startsWith('채워짐')||pjt.startsWith('개수'))continue;
     totalRows++;
     const sd=parseDate(r[C.sdate]),ed=parseDate(r[C.edate]);
-    if(!sd||!ed){skippedNoDate++;continue;}
+    const status=(r[C.status]||'').trim();
+    // 날짜 없는 행 처리:
+    //  - 상태가 '확인 중'/'확인중' → isPending=true 로 포함 (일정 조정중 표기)
+    //  - 그 외 → 제외 (의미없는 행 방지)
+    const isPending=(!sd||!ed)&&/확인/.test(status.replace(/\s/g,''));
+    if((!sd||!ed)&&!isPending){skippedNoDate++;continue;}
     let assigneeRaw=String(r[C.assignee]||'').trim();
     if(/^[₩\d,\s]+$/.test(assigneeRaw))assigneeRaw='';
     rows.push({
       type:r[C.type]||'',bsa:r[C.bsa]||'',pjt,media,
-      status:(r[C.status]||'').trim(),sdate:sd,edate:ed,
+      status,sdate:sd,edate:ed,
       period:r[C.period]||'',memo:r[C.memo]||'',sheetNote:'',
       assignee:assigneeRaw,
+      isPending,  // 일정 조정중 플래그
       budget:parseMoney(r[C.budget]),spent:parseMoney(r[C.spent]),
-      _rowIdx:i,  // 시트 row index (메모 매핑용)
+      _rowIdx:i,
     });
   }
   console.log(`[BRIN] 시트 행: ${values.length-CFG.headerRow}, 데이터 행: ${totalRows}, 날짜 파싱 실패: ${skippedNoDate}, 최종 파싱: ${rows.length}`);
@@ -1999,13 +2012,21 @@ function renderGantt(){
     const sortedRows=[...g.rows].sort((a,b)=>a.media.localeCompare(b.media,'ko'));
     sortedRows.forEach(r=>{
       const isDone=isDoneStatus(r.status);
-      const rl=document.createElement('div');rl.className='grow-l'+(isDone?' done-row':'');
+      const rl=document.createElement('div');rl.className='grow-l'+(isDone?' done-row':'')+(r.isPending?' pending-row':'');
       rl.style.height='34px';
-      rl.innerHTML=`<span class="rname" title="${r.media}">${r.media}</span><span class="rbadge ${mcls(r.bsa)}">${r.bsa}</span><span class="rbadge ${scls(r.status)}">${displayStatus(r.status)}</span>`;
+      const pendingBadge=r.isPending?`<span class="rbadge r-pending" title="일정 미정">📅 일정 조정중</span>`:'';
+      rl.innerHTML=`<span class="rname" title="${r.media}">${r.media}</span><span class="rbadge ${mcls(r.bsa)}">${r.bsa}</span><span class="rbadge ${scls(r.status)}">${displayStatus(r.status)}</span>${pendingBadge}`;
       gl.appendChild(rl);
-      const rr=document.createElement('div');rr.className='grow-r'+(isDone?' done-row':'');
+      const rr=document.createElement('div');rr.className='grow-r'+(isDone?' done-row':'')+(r.isPending?' pending-row':'');
       rr.style.width=totalW+'px';rr.style.height='34px';
       if(todayPx>=0&&todayPx<=totalW){const tl=document.createElement('div');tl.className='today-ln';tl.style.left=todayPx+'px';rr.appendChild(tl);}
+      // isPending이면 bar 영역은 비어있음, 클릭만 활성화
+      if(r.isPending){
+        rr.style.cursor='pointer';
+        rr.addEventListener('click',ev=>{ev.stopPropagation();openDetailPanel({...r,type:r.type||''});});
+        gr.appendChild(rr);
+        return;
+      }
       const s=doff(r.sdate),e=doff(r.edate);
       if(e>=0&&s<=DAYS){
         const x=Math.max(0,s)*CELL,w=Math.max(20,(Math.min(DAYS,e+1)-Math.max(0,s))*CELL);
@@ -2120,7 +2141,7 @@ function switchSubTab(tab){
 
 function buildInvoiceFilters(){
   const allInv=[];
-  groups.forEach(g=>g.rows.forEach(r=>{if(isInvoice(r))allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});}));
+  groups.forEach(g=>g.rows.forEach(r=>{if(isInvoice(r)&&!r.isPending)allInv.push({...r,_pjt:g.name,_color:g.color,_advertiser:g.advertiser||''});}));
 
   // 연도 목록 추출
   const years=[...new Set(allInv.map(r=>r.edate.getFullYear()))].sort();
@@ -2371,39 +2392,49 @@ function openDetailPanel(r){
 
   document.getElementById('dpBsa').textContent=r.bsa||'—';
   document.getElementById('dpType').textContent=r.type||'—';
-  document.getElementById('dpSdate').textContent=r.sdate.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
-  document.getElementById('dpEdate').textContent=r.edate.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
-
-  // D-day
-  const dd=dayDiff(TODAY,r.edate);
-  const ddTxt=dd<0?`종료 ${-dd}일 전`:dd===0?'D-DAY':`D-${dd}`;
-  const ddColor=dd<0?'var(--gray)':dd<=7?'#ff6b6b':dd<=15?'var(--orange)':'var(--tx2)';
-  document.getElementById('dpPeriod').innerHTML=`${r.period||'—'} <span style="font-size:10px;color:${ddColor};font-weight:700;margin-left:4px">${ddTxt}</span>`;
-
-  // 기간 진행률 (시작일~종료일 대비 오늘 위치)
-  const totalDays=dayDiff(r.sdate,r.edate)+1; // inclusive
-  const elapsed=dayDiff(r.sdate,TODAY); // 시작일 기준 경과일수 (음수=시작 전, 0=시작일, totalDays-1=종료일)
-  let datePct;
-  let dateSub;
-  if(elapsed<0){
-    datePct=0;
-    dateSub=`시작 ${-elapsed}일 전`;
-  } else if(elapsed>=totalDays-1){
-    datePct=100;
-    dateSub=dd<0?`종료 ${-dd}일 경과`:'오늘 종료';
+  // 일정 미정 (isPending) 처리
+  if(r.isPending){
+    document.getElementById('dpSdate').innerHTML=`<span style="color:var(--orange);font-weight:700">📅 일정 조정중</span>`;
+    document.getElementById('dpEdate').innerHTML=`<span style="color:var(--orange);font-weight:700">미정</span>`;
+    document.getElementById('dpPeriod').innerHTML=`<span style="color:var(--tx3)">—</span>`;
+    document.getElementById('dpDatePct').textContent='—';
+    document.getElementById('dpDateProgFill').style.width='0%';
+    document.getElementById('dpDateProgFill').style.background='var(--sur3)';
+    document.getElementById('dpDateSub').innerHTML=`<span style="color:var(--orange)">일정 확정 후 업데이트 예정</span>`;
   } else {
-    datePct=Math.round((elapsed+1)/totalDays*100);
-    dateSub=`${totalDays}일 중 ${elapsed+1}일째`;
+    document.getElementById('dpSdate').textContent=r.sdate.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
+    document.getElementById('dpEdate').textContent=r.edate.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
+
+    // D-day
+    const dd=dayDiff(TODAY,r.edate);
+    const ddTxt=dd<0?`종료 ${-dd}일 전`:dd===0?'D-DAY':`D-${dd}`;
+    const ddColor=dd<0?'var(--gray)':dd<=7?'#ff6b6b':dd<=15?'var(--orange)':'var(--tx2)';
+    document.getElementById('dpPeriod').innerHTML=`${r.period||'—'} <span style="font-size:10px;color:${ddColor};font-weight:700;margin-left:4px">${ddTxt}</span>`;
+
+    // 기간 진행률 (시작일~종료일 대비 오늘 위치)
+    const totalDays=dayDiff(r.sdate,r.edate)+1;
+    const elapsed=dayDiff(r.sdate,TODAY);
+    let datePct;
+    let dateSub;
+    if(elapsed<0){
+      datePct=0;
+      dateSub=`시작 ${-elapsed}일 전`;
+    } else if(elapsed>=totalDays-1){
+      datePct=100;
+      dateSub=dd<0?`종료 ${-dd}일 경과`:'오늘 종료';
+    } else {
+      datePct=Math.round((elapsed+1)/totalDays*100);
+      dateSub=`${totalDays}일 중 ${elapsed+1}일째`;
+    }
+    document.getElementById('dpDatePct').textContent=`${datePct}%`;
+    const dfill=document.getElementById('dpDateProgFill');
+    dfill.style.width=datePct+'%';
+    if(elapsed<0)dfill.style.background='var(--sur3)';
+    else if(datePct>=100)dfill.style.background='#f06565';
+    else if(datePct>=80)dfill.style.background='#f5a033';
+    else dfill.style.background='var(--pri)';
+    document.getElementById('dpDateSub').textContent=dateSub;
   }
-  document.getElementById('dpDatePct').textContent=`${datePct}%`;
-  const dfill=document.getElementById('dpDateProgFill');
-  dfill.style.width=datePct+'%';
-  // 색상: 시작 전(회색) / 진행중 진행률에 따라 / 종료(빨강)
-  if(elapsed<0)dfill.style.background='var(--sur3)';
-  else if(datePct>=100)dfill.style.background='#f06565';
-  else if(datePct>=80)dfill.style.background='#f5a033';
-  else dfill.style.background='var(--pri)';
-  document.getElementById('dpDateSub').textContent=dateSub;
 
   // 예산
   const remain=r.budget-r.spent;
@@ -3893,10 +3924,21 @@ function renderMobilePjt(){
   sortedRows.forEach(r=>{
     const isDone=isDoneStatus(r.status);
     const rr=document.createElement('div');
-    rr.className='grow-r'+(isDone?' done-row':'');
+    rr.className='grow-r'+(isDone?' done-row':'')+(r.isPending?' pending-row':'');
     rr.style.width=totalW+'px';rr.style.height='34px';
     if(todayPx>=0&&todayPx<=totalW){
       const tl=document.createElement('div');tl.className='today-ln';tl.style.left=todayPx+'px';rr.appendChild(tl);
+    }
+    // isPending: 일정 미정 → 좌측에 배지만 표시
+    if(r.isPending){
+      const pb=document.createElement('div');
+      pb.className='gbar-pending';
+      pb.style.borderLeft=`3px solid ${g.color}`;
+      pb.textContent=`${r.media} · ${r.bsa} — 📅 일정 조정중`;
+      pb.addEventListener('click',ev=>{ev.stopPropagation();haptic(10);openDetailPanel({...r,type:r.type||''});});
+      rr.appendChild(pb);
+      gr.appendChild(rr);
+      return;
     }
     const s=doff(r.sdate),e=doff(r.edate);
     if(e>=0&&s<=DAYS){
