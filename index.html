@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.17">
+<meta name="version" content="v4.19">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -374,6 +374,49 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kw-legend-item.warn{background:rgba(245,160,51,.12);color:var(--orange);}
 .kw-legend-item.danger{background:rgba(240,101,101,.12);color:var(--red);}
 .kw-legend-item.critical{background:rgba(255,68,68,.15);color:#ff4444;}
+
+/* ── 네이버 서브탭 + 캠페인비용 뷰 ─────────────────── */
+.kw-subtabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid var(--bd);}
+.kw-subtab{padding:8px 16px;border:none;background:transparent;color:var(--tx3);font-weight:700;font-size:13px;cursor:pointer;border-radius:6px 6px 0 0;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-1px;}
+.kw-subtab:hover{color:var(--tx2);background:var(--sur2);}
+.kw-subtab.on{color:var(--pri);border-bottom-color:var(--pri);}
+
+.kwc-filter{padding:5px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--sur2);color:var(--tx);font-size:12px;font-family:inherit;cursor:pointer;}
+.kwc-filter:hover{border-color:var(--pri);}
+
+.kwc-summary{margin-bottom:16px;}
+.kwc-sum-cards{display:grid;grid-template-columns:1fr 1fr 2fr;gap:10px;}
+.kwc-sum-card{background:var(--sur);border:1px solid var(--bd);border-radius:9px;padding:14px 16px;}
+.kwc-sum-lbl{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.03em;display:block;margin-bottom:6px;}
+.kwc-sum-val{font-size:20px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;display:block;}
+.kwc-sum-sub{font-size:11px;color:var(--tx3);display:block;margin-top:2px;}
+.kwc-trend-card{padding:10px 14px 8px;}
+.kwc-trend{display:flex;align-items:flex-end;gap:4px;height:48px;margin-top:6px;}
+.kwc-trend-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.kwc-trend-bar{width:100%;max-width:18px;min-height:4px;background:var(--bd);border-radius:2px;transition:all .2s;}
+.kwc-trend-bar.on{background:var(--pri);box-shadow:0 0 6px rgba(79,110,247,.5);}
+.kwc-trend-lbl{font-size:9px;color:var(--tx3);font-variant-numeric:tabular-nums;}
+
+.kwc-acct-block{background:var(--sur);border:1px solid var(--bd);border-radius:10px;margin-bottom:12px;overflow:hidden;}
+.kwc-acct-hd{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--sur2);border-bottom:1px solid var(--bd);}
+.kwc-acct-name{font-weight:700;font-size:13px;color:var(--tx);}
+.kwc-acct-meta{font-size:11px;color:var(--tx3);}
+.kwc-acct-total{margin-left:auto;font-weight:800;font-size:14px;color:var(--pri);font-variant-numeric:tabular-nums;}
+.kwc-table{width:100%;border-collapse:collapse;font-size:12px;}
+.kwc-table th{padding:8px 12px;background:transparent;color:var(--tx3);font-size:10px;font-weight:600;border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.05em;}
+.kwc-table td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:middle;color:var(--tx);}
+.kwc-table tr:last-child td{border-bottom:none;}
+.kwc-table tr:hover td{background:var(--sur2);}
+.kwc-td-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
+.kwc-pct{display:inline-block;min-width:50px;padding:2px 6px;background:var(--sur3);border-radius:4px;font-size:10px;color:var(--tx2);}
+.kwc-empty{padding:40px;text-align:center;color:var(--tx3);font-size:13px;}
+
+@media(max-width:700px){
+  .kwc-sum-cards{grid-template-columns:1fr 1fr;}
+  .kwc-trend-card{grid-column:1/-1;}
+  .kwc-table{font-size:11px;}
+  .kwc-table th,.kwc-table td{padding:6px 8px;}
+}
 
 @media(max-width:768px){
   .kw-view{padding:10px;height:calc(100vh - 50px - 50px);}
@@ -934,7 +977,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.17</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1116,26 +1159,51 @@ body.light .sms-tool{
     </div>
     <!-- 네이버 키워드광고 -->
     <div id="adNaverView">
-      <div class="kw-header">
-        <div class="kw-header-l">
-          <span class="kw-title">💳 네이버 키워드광고 잔액</span>
-          <span class="kw-sync" id="kwSync">—</span>
-        </div>
-        <div class="kw-header-r">
-          <div class="kw-total-wrap">
-            <span class="kw-total-lbl">전체 잔액</span>
-            <span class="kw-total-val" id="kwTotal">—</span>
+      <!-- 서브탭: 잔액 / 캠페인별 월비용 -->
+      <div class="kw-subtabs">
+        <button class="kw-subtab on" id="kwSubTabBalance" onclick="switchNaverSubTab('balance')">💳 잔액 현황</button>
+        <button class="kw-subtab" id="kwSubTabCampaign" onclick="switchNaverSubTab('campaign')">📊 캠페인별 월비용</button>
+      </div>
+
+      <!-- 잔액 현황 (기존) -->
+      <div id="kwBalanceView">
+        <div class="kw-header">
+          <div class="kw-header-l">
+            <span class="kw-title">💳 네이버 키워드광고 잔액</span>
+            <span class="kw-sync" id="kwSync">—</span>
           </div>
-          <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()" title="키워드광고 잔액만 새로고침">↻ 잔액 새로고침</button>
+          <div class="kw-header-r">
+            <div class="kw-total-wrap">
+              <span class="kw-total-lbl">전체 잔액</span>
+              <span class="kw-total-val" id="kwTotal">—</span>
+            </div>
+            <button class="btn btn-g" style="font-size:11px;padding:5px 10px" id="kwRefreshBtn" onclick="refreshKeyword()" title="키워드광고 잔액만 새로고침">↻ 잔액 새로고침</button>
+          </div>
         </div>
+        <div class="kw-legend">
+          <span class="kw-legend-item ok">✅ 10만원 이상 · 잔액 충분</span>
+          <span class="kw-legend-item warn">⚠ 10만원 미만 · 잔액 주의</span>
+          <span class="kw-legend-item danger">⚠ 3만원 미만 · 잔액 부족</span>
+          <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
+        </div>
+        <div class="kw-grid" id="kwGrid"></div>
       </div>
-      <div class="kw-legend">
-        <span class="kw-legend-item ok">✅ 10만원 이상 · 잔액 충분</span>
-        <span class="kw-legend-item warn">⚠ 10만원 미만 · 잔액 주의</span>
-        <span class="kw-legend-item danger">⚠ 3만원 미만 · 잔액 부족</span>
-        <span class="kw-legend-item critical">🔴 1만원 미만 · 충전 필요</span>
+
+      <!-- 캠페인별 월비용 -->
+      <div id="kwCampaignView" class="hide">
+        <div class="kw-header">
+          <div class="kw-header-l">
+            <span class="kw-title">📊 캠페인별 월비용</span>
+            <span class="kw-sync" id="kwcSync">—</span>
+          </div>
+          <div class="kw-header-r" style="gap:8px">
+            <select id="kwcMonthSel" class="kwc-filter" onchange="renderKeywordCampaign()"></select>
+            <select id="kwcAcctSel"  class="kwc-filter" onchange="renderKeywordCampaign()"></select>
+          </div>
+        </div>
+        <div class="kwc-summary" id="kwcSummary"></div>
+        <div id="kwcContent"></div>
       </div>
-      <div class="kw-grid" id="kwGrid"></div>
     </div>
     <!-- 직방/호갱노노 -->
     <div id="adZigbangView" class="hide">
@@ -1758,13 +1826,14 @@ async function fetchData(isManual){
   isFetching=true;
   if(isManual)showLoading('새로고침 중...');
   try{
-    // batchGet으로 5개 시트 한 번에: 매체집행일정 + 연차 + 키워드 + 직방(브릿지) + 직방(직방)
+    // batchGet으로 6개 시트 한 번에: 매체집행일정 + 연차 + 키워드잔액 + 직방(브릿지) + 직방(직방) + 키워드캠페인비용
     const ranges=[
       `${CFG.sheetName}!${CFG.range}`,
       '연차일정!A4:P30',
       '키워드광고_잔액!A1:G50',
       '직방/호갱노노(브릿지)!A:K',
       '직방/호갱노노(직방)!A:K',
+      '키워드광고_캠페인비용!A:F',
     ];
     const rangeParams=ranges.map(r=>`ranges=${encodeURIComponent(r)}`).join('&');
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values:batchGet?${rangeParams}&valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING`;
@@ -1803,6 +1872,11 @@ async function fetchData(isManual){
       parseKeywordSheet((valueRanges[2]&&valueRanges[2].values)||[]);
       if(view==='keyword')renderKeyword();
     }catch(e){console.warn('[BRIN-kw] parse',e);}
+    // [5] 키워드광고 캠페인비용
+    try{
+      parseKeywordCampaign((valueRanges[5]&&valueRanges[5].values)||[]);
+      if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='campaign')renderKeywordCampaign();
+    }catch(e){console.warn('[BRIN-kwc] parse',e);}
     // [3][4] 직방/호갱노노 — 항상 최신 데이터로 갱신
     try{
       parseZbBrin((valueRanges[3]&&valueRanges[3].values)||[]);
@@ -3278,6 +3352,161 @@ function daysSince(dateStr){
   return Math.max(0,Math.floor(diff/(1000*60*60*24)));
 }
 
+// ── 네이버 키워드광고 서브탭 ─────────────────────────
+let naverSubTab='balance'; // 'balance' | 'campaign'
+function switchNaverSubTab(tab){
+  naverSubTab=tab;
+  document.getElementById('kwSubTabBalance').classList.toggle('on',tab==='balance');
+  document.getElementById('kwSubTabCampaign').classList.toggle('on',tab==='campaign');
+  document.getElementById('kwBalanceView').classList.toggle('hide',tab!=='balance');
+  document.getElementById('kwCampaignView').classList.toggle('hide',tab!=='campaign');
+  if(tab==='campaign')renderKeywordCampaign();
+  haptic(8);
+}
+
+// ── 키워드 캠페인비용 시트 파싱 ──────────────────────
+// 컬럼: 계정ID | 캠페인명 | 캠페인ID | 년월 | 광고비(원) | 마지막갱신
+let kwcData=[];
+let kwcLastSync='';
+function parseKeywordCampaign(values){
+  kwcData=[];
+  if(!values||values.length<2)return;
+  // 헤더 행 자동 감지
+  let hdrIdx=values.findIndex(r=>String(r[0]||'').includes('계정')||String(r[0]||'')==='계정ID');
+  if(hdrIdx<0)hdrIdx=0;
+  for(let i=hdrIdx+1;i<values.length;i++){
+    const r=values[i];
+    if(!r||!r[0])continue;
+    const amt=parseMoney(r[4]);
+    if(amt<=0)continue;
+    kwcData.push({
+      acctId:String(r[0]).trim(),
+      campaignName:String(r[1]||'').trim(),
+      campaignId:String(r[2]||'').trim(),
+      month:String(r[3]||'').trim(),
+      amount:amt,
+      updatedAt:String(r[5]||'').trim(),
+    });
+  }
+  // 마지막 갱신 시각 = 데이터에서 가장 최신
+  kwcLastSync=kwcData.reduce((max,r)=>r.updatedAt>max?r.updatedAt:max,'');
+}
+
+// ── 캠페인비용 렌더 ─────────────────────────────────
+function renderKeywordCampaign(){
+  const content=document.getElementById('kwcContent');
+  const summary=document.getElementById('kwcSummary');
+  const syncEl=document.getElementById('kwcSync');
+
+  if(!kwcData.length){
+    content.innerHTML=`<div class="kwc-empty">
+      <p>아직 캠페인 비용 데이터가 없습니다.</p>
+      <p style="font-size:11px;color:var(--tx3);margin-top:6px">Apps Script에서 <code>fetchKeywordCampaignSpending</code> 실행 후 표시됩니다.</p>
+    </div>`;
+    summary.innerHTML='';syncEl.textContent='—';
+    return;
+  }
+
+  syncEl.textContent=kwcLastSync?`마지막 갱신 ${kwcLastSync}`:'';
+
+  // 월 목록 (내림차순)
+  const months=[...new Set(kwcData.map(r=>r.month))].sort().reverse();
+  const monthSel=document.getElementById('kwcMonthSel');
+  const acctSel=document.getElementById('kwcAcctSel');
+  // 셀렉트 초기화
+  if(!monthSel.options.length||monthSel.options.length!==months.length){
+    monthSel.innerHTML=months.map(m=>`<option value="${m}">${m}</option>`).join('');
+  }
+  // 계정 목록
+  const accts=[...new Set(kwcData.map(r=>r.acctId))].sort();
+  if(!acctSel.options.length||acctSel.options.length!==accts.length+1){
+    acctSel.innerHTML=`<option value="">전체 계정</option>`+accts.map(a=>`<option value="${a}">${a}</option>`).join('');
+  }
+
+  const selMonth=monthSel.value||months[0];
+  const selAcct=acctSel.value||'';
+  monthSel.value=selMonth;
+
+  // 필터링
+  let filtered=kwcData.filter(r=>r.month===selMonth);
+  if(selAcct)filtered=filtered.filter(r=>r.acctId===selAcct);
+
+  // 합계
+  const totalAmt=filtered.reduce((s,r)=>s+r.amount,0);
+  const acctCount=new Set(filtered.map(r=>r.acctId)).size;
+  const campCount=filtered.length;
+
+  // 월별 추세 (전체 누적, 모든 계정)
+  const monthlyTotal={};
+  kwcData.forEach(r=>{
+    if(selAcct&&r.acctId!==selAcct)return;
+    monthlyTotal[r.month]=(monthlyTotal[r.month]||0)+r.amount;
+  });
+  const trendMonths=Object.keys(monthlyTotal).sort();
+  const trendMax=Math.max(...Object.values(monthlyTotal),1);
+
+  summary.innerHTML=`
+    <div class="kwc-sum-cards">
+      <div class="kwc-sum-card">
+        <span class="kwc-sum-lbl">선택 월 광고비</span>
+        <span class="kwc-sum-val">${fmtMoney(totalAmt)}</span>
+        <span class="kwc-sum-sub">${selMonth}${selAcct?` · ${selAcct}`:' · 전체 계정'}</span>
+      </div>
+      <div class="kwc-sum-card">
+        <span class="kwc-sum-lbl">집계 계정</span>
+        <span class="kwc-sum-val">${acctCount}개</span>
+        <span class="kwc-sum-sub">캠페인 ${campCount}건</span>
+      </div>
+      <div class="kwc-sum-card kwc-trend-card">
+        <span class="kwc-sum-lbl">월별 추세 (최근 12개월${selAcct?' · '+selAcct:''})</span>
+        <div class="kwc-trend">
+          ${trendMonths.slice(-12).map(m=>{
+            const v=monthlyTotal[m];
+            const h=Math.max(4,Math.round(v/trendMax*40));
+            const isCur=m===selMonth;
+            return `<div class="kwc-trend-col" title="${m}: ${fmtMoney(v)}">
+              <div class="kwc-trend-bar${isCur?' on':''}" style="height:${h}px"></div>
+              <span class="kwc-trend-lbl">${m.slice(5)}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>`;
+
+  // 캠페인 테이블 (계정별 그룹)
+  const acctGroups={};
+  filtered.forEach(r=>{
+    if(!acctGroups[r.acctId])acctGroups[r.acctId]=[];
+    acctGroups[r.acctId].push(r);
+  });
+  const acctOrder=Object.keys(acctGroups).sort();
+
+  let html='';
+  acctOrder.forEach(aid=>{
+    const rows=acctGroups[aid].sort((a,b)=>b.amount-a.amount);
+    const acctTotal=rows.reduce((s,r)=>s+r.amount,0);
+    html+=`<div class="kwc-acct-block">
+      <div class="kwc-acct-hd">
+        <span class="kwc-acct-name">${esc(aid)}</span>
+        <span class="kwc-acct-meta">캠페인 ${rows.length}개</span>
+        <span class="kwc-acct-total">${fmtMoney(acctTotal)}</span>
+      </div>
+      <table class="kwc-table">
+        <thead><tr><th style="text-align:left">캠페인명</th><th style="text-align:right">광고비 (VAT별도)</th><th style="text-align:right">비중</th></tr></thead>
+        <tbody>
+          ${rows.map(r=>`<tr>
+            <td>${esc(r.campaignName)}</td>
+            <td class="kwc-td-num">${fmtMoney(r.amount)}</td>
+            <td class="kwc-td-num"><span class="kwc-pct">${(r.amount/acctTotal*100).toFixed(1)}%</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  });
+
+  content.innerHTML=html||`<div class="kwc-empty">선택한 조건에 데이터가 없습니다.</div>`;
+}
+
 function renderKeyword(){
   const grid=document.getElementById('kwGrid');
   const totalEl=document.getElementById('kwTotal');
@@ -4149,7 +4378,7 @@ const RANK_DB = [
 
 const MEDIA = [
   {name:"KB국민카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:false,johabNote:"지역주택조합 전체 불가",
-    biz:{types:["LMS 100","MMS 150"],min:"3만건",note:"CTR및로그분석제공"},
+    biz:{types:["LMS 100","MMS 150"],min:"3만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:""}},
   {name:"신한카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",extra2:"신한카드고객만을위한이벤트필요",
@@ -4176,16 +4405,19 @@ const MEDIA = [
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dh:{types:["LMS 100","MMS 150","PUSH 협의"],min:"300만원",note:""}},
+  {name:"현대카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:null,dh:null},
   {name:"SKT",cat:"통신사",rankRule:(r,reg)=>{if(reg==="수도권"&&r<=100)return"available";if(reg!=="수도권"&&r<=150)return"review";return"unavailable";},rankDesc:"수도권100위/지방150위",ilbanOk:true,
-    biz:{types:["LMS 100","MMS 120*"],min:"2만건",note:"버튼CTR로그분석"},
+    biz:{types:["LMS 100","MMS 120"],min:"4만건",note:"버튼CTR및로그분석/최초3건한정진행가능"},
     dc:{types:["LMS(RCS) 100","MMS(RCS) 120"],min:"500만원",note:""},
     dh:{types:["LMS 100","MMS 120"],min:"200만원",note:""}},
   {name:"KT",cat:"통신사",rankRule:()=>"available",rankDesc:"순위무관(분양1년이내)",ilbanOk:true,extra:"분양1년이내",
-    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR로그분석제공"},
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS(RCS) 150"],min:"100만원",note:"CTR로그분석제공"},
     dh:{types:["LMS 100","MMS 150"],min:"100만원",note:""}},
   {name:"LG U+",cat:"통신사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
-    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"발송수5~10%서비스"},
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"발송수 5~10% 서비스지원"},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
     dh:{types:["LMS 100","MMS 150"],min:"500만원",note:""}},
   {name:"엘포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
@@ -4193,11 +4425,11 @@ const MEDIA = [
     dc:{types:["LMS 80","MMS 120"],min:"500만원",note:""},
     dh:{types:["LMS 80","MMS 120","PUSH 50","KAKAO 100"],min:"200만원",note:""}},
   {name:"CJ ONE",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
-    biz:{types:["LMS 100"],min:"5만건",note:""},
+    biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
     dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:""}},
   {name:"OK캐쉬백",cat:"멤버십",rankRule:(r)=>r<=100?"available":"review",rankDesc:"100위이내(이외검토)",ilbanOk:true,johabNote:"지주택일반분양만가능",
-    biz:{types:["LMS 100","MMS 120*"],min:"3만건",note:""},
+    biz:{types:["LMS 100","MMS 120"],min:"3만건",note:""},
     dc:null,
     dh:{types:["LMS 100","MMS 150"],min:"300만원",note:""}},
   {name:"신세계포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
@@ -4215,9 +4447,12 @@ const MEDIA = [
     dc:{types:["LMS 100"],min:"5만건",note:"타겟할증"},
     dh:{types:["LMS 100","MMS 250"],min:"300만원",note:""}},
   {name:"호갱노노",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
-    biz:{types:["카플친 150"],min:"3.3만",note:"최소500만원"},
+    biz:{types:["카플친 150"],min:"3.3만",note:"최소금액 500만원"},
     dc:{types:["KAKAO 170"],min:"1만건",note:""},
     dh:{types:["PUSH 100","KAKAO 200"],min:"500만원",note:""}},
+  {name:"제로페이",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"2만건",note:""},
+    dc:null,dh:null},
   {name:"직방",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:null,
     dc:{types:["KAKAO 120"],min:"1만건",note:""},
@@ -4249,6 +4484,24 @@ const MEDIA = [
   {name:"LG라이프케어",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,dh:null,
     dc:{types:["LMS 120","MMS 150","PUSH 80","KAKAO 120"],min:"200만원",note:""}},
+  {name:"GS&point",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:null,dh:null},
+  {name:"yes24",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 150"],min:"5만건",note:""},
+    dc:null,dh:null},
+  {name:"교보문고",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 150"],min:"5만건",note:"CTR데이터제공"},
+    dc:null,dh:null},
+  {name:"경기지역화폐",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:"타겟팅조건당 단가 10원 추가"},
+    dc:null,dh:null},
+  {name:"PAYCO기업복지",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"3만건",note:""},
+    dc:null,dh:null},
+  {name:"중고나라",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+    biz:{types:["LMS 100"],min:"5만건",note:""},
+    dc:null,dh:null},
 ];
 
 const AGENCIES_INFO = {
