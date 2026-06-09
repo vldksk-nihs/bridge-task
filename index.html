@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.1">
+<meta name="version" content="v4.19.2">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -384,38 +384,52 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kwc-filter{padding:5px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--sur2);color:var(--tx);font-size:12px;font-family:inherit;cursor:pointer;}
 .kwc-filter:hover{border-color:var(--pri);}
 
-.kwc-summary{margin-bottom:16px;}
-.kwc-sum-cards{display:grid;grid-template-columns:1fr 1fr 2fr;gap:10px;}
-.kwc-sum-card{background:var(--sur);border:1px solid var(--bd);border-radius:9px;padding:14px 16px;}
-.kwc-sum-lbl{font-size:11px;font-weight:600;color:var(--tx3);letter-spacing:.03em;display:block;margin-bottom:6px;}
-.kwc-sum-val{font-size:20px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;display:block;}
-.kwc-sum-sub{font-size:11px;color:var(--tx3);display:block;margin-top:2px;}
-.kwc-trend-card{padding:10px 14px 8px;}
-.kwc-trend{display:flex;align-items:flex-end;gap:4px;height:48px;margin-top:6px;}
-.kwc-trend-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
-.kwc-trend-bar{width:100%;max-width:18px;min-height:4px;background:var(--bd);border-radius:2px;transition:all .2s;}
-.kwc-trend-bar.on{background:var(--pri);box-shadow:0 0 6px rgba(79,110,247,.5);}
-.kwc-trend-lbl{font-size:9px;color:var(--tx3);font-variant-numeric:tabular-nums;}
+/* 연간 요약 */
+.kwc-year-summary{display:flex;align-items:baseline;gap:12px;padding:12px 16px;background:var(--sur);border:1px solid var(--bd);border-radius:9px;margin-bottom:14px;flex-wrap:wrap;}
+.kwc-year-lbl{font-size:11px;color:var(--tx3);font-weight:600;}
+.kwc-year-val{font-size:22px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;}
+.kwc-year-sub{font-size:11px;color:var(--tx3);margin-left:auto;}
 
-.kwc-acct-block{background:var(--sur);border:1px solid var(--bd);border-radius:10px;margin-bottom:12px;overflow:hidden;}
-.kwc-acct-hd{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--sur2);border-bottom:1px solid var(--bd);}
-.kwc-acct-name{font-weight:700;font-size:13px;color:var(--tx);}
-.kwc-acct-meta{font-size:11px;color:var(--tx3);}
-.kwc-acct-total{margin-left:auto;font-weight:800;font-size:14px;color:var(--pri);font-variant-numeric:tabular-nums;}
-.kwc-table{width:100%;border-collapse:collapse;font-size:12px;}
-.kwc-table th{padding:8px 12px;background:transparent;color:var(--tx3);font-size:10px;font-weight:600;border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:.05em;}
-.kwc-table td{padding:8px 12px;border-bottom:1px solid var(--bd);vertical-align:middle;color:var(--tx);}
-.kwc-table tr:last-child td{border-bottom:none;}
-.kwc-table tr:hover td{background:var(--sur2);}
-.kwc-td-num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;}
-.kwc-pct{display:inline-block;min-width:50px;padding:2px 6px;background:var(--sur3);border-radius:4px;font-size:10px;color:var(--tx2);}
+/* 피벗 테이블 */
+.kwc-pivot-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);}
+.kwc-pivot-table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap;}
+.kwc-pivot-table th,.kwc-pivot-table td{padding:7px 10px;border-bottom:1px solid var(--bd);}
+.kwc-th-name{text-align:left;background:var(--sur2);color:var(--tx3);font-size:10px;font-weight:700;letter-spacing:.04em;position:sticky;left:0;z-index:2;}
+.kwc-th-mo{text-align:right;background:var(--sur2);color:var(--tx3);font-size:10px;font-weight:700;min-width:72px;}
+.kwc-th-mo.active{color:var(--pri);}
+.kwc-th-total{text-align:right;background:var(--sur2);color:var(--tx3);font-size:10px;font-weight:700;}
+
+/* 계정 헤더 행 */
+.kwc-acct-row td{background:var(--sur3);padding:6px 10px;border-top:2px solid var(--bd);}
+.kwc-acct-badge{font-size:11px;font-weight:800;color:var(--pri);letter-spacing:.02em;}
+
+/* 캠페인 행 */
+.kwc-camp-row:hover td{background:var(--sur2);}
+.kwc-camp-name{text-align:left;max-width:200px;overflow:hidden;text-overflow:ellipsis;color:var(--tx);position:sticky;left:0;background:var(--sur);z-index:1;}
+.kwc-camp-row:hover .kwc-camp-name{background:var(--sur2);}
+.kwc-td-mo{text-align:right;color:var(--tx3);font-variant-numeric:tabular-nums;}
+.kwc-td-mo.has-val{color:var(--tx);font-weight:600;}
+.kwc-td-sum{text-align:right;font-weight:700;color:var(--tx);font-variant-numeric:tabular-nums;border-left:1px solid var(--bd);}
+
+/* 소계 행 */
+.kwc-subtotal-row{background:rgba(79,110,247,.04);}
+.kwc-subtotal-row:hover td{background:rgba(79,110,247,.08);}
+.kwc-subtotal-lbl{font-size:11px;font-weight:700;color:var(--pri);position:sticky;left:0;background:rgba(79,110,247,.04);z-index:1;}
+.kwc-td-subtotal{font-weight:700;}
+.kwc-td-subtotal.has-val{color:var(--pri);}
+
+/* 전체 합계 행 */
+.kwc-grand-row{background:var(--sur2);}
+.kwc-grand-row td{border-top:2px solid var(--bd);font-weight:800;}
+.kwc-grand-lbl{font-size:11px;color:var(--tx);position:sticky;left:0;background:var(--sur2);z-index:1;}
+.kwc-td-grand.has-val{color:var(--tx);}
+
 .kwc-empty{padding:40px;text-align:center;color:var(--tx3);font-size:13px;}
 
 @media(max-width:700px){
-  .kwc-sum-cards{grid-template-columns:1fr 1fr;}
-  .kwc-trend-card{grid-column:1/-1;}
-  .kwc-table{font-size:11px;}
-  .kwc-table th,.kwc-table td{padding:6px 8px;}
+  .kwc-pivot-table{font-size:11px;}
+  .kwc-pivot-table th,.kwc-pivot-table td{padding:5px 7px;}
+  .kwc-year-val{font-size:18px;}
 }
 
 @media(max-width:768px){
@@ -977,7 +991,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.1</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.2</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1197,8 +1211,8 @@ body.light .sms-tool{
             <span class="kw-sync" id="kwcSync">—</span>
           </div>
           <div class="kw-header-r" style="gap:8px">
-            <select id="kwcMonthSel" class="kwc-filter" onchange="renderKeywordCampaign()"></select>
-            <select id="kwcAcctSel"  class="kwc-filter" onchange="renderKeywordCampaign()"></select>
+            <select id="kwcYearSel" class="kwc-filter" onchange="renderKeywordCampaign()"></select>
+            <select id="kwcAcctSel" class="kwc-filter" onchange="renderKeywordCampaign()"></select>
           </div>
         </div>
         <div class="kwc-summary" id="kwcSummary"></div>
@@ -3368,10 +3382,11 @@ function switchNaverSubTab(tab){
 // 컬럼: 계정ID | 캠페인명 | 캠페인ID | 년월 | 광고비(원) | 마지막갱신
 let kwcData=[];
 let kwcLastSync='';
+
+// ── 캠페인비용 시트 파싱 ─────────────────────────────────
 function parseKeywordCampaign(values){
   kwcData=[];
   if(!values||values.length<2)return;
-  // 헤더 행 자동 감지
   let hdrIdx=values.findIndex(r=>String(r[0]||'').includes('계정')||String(r[0]||'')==='계정ID');
   if(hdrIdx<0)hdrIdx=0;
   for(let i=hdrIdx+1;i<values.length;i++){
@@ -3379,20 +3394,40 @@ function parseKeywordCampaign(values){
     if(!r||!r[0])continue;
     const amt=parseMoney(r[4]);
     if(amt<=0)continue;
+    // 월 형식 정규화: '2026-05', '2026-05-01', 'May 2026', '26-05' 등 → 'YYYY-MM'
+    const rawMonth=String(r[3]||'').trim();
+    const month=normalizeYearMonth(rawMonth);
+    if(!month)continue;
     kwcData.push({
       acctId:String(r[0]).trim(),
-      campaignName:String(r[1]||'').trim(),
+      campaignName:String(r[1]||'(이름없음)').trim(),
       campaignId:String(r[2]||'').trim(),
-      month:String(r[3]||'').trim(),
+      month,
       amount:amt,
       updatedAt:String(r[5]||'').trim(),
     });
   }
-  // 마지막 갱신 시각 = 데이터에서 가장 최신
   kwcLastSync=kwcData.reduce((max,r)=>r.updatedAt>max?r.updatedAt:max,'');
 }
 
-// ── 캠페인비용 렌더 ─────────────────────────────────
+// 'YYYY-MM' 정규화 헬퍼
+function normalizeYearMonth(s){
+  if(!s)return'';
+  // 이미 YYYY-MM 형식
+  if(/^\d{4}-\d{2}$/.test(s))return s;
+  // YYYY-MM-DD 형식
+  const m1=s.match(/^(\d{4})-(\d{2})-\d{2}$/);
+  if(m1)return`${m1[1]}-${m1[2]}`;
+  // YYYY.MM 형식
+  const m2=s.match(/^(\d{4})\.(\d{2})/);
+  if(m2)return`${m2[1]}-${m2[2]}`;
+  // YY-MM 형식 (20YY 가정)
+  const m3=s.match(/^(\d{2})-(\d{2})$/);
+  if(m3)return`20${m3[1]}-${m3[2]}`;
+  return'';
+}
+
+// ── 캠페인비용 피벗 테이블 렌더 ──────────────────────────
 function renderKeywordCampaign(){
   const content=document.getElementById('kwcContent');
   const summary=document.getElementById('kwcSummary');
@@ -3401,111 +3436,151 @@ function renderKeywordCampaign(){
   if(!kwcData.length){
     content.innerHTML=`<div class="kwc-empty">
       <p>아직 캠페인 비용 데이터가 없습니다.</p>
-      <p style="font-size:11px;color:var(--tx3);margin-top:6px">Apps Script에서 <code>fetchKeywordCampaignSpending</code> 실행 후 표시됩니다.</p>
+      <p style="font-size:11px;color:var(--tx3);margin-top:6px">Apps Script에서 <b>fetchKeywordCampaignSpending</b> 실행 후 표시됩니다.</p>
     </div>`;
-    summary.innerHTML='';syncEl.textContent='—';
+    summary.innerHTML='';
+    if(syncEl)syncEl.textContent='—';
     return;
   }
 
-  syncEl.textContent=kwcLastSync?`마지막 갱신 ${kwcLastSync}`:'';
+  if(syncEl)syncEl.textContent=kwcLastSync?`마지막 갱신 ${kwcLastSync}`:'';
 
-  // 월 목록 (내림차순) — 매번 갱신 (새 달 추가 대비)
-  const months=[...new Set(kwcData.map(r=>r.month))].sort().reverse();
-  const monthSel=document.getElementById('kwcMonthSel');
+  // ── 필터 빌드 ──
+  const years=[...new Set(kwcData.map(r=>r.month.slice(0,4)))].sort().reverse();
+  const accts=[...new Set(kwcData.map(r=>r.acctId))].sort();
+
+  const yearSel=document.getElementById('kwcYearSel');
   const acctSel=document.getElementById('kwcAcctSel');
 
-  // 현재 선택값 기억 후 재구성
-  const prevMonth=monthSel.value;
-  const prevAcct=acctSel.value;
-  monthSel.innerHTML=months.map(m=>`<option value="${m}">${m}</option>`).join('');
-  monthSel.value=months.includes(prevMonth)?prevMonth:months[0];
+  // 연도 셀렉트
+  const prevYear=yearSel?yearSel.value:'';
+  if(yearSel){
+    yearSel.innerHTML=years.map(y=>`<option value="${y}">${y}년</option>`).join('');
+    yearSel.value=years.includes(prevYear)?prevYear:years[0];
+  }
+  // 계정 셀렉트
+  const prevAcct=acctSel?acctSel.value:'';
+  if(acctSel){
+    acctSel.innerHTML=`<option value="">전체 계정</option>`+accts.map(a=>`<option value="${a}">${a}</option>`).join('');
+    acctSel.value=accts.includes(prevAcct)?prevAcct:'';
+  }
 
-  const accts=[...new Set(kwcData.map(r=>r.acctId))].sort();
-  acctSel.innerHTML=`<option value="">전체 계정</option>`+accts.map(a=>`<option value="${a}">${a}</option>`).join('');
-  acctSel.value=accts.includes(prevAcct)?prevAcct:'';
+  const selYear=(yearSel&&yearSel.value)||years[0];
+  const selAcct=(acctSel&&acctSel.value)||'';
+  const MONTHS=['01','02','03','04','05','06','07','08','09','10','11','12'];
+  const MONTH_LABELS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-  const selMonth=monthSel.value||months[0];
-  const selAcct=acctSel.value||'';
-
-  // 필터링
-  let filtered=kwcData.filter(r=>r.month===selMonth);
+  // 해당 연도 데이터 필터
+  let filtered=kwcData.filter(r=>r.month.startsWith(selYear));
   if(selAcct)filtered=filtered.filter(r=>r.acctId===selAcct);
 
-  // 합계
-  const totalAmt=filtered.reduce((s,r)=>s+r.amount,0);
-  const acctCount=new Set(filtered.map(r=>r.acctId)).size;
-  const campCount=filtered.length;
+  if(!filtered.length){
+    content.innerHTML=`<div class="kwc-empty">${selYear}년 데이터가 없습니다.</div>`;
+    summary.innerHTML='';
+    return;
+  }
 
-  // 월별 추세 (전체 누적, 모든 계정)
-  const monthlyTotal={};
-  kwcData.forEach(r=>{
-    if(selAcct&&r.acctId!==selAcct)return;
-    monthlyTotal[r.month]=(monthlyTotal[r.month]||0)+r.amount;
-  });
-  const trendMonths=Object.keys(monthlyTotal).sort();
-  const trendMax=Math.max(...Object.values(monthlyTotal),1);
-
+  // 연간 합계 요약
+  const yearTotal=filtered.reduce((s,r)=>s+r.amount,0);
+  const activeMonths=MONTHS.filter(mo=>filtered.some(r=>r.month===`${selYear}-${mo}`));
   summary.innerHTML=`
-    <div class="kwc-sum-cards">
-      <div class="kwc-sum-card">
-        <span class="kwc-sum-lbl">선택 월 광고비</span>
-        <span class="kwc-sum-val">${fmtMoney(totalAmt)}</span>
-        <span class="kwc-sum-sub">${selMonth}${selAcct?` · ${selAcct}`:' · 전체 계정'}</span>
-      </div>
-      <div class="kwc-sum-card">
-        <span class="kwc-sum-lbl">집계 계정</span>
-        <span class="kwc-sum-val">${acctCount}개</span>
-        <span class="kwc-sum-sub">캠페인 ${campCount}건</span>
-      </div>
-      <div class="kwc-sum-card kwc-trend-card">
-        <span class="kwc-sum-lbl">월별 추세 (최근 12개월${selAcct?' · '+selAcct:''})</span>
-        <div class="kwc-trend">
-          ${trendMonths.slice(-12).map(m=>{
-            const v=monthlyTotal[m];
-            const h=Math.max(4,Math.round(v/trendMax*40));
-            const isCur=m===selMonth;
-            return `<div class="kwc-trend-col" title="${m}: ${fmtMoney(v)}">
-              <div class="kwc-trend-bar${isCur?' on':''}" style="height:${h}px"></div>
-              <span class="kwc-trend-lbl">${m.slice(5)}</span>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
+    <div class="kwc-year-summary">
+      <span class="kwc-year-lbl">${selYear}년 전체 광고비</span>
+      <span class="kwc-year-val">${fmtMoney(yearTotal)}</span>
+      <span class="kwc-year-sub">집행 월 ${activeMonths.length}개월 · ${selAcct||'전체 계정'}</span>
     </div>`;
 
-  // 캠페인 테이블 (계정별 그룹)
-  const acctGroups={};
+  // ── 피벗 데이터 구조 ──
+  // pivot[acctId][campaignName][month] = amount
+  const pivot={};
   filtered.forEach(r=>{
-    if(!acctGroups[r.acctId])acctGroups[r.acctId]=[];
-    acctGroups[r.acctId].push(r);
+    if(!pivot[r.acctId])pivot[r.acctId]={};
+    if(!pivot[r.acctId][r.campaignName])pivot[r.acctId][r.campaignName]={};
+    const mo=r.month.slice(5,7); // 'MM'
+    pivot[r.acctId][r.campaignName][mo]=(pivot[r.acctId][r.campaignName][mo]||0)+r.amount;
   });
-  const acctOrder=Object.keys(acctGroups).sort();
 
-  let html='';
+  // ── 테이블 렌더 ──
+  const acctOrder=Object.keys(pivot).sort();
+  // 전체 월별 합계 (최하단 행)
+  const grandTotal={};
+  MONTHS.forEach(mo=>{grandTotal[mo]=0;});
+
+  let html='<div class="kwc-pivot-wrap">';
+  html+=`<table class="kwc-pivot-table">
+    <colgroup>
+      <col style="min-width:160px;max-width:220px">
+      ${MONTHS.map(()=>`<col style="min-width:72px">`).join('')}
+      <col style="min-width:90px">
+    </colgroup>
+    <thead>
+      <tr class="kwc-pivot-hdr">
+        <th class="kwc-th-name">캠페인명</th>
+        ${MONTH_LABELS.map((l,i)=>`<th class="kwc-th-mo ${activeMonths.includes(MONTHS[i])?'active':''}">${l}</th>`).join('')}
+        <th class="kwc-th-total">합계</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
   acctOrder.forEach(aid=>{
-    const rows=acctGroups[aid].sort((a,b)=>b.amount-a.amount);
-    const acctTotal=rows.reduce((s,r)=>s+r.amount,0);
-    html+=`<div class="kwc-acct-block">
-      <div class="kwc-acct-hd">
-        <span class="kwc-acct-name">${esc(aid)}</span>
-        <span class="kwc-acct-meta">캠페인 ${rows.length}개</span>
-        <span class="kwc-acct-total">${fmtMoney(acctTotal)}</span>
-      </div>
-      <table class="kwc-table">
-        <thead><tr><th style="text-align:left">캠페인명</th><th style="text-align:right">광고비 (VAT별도)</th><th style="text-align:right">비중</th></tr></thead>
-        <tbody>
-          ${rows.map(r=>`<tr>
-            <td>${esc(r.campaignName)}</td>
-            <td class="kwc-td-num">${fmtMoney(r.amount)}</td>
-            <td class="kwc-td-num"><span class="kwc-pct">${(r.amount/acctTotal*100).toFixed(1)}%</span></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`;
+    const campaigns=pivot[aid];
+    const campNames=Object.keys(campaigns).sort();
+    // 계정 소계
+    const acctMonthSum={};
+    MONTHS.forEach(mo=>{acctMonthSum[mo]=0;});
+    let acctTotal=0;
+
+    // 계정 헤더 행
+    html+=`<tr class="kwc-acct-row"><td class="kwc-acct-cell" colspan="${MONTHS.length+2}">
+      <span class="kwc-acct-badge">${esc(aid)}</span>
+    </td></tr>`;
+
+    // 캠페인 행
+    campNames.forEach(cname=>{
+      const mdata=campaigns[cname];
+      let campTotal=0;
+      html+=`<tr class="kwc-camp-row">
+        <td class="kwc-camp-name" title="${esc(cname)}">${esc(cname)}</td>`;
+      MONTHS.forEach(mo=>{
+        const v=mdata[mo]||0;
+        campTotal+=v;
+        acctMonthSum[mo]+=v;
+        acctTotal+=v;
+        if(activeMonths.includes(mo)){
+          grandTotal[mo]+=v;
+        }
+        html+=`<td class="kwc-td-mo ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+      });
+      html+=`<td class="kwc-td-sum">${fmtMoney(campTotal)}</td>`;
+      html+=`</tr>`;
+    });
+
+    // 계정 소계 행
+    html+=`<tr class="kwc-subtotal-row">
+      <td class="kwc-subtotal-lbl">소계 (${aid})</td>`;
+    MONTHS.forEach(mo=>{
+      const v=acctMonthSum[mo];
+      html+=`<td class="kwc-td-mo kwc-td-subtotal ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+    });
+    html+=`<td class="kwc-td-sum kwc-td-subtotal">${fmtMoney(acctTotal)}</td></tr>`;
   });
 
-  content.innerHTML=html||`<div class="kwc-empty">선택한 조건에 데이터가 없습니다.</div>`;
+  // 전체 합계 행
+  if(acctOrder.length>1||!selAcct){
+    const totalSum=Object.values(grandTotal).reduce((s,v)=>s+v,0);
+    html+=`<tr class="kwc-grand-row">
+      <td class="kwc-grand-lbl">전체 합계</td>`;
+    MONTHS.forEach(mo=>{
+      const v=grandTotal[mo];
+      html+=`<td class="kwc-td-mo kwc-td-grand ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+    });
+    html+=`<td class="kwc-td-sum kwc-td-grand">${fmtMoney(totalSum)}</td></tr>`;
+  }
+
+  html+=`</tbody></table></div>`;
+  content.innerHTML=html;
 }
+
 
 function renderKeyword(){
   const grid=document.getElementById('kwGrid');
