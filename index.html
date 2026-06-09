@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.2">
+<meta name="version" content="v4.19.3">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -991,7 +991,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.2</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.3</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3491,94 +3491,87 @@ function renderKeywordCampaign(){
     </div>`;
 
   // ── 피벗 데이터 구조 ──
-  // pivot[acctId][campaignName][month] = amount
   const pivot={};
   filtered.forEach(r=>{
     if(!pivot[r.acctId])pivot[r.acctId]={};
     if(!pivot[r.acctId][r.campaignName])pivot[r.acctId][r.campaignName]={};
-    const mo=r.month.slice(5,7); // 'MM'
+    const mo=r.month.slice(5,7);
     pivot[r.acctId][r.campaignName][mo]=(pivot[r.acctId][r.campaignName][mo]||0)+r.amount;
   });
 
-  // ── 테이블 렌더 ──
-  const acctOrder=Object.keys(pivot).sort();
-  // 전체 월별 합계 (최하단 행)
-  const grandTotal={};
-  MONTHS.forEach(mo=>{grandTotal[mo]=0;});
+  // ── 테이블 렌더 (try-catch로 에러 포착) ──
+  try{
+    const acctOrder=Object.keys(pivot).sort();
+    const grandTotal={};
+    MONTHS.forEach(mo=>{grandTotal[mo]=0;});
 
-  let html='<div class="kwc-pivot-wrap">';
-  html+=`<table class="kwc-pivot-table">
-    <colgroup>
-      <col style="min-width:160px;max-width:220px">
-      ${MONTHS.map(()=>`<col style="min-width:72px">`).join('')}
-      <col style="min-width:90px">
-    </colgroup>
-    <thead>
-      <tr class="kwc-pivot-hdr">
-        <th class="kwc-th-name">캠페인명</th>
-        ${MONTH_LABELS.map((l,i)=>`<th class="kwc-th-mo ${activeMonths.includes(MONTHS[i])?'active':''}">${l}</th>`).join('')}
-        <th class="kwc-th-total">합계</th>
-      </tr>
-    </thead>
-    <tbody>`;
+    let html='<div class="kwc-pivot-wrap"><table class="kwc-pivot-table"><colgroup>'
+      +`<col style="min-width:160px">`
+      +MONTHS.map(()=>`<col style="min-width:72px">`).join('')
+      +`<col style="min-width:90px"></colgroup>`
+      +`<thead><tr class="kwc-pivot-hdr">`
+      +`<th class="kwc-th-name">캠페인명</th>`
+      +MONTH_LABELS.map((l,i)=>`<th class="kwc-th-mo${activeMonths.includes(MONTHS[i])?' active':''}">${l}</th>`).join('')
+      +`<th class="kwc-th-total">합계</th></tr></thead><tbody>`;
 
-  acctOrder.forEach(aid=>{
-    const campaigns=pivot[aid];
-    const campNames=Object.keys(campaigns).sort();
-    // 계정 소계
-    const acctMonthSum={};
-    MONTHS.forEach(mo=>{acctMonthSum[mo]=0;});
-    let acctTotal=0;
+    acctOrder.forEach(aid=>{
+      const campaigns=pivot[aid];
+      const campNames=Object.keys(campaigns).sort();
+      const acctMonthSum={};
+      MONTHS.forEach(mo=>{acctMonthSum[mo]=0;});
+      let acctTotal=0;
 
-    // 계정 헤더 행
-    html+=`<tr class="kwc-acct-row"><td class="kwc-acct-cell" colspan="${MONTHS.length+2}">
-      <span class="kwc-acct-badge">${esc(aid)}</span>
-    </td></tr>`;
+      html+=`<tr class="kwc-acct-row"><td colspan="${MONTHS.length+2}" style="background:var(--sur3);padding:6px 12px;border-top:2px solid var(--bd)">`
+        +`<span class="kwc-acct-badge">${aid}</span></td></tr>`;
 
-    // 캠페인 행
-    campNames.forEach(cname=>{
-      const mdata=campaigns[cname];
-      let campTotal=0;
-      html+=`<tr class="kwc-camp-row">
-        <td class="kwc-camp-name" title="${esc(cname)}">${esc(cname)}</td>`;
-      MONTHS.forEach(mo=>{
-        const v=mdata[mo]||0;
-        campTotal+=v;
-        acctMonthSum[mo]+=v;
-        acctTotal+=v;
-        if(activeMonths.includes(mo)){
+      campNames.forEach(cname=>{
+        const mdata=campaigns[cname];
+        let campTotal=0;
+        let tds='';
+        MONTHS.forEach(mo=>{
+          const v=mdata[mo]||0;
+          campTotal+=v;
+          acctMonthSum[mo]+=v;
           grandTotal[mo]+=v;
-        }
-        html+=`<td class="kwc-td-mo ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+          tds+=`<td class="kwc-td-mo${v?' has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+        });
+        acctTotal+=campTotal;
+        html+=`<tr class="kwc-camp-row">`
+          +`<td class="kwc-camp-name" title="${cname.replace(/"/g,'&quot;')}">${cname.replace(/</g,'&lt;')}</td>`
+          +tds
+          +`<td class="kwc-td-sum">${fmtMoney(campTotal)}</td></tr>`;
       });
-      html+=`<td class="kwc-td-sum">${fmtMoney(campTotal)}</td>`;
-      html+=`</tr>`;
+
+      // 소계
+      let subTds='';
+      MONTHS.forEach(mo=>{
+        const v=acctMonthSum[mo];
+        subTds+=`<td class="kwc-td-mo kwc-td-subtotal${v?' has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+      });
+      html+=`<tr class="kwc-subtotal-row">`
+        +`<td class="kwc-subtotal-lbl">소계 (${aid})</td>`
+        +subTds
+        +`<td class="kwc-td-sum kwc-td-subtotal">${fmtMoney(acctTotal)}</td></tr>`;
     });
 
-    // 계정 소계 행
-    html+=`<tr class="kwc-subtotal-row">
-      <td class="kwc-subtotal-lbl">소계 (${aid})</td>`;
-    MONTHS.forEach(mo=>{
-      const v=acctMonthSum[mo];
-      html+=`<td class="kwc-td-mo kwc-td-subtotal ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
-    });
-    html+=`<td class="kwc-td-sum kwc-td-subtotal">${fmtMoney(acctTotal)}</td></tr>`;
-  });
-
-  // 전체 합계 행
-  if(acctOrder.length>1||!selAcct){
+    // 전체 합계
     const totalSum=Object.values(grandTotal).reduce((s,v)=>s+v,0);
-    html+=`<tr class="kwc-grand-row">
-      <td class="kwc-grand-lbl">전체 합계</td>`;
+    let gTds='';
     MONTHS.forEach(mo=>{
       const v=grandTotal[mo];
-      html+=`<td class="kwc-td-mo kwc-td-grand ${v?'has-val':''}">${v?fmtMoney(v):'—'}</td>`;
+      gTds+=`<td class="kwc-td-mo kwc-td-grand${v?' has-val':''}">${v?fmtMoney(v):'—'}</td>`;
     });
-    html+=`<td class="kwc-td-sum kwc-td-grand">${fmtMoney(totalSum)}</td></tr>`;
-  }
+    html+=`<tr class="kwc-grand-row">`
+      +`<td class="kwc-grand-lbl">전체 합계</td>`
+      +gTds
+      +`<td class="kwc-td-sum kwc-td-grand">${fmtMoney(totalSum)}</td></tr>`;
 
-  html+=`</tbody></table></div>`;
-  content.innerHTML=html;
+    html+=`</tbody></table></div>`;
+    content.innerHTML=html;
+  }catch(err){
+    content.innerHTML=`<div class="kwc-empty" style="color:var(--red)">렌더링 오류: ${err.message}<br><small>${err.stack||''}</small></div>`;
+    console.error('[BRIN-kwc]',err);
+  }
 }
 
 
