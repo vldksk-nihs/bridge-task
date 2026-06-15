@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.3">
+<meta name="version" content="v4.19.5">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -301,6 +301,16 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .l-name{font-size:10.5px;padding:3px 7px;border-radius:4px;background:rgba(91,163,245,.15);color:#93c5fd;font-weight:600;cursor:pointer;display:block;transition:.15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .l-name:hover{background:rgba(91,163,245,.28);}
 .l-name.is-today{background:rgba(245,160,51,.22);color:#ffb347;animation:lpulse 1.4s ease-in-out infinite;}
+/* 반차 스타일 — 연한 색 + 점선 테두리 */
+.l-name.is-half{background:rgba(91,163,245,.07);color:#93c5fd;border:1px dashed rgba(91,163,245,.4);}
+.l-name.is-half.is-today{background:rgba(245,160,51,.10);color:#ffb347;border:1px dashed rgba(245,160,51,.5);}
+.l-half-badge{font-size:8px;font-weight:700;background:rgba(91,163,245,.25);color:#93c5fd;padding:0 3px;border-radius:2px;margin-left:3px;vertical-align:middle;}
+/* 소진현황 반차 칩 */
+.ls-chip.half{background:rgba(79,110,247,.08);border:1px dashed rgba(79,110,247,.3);font-size:9px;}
+.ls-chip.half.today{background:rgba(245,160,51,.12);border-color:rgba(245,160,51,.4);}
+/* 인원 모달 반차 */
+.lp-chip.is-half{background:rgba(79,110,247,.06);border:1px dashed rgba(79,110,247,.25);}
+.lp-half-badge{font-size:9px;background:rgba(79,110,247,.15);color:var(--pri);padding:1px 4px;border-radius:3px;margin-left:4px;}
 @keyframes lpulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,160,51,.55);}50%{opacity:.75;box-shadow:0 0 10px 2px rgba(245,160,51,.6);}}
 
 .lp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:7px;margin-top:14px;}
@@ -954,6 +964,13 @@ body.light .sms-tool{
 .sms-tool .sms-byte-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
 .sms-tool .sms-byte-tag{font-size:11px;background:var(--sms-card2);color:var(--sms-text2);padding:3px 9px;border-radius:5px;}  /* 10→11px, padding 2→3px */
 .sms-tool .sms-byte-tag.ok{background:var(--sms-green-light);color:var(--sms-green);font-weight:600;}
+/* 가이드 체크 블록 */
+.sms-guide-check{margin-top:14px;padding:10px 13px;background:rgba(245,160,51,.07);border:1px solid rgba(245,160,51,.25);border-radius:8px;}
+.sms-guide-check.sms-guide-all-ok{background:rgba(45,217,143,.07);border-color:rgba(45,217,143,.25);}
+.sms-guide-check-title{font-size:11px;font-weight:700;color:var(--sms-text2);margin-bottom:7px;letter-spacing:.02em;}
+.sms-guide-warn{font-size:11px;color:#f59e0b;padding:3px 0;border-bottom:1px solid rgba(245,160,51,.12);line-height:1.5;}
+.sms-guide-warn:last-child{border-bottom:none;}
+.sms-guide-ok{font-size:11px;color:var(--sms-green);padding:2px 0;}
 .sms-tool .sms-byte-tag.over{background:var(--sms-red-light);color:var(--sms-red);font-weight:600;}
 .sms-tool .sms-empty-state{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sms-text2);gap:10px;text-align:center;}  /* text3→text2 */
 .sms-tool .sms-empty-state .sms-icon{font-size:36px;}
@@ -991,7 +1008,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.3</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.5</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3693,18 +3710,35 @@ function parseLeaveDate(str){
 function parseLeaveSheet(values){
   leaveData=[];
   if(!values||values.length<2)return;
-  // 첫 행은 헤더(이름,1,2,3...) → 1행부터 데이터
+  // 시트 구조: A열=이름(또는 이름(반차)), B열~=날짜들
+  // "(반차)" 포함 행 → 같은 이름의 halfDates에 추가
+  const entryMap={}; // name → leaveData 인덱스
   for(let i=1;i<values.length;i++){
     const r=values[i];
     if(!r||r.length<1)continue;
-    const name=String(r[0]||'').trim();
+    const rawName=String(r[0]||'').trim();
+    if(!rawName)continue;
+    const isHalf=/\(반차\)/.test(rawName);
+    const name=rawName.replace(/\(반차\)/g,'').trim();
     if(!name)continue;
     const dates=[];
     for(let j=1;j<r.length;j++){
       const d=parseLeaveDate(r[j]);
       if(d)dates.push(d);
     }
-    leaveData.push({name,dates});
+    if(entryMap[name]!==undefined){
+      // 기존 항목에 병합
+      const entry=leaveData[entryMap[name]];
+      if(isHalf)entry.halfDates.push(...dates);
+      else entry.dates.push(...dates);
+    } else {
+      entryMap[name]=leaveData.length;
+      leaveData.push({
+        name,
+        dates: isHalf?[]:dates,       // 연차(종일)
+        halfDates: isHalf?dates:[],   // 반차
+      });
+    }
   }
 }
 
@@ -3749,67 +3783,74 @@ function renderLeaveSummary(){
   }
 
   const today=TODAY;
-  // 오늘 연차 중인 인원 / 아닌 인원 분리
-  const todayLeave=leaveData.filter(p=>p.dates.some(d=>d.getTime()===today.getTime()));
-  const others=leaveData.filter(p=>!p.dates.some(d=>d.getTime()===today.getTime()));
+  const todayLeave=leaveData.filter(p=>
+    p.dates.some(d=>d.getTime()===today.getTime())||
+    (p.halfDates||[]).some(d=>d.getTime()===today.getTime())
+  );
+  const others=leaveData.filter(p=>!todayLeave.includes(p));
   const sorted=[...todayLeave,...others];
 
-  // 월별 연차 매트릭스 (12개월)
   const year=today.getFullYear();
-  const months=Array.from({length:12},(_,i)=>i); // 0~11
+  const months=Array.from({length:12},(_,i)=>i);
 
-  // 요약 통계 먼저
-  const totalDays=leaveData.reduce((s,p)=>s+p.dates.length,0);
-  const usedDays=leaveData.reduce((s,p)=>s+p.dates.filter(d=>d<=today).length,0);
+  // 반차 0.5일 계산
+  const totalDays=leaveData.reduce((s,p)=>s+p.dates.length+(p.halfDates||[]).length*0.5,0);
+  const usedDays=leaveData.reduce((s,p)=>
+    s+p.dates.filter(d=>d<=today).length+(p.halfDates||[]).filter(d=>d<=today).length*0.5,0);
 
   let html=`
     <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
       <div class="bsum-card"><div class="bsum-label">전체 인원</div><div class="bsum-value">${leaveData.length}명</div></div>
       <div class="bsum-card"><div class="bsum-label">전체 연차</div><div class="bsum-value">${totalDays}일</div></div>
       <div class="bsum-card"><div class="bsum-label">사용 완료</div><div class="bsum-value g">${usedDays}일</div></div>
-      <div class="bsum-card"><div class="bsum-label">예정</div><div class="bsum-value b">${totalDays-usedDays}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">예정</div><div class="bsum-value b">${(totalDays-usedDays).toFixed(1).replace('.0','')}일</div></div>
     </div>`;
 
-  // 오늘 연차 중
   if(todayLeave.length){
-    html+=`<div class="ls-section-title">🏖 오늘 연차 <span class="ls-section-badge" style="background:rgba(245,160,51,.15);color:var(--orange)">${todayLeave.length}명</span></div>`;
+    html+=`<div class="ls-section-title">🏖 오늘 연차/반차 <span class="ls-section-badge" style="background:rgba(245,160,51,.15);color:var(--orange)">${todayLeave.length}명</span></div>`;
   }
 
   html+=`<div class="ls-grid" id="lsGridMain">`;
   sorted.forEach(p=>{
-    const isOnLeaveToday=p.dates.some(d=>d.getTime()===today.getTime());
-    const pastDates=p.dates.filter(d=>d<today&&d.getTime()!==today.getTime()).sort((a,b)=>a-b);
-    const futureDates=p.dates.filter(d=>d>today).sort((a,b)=>a-b);
-    const todayDate=p.dates.filter(d=>d.getTime()===today.getTime());
-    const allSorted=[...pastDates,...todayDate,...futureDates];
+    const allEntries=[
+      ...p.dates.map(d=>({d,isHalf:false})),
+      ...(p.halfDates||[]).map(d=>({d,isHalf:true})),
+    ].sort((a,b)=>a.d-b.d);
+
+    const isOnLeaveToday=allEntries.some(e=>e.d.getTime()===today.getTime());
+    const todayIsHalf=(p.halfDates||[]).some(d=>d.getTime()===today.getTime());
     const initial=p.name.charAt(0);
 
-    const chips=allSorted.map(d=>{
+    const usedCount=p.dates.filter(d=>d<=today).length+(p.halfDates||[]).filter(d=>d<=today).length*0.5;
+    const futureCount=p.dates.filter(d=>d>today).length+(p.halfDates||[]).filter(d=>d>today).length*0.5;
+    const totalCount=p.dates.length+(p.halfDates||[]).length*0.5;
+
+    const chips=allEntries.map(({d,isHalf})=>{
       const isToday=d.getTime()===today.getTime();
       const isPast=d<today&&!isToday;
       const cls=isToday?'today':isPast?'past':'upcoming';
-      return `<span class="ls-chip ${cls}">${d.getMonth()+1}/${d.getDate()}</span>`;
+      return `<span class="ls-chip ${cls}${isHalf?' half':''}">${d.getMonth()+1}/${d.getDate()}${isHalf?'½':''}</span>`;
     }).join('');
 
     html+=`<div class="ls-card" style="cursor:pointer;${isOnLeaveToday?'border-color:rgba(245,160,51,.4);background:rgba(245,160,51,.03)':''}" onclick="goToLeaveCalendarFor(${today.getMonth()},${today.getFullYear()})">
       <div class="ls-card-top">
         <div class="ls-avatar" style="background:${isOnLeaveToday?'var(--orange)':'var(--pri)'}">${initial}</div>
         <span class="ls-name">${p.name}</span>
-        ${isOnLeaveToday?'<span class="ls-today">연차 중</span>':''}
+        ${isOnLeaveToday?`<span class="ls-today">${todayIsHalf?'반차 중':'연차 중'}</span>`:''}
       </div>
-      ${allSorted.length?`<div class="ls-dates">${chips}</div>`:'<span class="ls-empty">연차 없음</span>'}
+      ${allEntries.length?`<div class="ls-dates">${chips}</div>`:'<span class="ls-empty">연차 없음</span>'}
       <div class="ls-stat">
-        <span>사용 <strong>${pastDates.length+todayDate.length}일</strong></span>
-        <span>예정 <strong>${futureDates.length}일</strong></span>
-        <span>합계 <strong>${p.dates.length}일</strong></span>
+        <span>사용 <strong>${usedCount}일</strong></span>
+        <span>예정 <strong>${futureCount}일</strong></span>
+        <span>합계 <strong>${totalCount}일</strong></span>
       </div>
       <div style="font-size:10px;color:var(--tx3);margin-top:2px;">📅 달력에서 보기</div>
     </div>`;
   });
   html+=`</div>`;
 
-  // 월별 연차 분포 테이블
-  html+=`<div class="ls-section-title" style="margin-top:24px;">📆 ${year}년 월별 연차 분포</div>
+  // 월별 분포 테이블
+  html+=`<div class="ls-section-title" style="margin-top:24px;">📆 ${year}년 월별 연차/반차 분포</div>
   <div style="overflow-x:auto">
   <table style="width:100%;border-collapse:collapse;font-size:11px;">
     <thead>
@@ -3822,16 +3863,20 @@ function renderLeaveSummary(){
     <tbody>
       ${leaveData.map(p=>{
         const cells=months.map(m=>{
-          const cnt=p.dates.filter(d=>d.getFullYear()===year&&d.getMonth()===m).length;
+          const full=p.dates.filter(d=>d.getFullYear()===year&&d.getMonth()===m).length;
+          const half=(p.halfDates||[]).filter(d=>d.getFullYear()===year&&d.getMonth()===m).length;
+          const cnt=full+half*0.5;
           const isThisMonth=m===today.getMonth();
           const bg=cnt>0?(isThisMonth?'rgba(245,160,51,.2)':'rgba(79,110,247,.12)'):'';
           const color=cnt>0?(isThisMonth?'var(--orange)':'#99aaff'):'var(--tx3)';
-          return `<td style="padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);background:${bg};color:${color};font-weight:${cnt>0?'700':'400'}">${cnt||'·'}</td>`;
+          const label=cnt===0?'·':half>0&&full===0?`½`:half>0?`${full}+½`:`${full}`;
+          return `<td style="padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);background:${bg};color:${color};font-weight:${cnt>0?'700':'400'}">${label}</td>`;
         }).join('');
+        const yearTotal=p.dates.filter(d=>d.getFullYear()===year).length+(p.halfDates||[]).filter(d=>d.getFullYear()===year).length*0.5;
         return `<tr>
           <td style="padding:6px 10px;font-weight:600;color:var(--tx);border-bottom:1px solid var(--bd);white-space:nowrap;">${p.name}</td>
           ${cells}
-          <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--tx);border-bottom:1px solid var(--bd);">${p.dates.filter(d=>d.getFullYear()===year).length}</td>
+          <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--tx);border-bottom:1px solid var(--bd);">${yearTotal}</td>
         </tr>`;
       }).join('')}
     </tbody>
@@ -3862,20 +3907,28 @@ function renderLeave(){
   const startDow=first.getDay();
   const totalCells=Math.ceil((startDow+lastDay)/7)*7;
 
-  // 이번 달 연차 카운트
+  // 이번 달 연차/반차 카운트
   let monthCount=0;
-  const dayMap={}; // dayKey -> [name,...]
+  const dayMap={}; // dayKey -> [{name, isHalf}, ...]
   leaveData.forEach(p=>{
     p.dates.forEach(d=>{
       if(d.getFullYear()===y&&d.getMonth()===m){
         monthCount++;
         const k=d.getDate();
         if(!dayMap[k])dayMap[k]=[];
-        dayMap[k].push(p.name);
+        dayMap[k].push({name:p.name,isHalf:false});
+      }
+    });
+    (p.halfDates||[]).forEach(d=>{
+      if(d.getFullYear()===y&&d.getMonth()===m){
+        monthCount+=0.5;
+        const k=d.getDate();
+        if(!dayMap[k])dayMap[k]=[];
+        dayMap[k].push({name:p.name,isHalf:true});
       }
     });
   });
-  sumEl.innerHTML=`이번 달 연차 <strong>${monthCount}건</strong> · 인원 ${leaveData.length}명`;
+  sumEl.innerHTML=`이번 달 연차 <strong>${monthCount}일</strong> · 인원 ${leaveData.length}명`;
 
   // 셀 렌더
   let html='';
@@ -3900,10 +3953,12 @@ function renderLeave(){
       if(holiday){
         html+=`<span class="l-holiday" title="${holiday}">${holiday}</span>`;
       }
-      names.forEach(n=>{
+      names.forEach(({name:n,isHalf})=>{
         const todayCls=isToday?' is-today':'';
+        const halfCls=isHalf?' is-half':'';
         const safe=n.replace(/"/g,'&quot;');
-        html+=`<span class="l-name${todayCls}" onclick="openLeavePerson('${safe}')" title="${safe}">${n}</span>`;
+        const label=isHalf?`${n} <span class="l-half-badge">반</span>`:n;
+        html+=`<span class="l-name${todayCls}${halfCls}" onclick="openLeavePerson('${safe}')" title="${safe}${isHalf?' (반차)':''}">${label}</span>`;
       });
     }
     html+='</div>';
@@ -3921,10 +3976,14 @@ function updateLeaveBanner(){
     const tomorrow=new Date(TODAY);tomorrow.setDate(tomorrow.getDate()+1);
     const todayNames=[],tomorrowNames=[];
     leaveData.forEach(p=>{
-      p.dates.forEach(d=>{
-        if(d.getTime()===TODAY.getTime())todayNames.push(p.name);
-        else if(d.getTime()===tomorrow.getTime())tomorrowNames.push(p.name);
-      });
+      const isFullToday=p.dates.some(d=>d.getTime()===TODAY.getTime());
+      const isHalfToday=(p.halfDates||[]).some(d=>d.getTime()===TODAY.getTime());
+      const isFullTomorrow=p.dates.some(d=>d.getTime()===tomorrow.getTime());
+      const isHalfTomorrow=(p.halfDates||[]).some(d=>d.getTime()===tomorrow.getTime());
+      if(isFullToday)todayNames.push(p.name);
+      else if(isHalfToday)todayNames.push(`${p.name}(반차)`);
+      if(isFullTomorrow)tomorrowNames.push(p.name);
+      else if(isHalfTomorrow)tomorrowNames.push(`${p.name}(반차)`);
     });
     let parts=[];
     if(todayNames.length)parts.push(`<span><span class="lb-ic">🏖</span><strong>오늘 연차:</strong> ${todayNames.join(', ')}</span>`);
@@ -3934,6 +3993,9 @@ function updateLeaveBanner(){
     leaveData.forEach(p=>{
       p.dates.forEach(d=>{
         if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(p.name);
+      });
+      (p.halfDates||[]).forEach(d=>{
+        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(`${p.name}(반차)`);
       });
     });
     if(weekNames.size)parts.push(`<span style="opacity:.85">이번 주 추가 예정: ${[...weekNames].join(', ')}</span>`);
@@ -3960,20 +4022,31 @@ function updateLeaveBanner(){
 function openLeavePerson(name){
   const p=leaveData.find(x=>x.name===name);
   if(!p)return;
-  document.getElementById('lpTitle').textContent=`🏖 ${name}님 연차 내역`;
-  const usedThisYear=p.dates.length;
-  const past=p.dates.filter(d=>d<TODAY).length;
-  const upcoming=p.dates.filter(d=>d>TODAY).length;
-  const isTodayLeave=p.dates.some(d=>d.getTime()===TODAY.getTime());
+  document.getElementById('lpTitle').textContent=`🏖 ${name}님 연차/반차 내역`;
+  const halfDates=p.halfDates||[];
+  const totalDays=p.dates.length+halfDates.length*0.5;
+  const past=p.dates.filter(d=>d<TODAY).length+halfDates.filter(d=>d<TODAY).length*0.5;
+  const upcoming=p.dates.filter(d=>d>TODAY).length+halfDates.filter(d=>d>TODAY).length*0.5;
+  const isTodayFull=p.dates.some(d=>d.getTime()===TODAY.getTime());
+  const isTodayHalf=halfDates.some(d=>d.getTime()===TODAY.getTime());
   document.getElementById('lpSub').innerHTML=
-    `<div class="lp-stat"><div>총 사용 <strong>${usedThisYear}일</strong></div><div>지난 연차 <strong>${past}일</strong></div><div>예정 <strong>${upcoming}일</strong></div>${isTodayLeave?'<div style="color:var(--orange)">🔥 오늘 연차 중</div>':''}</div>`;
-  // 칩 리스트
-  const sorted=[...p.dates].sort((a,b)=>a-b);
-  const chips=sorted.map(d=>{
+    `<div class="lp-stat">
+      <div>총 사용 <strong>${totalDays}일</strong></div>
+      <div>지난 연차 <strong>${past}일</strong></div>
+      <div>예정 <strong>${upcoming}일</strong></div>
+      ${isTodayFull?'<div style="color:var(--orange)">🔥 오늘 연차 중</div>':''}
+      ${isTodayHalf?'<div style="color:var(--orange)">🌗 오늘 반차 중</div>':''}
+    </div>`;
+  // 칩 리스트 (연차 + 반차 합쳐서 날짜순)
+  const allEntries=[
+    ...p.dates.map(d=>({d,isHalf:false})),
+    ...halfDates.map(d=>({d,isHalf:true})),
+  ].sort((a,b)=>a.d-b.d);
+  const chips=allEntries.map(({d,isHalf})=>{
     const isToday=d.getTime()===TODAY.getTime();
     const isPast=d<TODAY&&!isToday;
-    const cls='lp-chip'+(isToday?' is-today':'')+(isPast?' is-past':'');
-    return `<div class="${cls}">${d.getMonth()+1}월 ${d.getDate()}일</div>`;
+    const cls='lp-chip'+(isToday?' is-today':'')+(isPast?' is-past':'')+(isHalf?' is-half':'');
+    return `<div class="${cls}">${d.getMonth()+1}월 ${d.getDate()}일${isHalf?'<span class="lp-half-badge">반차</span>':''}</div>`;
   }).join('');
   document.getElementById('lpBody').innerHTML=`<div class="lp-list">${chips||'<div style="color:var(--tx3);font-size:11px">등록된 연차가 없습니다.</div>'}</div>`;
   document.getElementById('leavePersonMo').classList.remove('hide');
@@ -5068,16 +5141,107 @@ function renderEditResult(data){
   }
   const g=MEDIA_GUIDES[state.selectedMedia];
   const isSKT=state.selectedMedia==='SKT';
-  // SKT는 한글 자수 기준, 카드사는 Bytes 기준
+  const fullText=(data.title||'')+'\n'+(data.body||'');
   const bodyMeasure=isSKT?[...data.body].length:new Blob([data.body]).size;
   const overLimit=g&&g.maxBytes&&bodyMeasure>g.maxBytes;
   const unit=isSKT?'자':'B';
+
   let html=`<div class="sms-fade-up">`;
   html+=`<div class="sms-result-block"><div class="sms-blabel">제목 <span class="sms-badge sms-badge-agency-dc" style="font-size:9px">${esc(state.selectedMedia)} 헤더 포함</span></div><div class="sms-result-title-box">${esc(data.title||'(제목 없음)')}</div></div>`;
   html+=`<div class="sms-result-block"><div class="sms-blabel">본문 (필수문구 포함)</div><div class="sms-result-body-box">${esc(data.body)}</div></div>`;
   html+=`<div class="sms-byte-row"><span class="sms-byte-tag">본문 약 ${bodyMeasure} ${unit}</span>`;
   if(g&&g.maxBytes) html+=`<span class="sms-byte-tag ${overLimit?'over':'ok'}">${overLimit?`⚠ 제한 초과 (${g.maxBytes}${unit})`:`✓ 용량 정상 (${g.maxBytes}${unit} 이내)`}</span>`;
-  html+=`</div></div>`;
+  html+=`</div>`;
+
+  // ── 가이드 준수 체크 ──────────────────────────────
+  if(g){
+    const warns=[];
+    const checks=[];
+
+    // 1) 필수문구 포함 여부
+    if(g.required){
+      // 필수문구를 줄 단위로 분리, 각 줄이 본문에 포함되는지
+      const reqLines=g.required.split('\n').map(s=>s.trim()).filter(Boolean);
+      reqLines.forEach(line=>{
+        const key=line.replace(/[＊※*]/g,'').trim().slice(0,15); // 앞 15자로 체크
+        if(key&&!data.body.includes(key)){
+          warns.push(`필수문구 누락: "${key}…"`);
+        }
+      });
+    }
+
+    // 2) 헤더 포함 여부
+    if(g.header){
+      const hdr=g.header.replace(/\[|\]/g,'').trim();
+      if(hdr&&!data.title.includes(hdr)&&!(g.headerAlt&&data.title.includes(g.headerAlt.replace(/\[|\]/g,'').trim()))){
+        warns.push(`헤더 누락: 제목에 "${g.header}" 포함 필요`);
+      }
+    }
+
+    // 3) 금지 표현 검사
+    if(g.forbidden){
+      g.forbidden.forEach(f=>{
+        // 금지 표현 키워드 추출 (따옴표 안 단어, 또는 첫 단어)
+        const kwMatch=f.match(/['"「」""]([^'"「」""]+)['"「」""]/);
+        const kw=kwMatch?kwMatch[1]:f.split(/[,·/]/)[0].replace(/\s*(금지|사용|표현|불가|절대).*/,'').trim();
+        if(kw&&kw.length>=2&&fullText.includes(kw)){
+          warns.push(`금지 표현 포함: "${kw}" — ${f.slice(0,40)}`);
+        }
+      });
+    }
+
+    // 4) 이벤트 필수조건 (키워드 부분 체크)
+    if(g.eventRequired){
+      const evKey=g.eventRequired.slice(0,20);
+      checks.push({ok:true, msg:`이벤트 조건: ${evKey}… (AI 반영 여부 직접 확인 필요)`});
+    }
+
+    // 5) rules 중 자동 체크 가능한 항목
+    if(g.rules){
+      g.rules.forEach(rule=>{
+        // 수신거부 번호 포함 여부
+        if(rule.includes('수신거부')||rule.includes('080')){
+          const has080=/080[-\d]+/.test(data.body);
+          if(!has080) warns.push(`수신거부 번호(080-xxx) 미포함 — 규칙: "${rule.slice(0,40)}"`);
+          else checks.push({ok:true,msg:`수신거부 번호 포함 ✓`});
+        }
+        // 제목 Bytes 체크
+        if(rule.includes('제목')&&rule.includes('Bytes')){
+          if(g.titleMaxBytes){
+            const titleB=new Blob([data.title||'']).size;
+            const over=titleB>g.titleMaxBytes;
+            if(over) warns.push(`제목 ${titleB}B — 제한 ${g.titleMaxBytes}B 초과`);
+            else checks.push({ok:true,msg:`제목 ${titleB}B (${g.titleMaxBytes}B 이내) ✓`});
+          }
+        }
+      });
+    }
+
+    // 6) 언어 순화 (SKT) — 일본식 표현 잔존 여부
+    if(g.languageGuide&&isSKT){
+      const badWords=[['익월','다음 달'],['잔액','남은 금액'],['렌탈','렌털'],['~시','시'],['할부','분할납부']];
+      badWords.forEach(([bad,good])=>{
+        if(fullText.includes(bad)) warns.push(`순화 필요: "${bad}" → "${good}"`);
+      });
+    }
+
+    // 결과 표시
+    if(warns.length||checks.length){
+      html+=`<div class="sms-guide-check">`;
+      html+=`<div class="sms-guide-check-title">📋 가이드 체크</div>`;
+      warns.forEach(w=>{
+        html+=`<div class="sms-guide-warn">⚠ ${esc(w)}</div>`;
+      });
+      checks.forEach(c=>{
+        html+=`<div class="sms-guide-ok">✅ ${esc(c.msg)}</div>`;
+      });
+      html+=`</div>`;
+    } else {
+      html+=`<div class="sms-guide-check sms-guide-all-ok">✅ 주요 가이드 항목 이상 없음</div>`;
+    }
+  }
+
+  html+=`</div>`;
   el.innerHTML=html;
   copyBtn.style.display='';
   state.editResult=data;
