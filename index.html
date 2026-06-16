@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.5">
+<meta name="version" content="v4.19.6">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1008,7 +1008,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.5</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.6</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1736,6 +1736,8 @@ function parseDate(str){
 }
 function parseMoney(s){if(!s)return 0;return parseInt(String(s).replace(/[₩,\s]/g,''))||0;}
 function fmtMoney(n){if(!n)return'—';return'₩'+n.toLocaleString('ko-KR');}
+// 연차 일수 표시: 정수면 정수, 소수면 소수 유지, 0이면 '·'
+function fmtDay(n,dot=false){if(!n)return dot?'·':'0';return n%1===0?String(n):n.toFixed(1);}
 function dayDiff(a,b){return Math.round((b-a)/86400000);}
 function doff(d){return dayDiff(tlStart,d);}
 function isEmail(s){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim());}
@@ -3801,9 +3803,9 @@ function renderLeaveSummary(){
   let html=`
     <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
       <div class="bsum-card"><div class="bsum-label">전체 인원</div><div class="bsum-value">${leaveData.length}명</div></div>
-      <div class="bsum-card"><div class="bsum-label">전체 연차</div><div class="bsum-value">${totalDays}일</div></div>
-      <div class="bsum-card"><div class="bsum-label">사용 완료</div><div class="bsum-value g">${usedDays}일</div></div>
-      <div class="bsum-card"><div class="bsum-label">예정</div><div class="bsum-value b">${(totalDays-usedDays).toFixed(1).replace('.0','')}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">전체 연차</div><div class="bsum-value">${fmtDay(totalDays)}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">사용 완료</div><div class="bsum-value g">${fmtDay(usedDays)}일</div></div>
+      <div class="bsum-card"><div class="bsum-label">예정</div><div class="bsum-value b">${fmtDay(totalDays-usedDays)}일</div></div>
     </div>`;
 
   if(todayLeave.length){
@@ -3829,7 +3831,7 @@ function renderLeaveSummary(){
       const isToday=d.getTime()===today.getTime();
       const isPast=d<today&&!isToday;
       const cls=isToday?'today':isPast?'past':'upcoming';
-      return `<span class="ls-chip ${cls}${isHalf?' half':''}">${d.getMonth()+1}/${d.getDate()}${isHalf?'½':''}</span>`;
+      return `<span class="ls-chip ${cls}${isHalf?' half':''}">${d.getMonth()+1}/${d.getDate()}${isHalf?'<small style="opacity:.7"> 반</small>':''}</span>`;
     }).join('');
 
     html+=`<div class="ls-card" style="cursor:pointer;${isOnLeaveToday?'border-color:rgba(245,160,51,.4);background:rgba(245,160,51,.03)':''}" onclick="goToLeaveCalendarFor(${today.getMonth()},${today.getFullYear()})">
@@ -3840,9 +3842,9 @@ function renderLeaveSummary(){
       </div>
       ${allEntries.length?`<div class="ls-dates">${chips}</div>`:'<span class="ls-empty">연차 없음</span>'}
       <div class="ls-stat">
-        <span>사용 <strong>${usedCount}일</strong></span>
-        <span>예정 <strong>${futureCount}일</strong></span>
-        <span>합계 <strong>${totalCount}일</strong></span>
+        <span>사용 <strong>${fmtDay(usedCount)}일</strong></span>
+        <span>예정 <strong>${fmtDay(futureCount)}일</strong></span>
+        <span>합계 <strong>${fmtDay(totalCount)}일</strong></span>
       </div>
       <div style="font-size:10px;color:var(--tx3);margin-top:2px;">📅 달력에서 보기</div>
     </div>`;
@@ -3869,14 +3871,14 @@ function renderLeaveSummary(){
           const isThisMonth=m===today.getMonth();
           const bg=cnt>0?(isThisMonth?'rgba(245,160,51,.2)':'rgba(79,110,247,.12)'):'';
           const color=cnt>0?(isThisMonth?'var(--orange)':'#99aaff'):'var(--tx3)';
-          const label=cnt===0?'·':half>0&&full===0?`½`:half>0?`${full}+½`:`${full}`;
+          const label=fmtDay(cnt,true);
           return `<td style="padding:6px 8px;text-align:center;border-bottom:1px solid var(--bd);background:${bg};color:${color};font-weight:${cnt>0?'700':'400'}">${label}</td>`;
         }).join('');
         const yearTotal=p.dates.filter(d=>d.getFullYear()===year).length+(p.halfDates||[]).filter(d=>d.getFullYear()===year).length*0.5;
         return `<tr>
           <td style="padding:6px 10px;font-weight:600;color:var(--tx);border-bottom:1px solid var(--bd);white-space:nowrap;">${p.name}</td>
           ${cells}
-          <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--tx);border-bottom:1px solid var(--bd);">${yearTotal}</td>
+          <td style="padding:6px 10px;text-align:center;font-weight:700;color:var(--tx);border-bottom:1px solid var(--bd);">${fmtDay(yearTotal)}</td>
         </tr>`;
       }).join('')}
     </tbody>
@@ -4031,9 +4033,9 @@ function openLeavePerson(name){
   const isTodayHalf=halfDates.some(d=>d.getTime()===TODAY.getTime());
   document.getElementById('lpSub').innerHTML=
     `<div class="lp-stat">
-      <div>총 사용 <strong>${totalDays}일</strong></div>
-      <div>지난 연차 <strong>${past}일</strong></div>
-      <div>예정 <strong>${upcoming}일</strong></div>
+      <div>총 사용 <strong>${fmtDay(totalDays)}일</strong></div>
+      <div>지난 연차 <strong>${fmtDay(past)}일</strong></div>
+      <div>예정 <strong>${fmtDay(upcoming)}일</strong></div>
       ${isTodayFull?'<div style="color:var(--orange)">🔥 오늘 연차 중</div>':''}
       ${isTodayHalf?'<div style="color:var(--orange)">🌗 오늘 반차 중</div>':''}
     </div>`;
