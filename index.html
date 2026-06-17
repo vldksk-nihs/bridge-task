@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.7">
+<meta name="version" content="v4.19.8">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1008,7 +1008,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.7</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.8</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -4567,7 +4567,7 @@ const MEDIA = [
     biz:null,
     dc:{types:["LMS 80","MMS 120"],min:"500만원",note:""},
     dh:{types:["LMS 80","MMS 120","PUSH 50","KAKAO 100"],min:"200만원",note:"도급100위이내/9~20시/소재2영업일"}},
-  {name:"CJ ONE",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
+  {name:"CJ ONE",cat:"멤버십",rankRule:(r)=>r<=20?"available":"unavailable",rankDesc:"도급순위 20위이내",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
     dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:"도급20위이내/9~20시/소재3영업일/위약금있음"}},
@@ -4726,6 +4726,24 @@ const MEDIA_GUIDES = {
       "【부정→긍정】 '가스비 폭탄 해결' → '가스비 고민 해결'",
       "【외모 지상주의 금지】 브이라인→턱선, '키 때문에 꿈을 포기' 같은 표현 금지",
       "【고정 성역할 금지】 '대학 잘 보낸 엄마들' → '자녀를 상위권 대학에 보낸 학부모'",
+    ],
+  },
+  "CJ ONE":{
+    maxBytes:2000,
+    rules:[
+      "도급순위 20위이내 현장만 집행 가능",
+      "발송 가능 시간대: 09:00~20:00 (주말·공휴일 가능, 단 사전 협의 필수)",
+      "소재 전달 기한: 집행 3영업일 이전까지",
+      "임직원·VIP 등급 타겟팅 불가 — 문구에 '임직원', 'VIP', '우수회원' 등 특정 등급 언급 금지",
+      "고객 컴플레인 발생 가능성이 높은 현장 집행 불가",
+      "지역주택조합 현장 집행 불가",
+      "연립·다세대주택 집행 불가",
+      "수신거부 번호 본문 하단 필수 포함",
+    ],
+    forbidden:[
+      "임직원·VIP 타겟 언급 ('임직원 전용', 'VIP 회원 한정' 등 등급 특정 금지)",
+      "지역주택조합 관련 내용 ('지역주택조합', '조합원 모집' 등)",
+      "연립·다세대주택 관련 내용",
     ],
   },
 };
