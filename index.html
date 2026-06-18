@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.8">
+<meta name="version" content="v4.19.9">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -849,20 +849,23 @@ body.offline .offline-bar{display:block;}
    WCAG AA (4.5:1) 기준 통과하는 명도값으로 조정
 ──────────────────────────────────────────────────── */
 body:not(.light) .sms-tool{
-  /* 텍스트: 밝기 +25~35% (대비비 WCAG AA 통과) */
-  --sms-text2: #a8b2c8;        /* #8892a8 → #a8b2c8 (+30%) */
-  --sms-text3: #828ca0;        /* #606880 → #828ca0 (+35%) */
-  /* 카드/배경: 미세하게 밝혀 레이어 깊이감 */
-  --sms-card:  #1d2235;        /* sur2 #181c28 → #1d2235 */
-  --sms-card2: #242840;        /* sur3 #1e2333 → #242840 */
-  --sms-border: #2e3450;       /* bd  #232738 → #2e3450 (테두리 더 선명) */
-  /* 활성 상태 배경: 불투명도 12% → 22% (2배 진해짐) */
-  --sms-primary-light: rgba(79,110,247,.22);
-  --sms-purple-light:  rgba(167,139,250,.24);
-  --sms-green-light:   rgba(45,217,143,.20);
-  --sms-red-light:     rgba(240,101,101,.22);
-  --sms-amber-light:   rgba(245,160,51,.22);
-  --sms-gray-light:    #242840;
+  /* 텍스트: 다크모드 가독성 최우선 */
+  --sms-text:  #eef1f8;        /* 본문 텍스트 — 밝게 */
+  --sms-text2: #c2cce0;        /* 보조 텍스트 */
+  --sms-text3: #8e9ab4;        /* 3차 텍스트 */
+  /* 배경/카드: 충분한 레이어 대비 */
+  --sms-bg:    #141929;
+  --sms-card:  #1c2237;        /* 카드 배경 */
+  --sms-card2: #222842;        /* 중첩 카드 */
+  --sms-header:#1c2237;
+  --sms-border: #333c58;       /* 테두리: 뚜렷하게 */
+  /* 활성 상태 */
+  --sms-primary-light: rgba(99,130,255,.25);
+  --sms-purple-light:  rgba(167,139,250,.28);
+  --sms-green-light:   rgba(45,217,143,.22);
+  --sms-red-light:     rgba(240,101,101,.25);
+  --sms-amber-light:   rgba(245,160,51,.25);
+  --sms-gray-light:    #252c44;
 }
 
 /* ── 라이트 테마 전용 ── */
@@ -937,6 +940,12 @@ body.light .sms-tool{
 .sms-tool .sms-info-bar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;}  /* 12→13px */
 
 .sms-tool .sms-table-wrap{background:var(--sms-card);border-radius:10px;box-shadow:var(--sms-shadow);overflow-x:auto;border:1px solid var(--sms-border);}
+.sms-tool #sms-result-table th{background:var(--sms-card2);color:var(--sms-text2);font-size:10px;font-weight:700;padding:9px 10px;border-bottom:1px solid var(--sms-border);white-space:nowrap;letter-spacing:.03em;}
+.sms-tool #sms-result-table td{border-bottom:1px solid var(--sms-border);color:var(--sms-text);padding:7px 10px;font-size:11px;}
+.sms-tool #sms-result-table tr:hover td{background:rgba(99,130,255,.05);}
+.sms-tool #sms-result-table tr.unavailable td{opacity:.55;}
+.sms-restrict-chip{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(245,160,51,.13);color:#e8a020;line-height:1.5;}
+.sms-restrict-chip-ban{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(240,101,101,.15);color:#e85555;line-height:1.5;}
 .sms-tool table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px;}
 .sms-tool thead tr{background:var(--sms-card2);}
 .sms-tool th{padding:10px 6px;font-weight:700;color:var(--sms-text2);font-size:10px;border-bottom:2px solid var(--sms-border);white-space:nowrap;text-align:left;}  /* 9→10px */
@@ -1008,7 +1017,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.8</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.9</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -4523,90 +4532,90 @@ const MEDIA = [
   {name:"KB국민카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:false,johabNote:"지역주택조합 전체 불가",
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:"도급100위이내/9:30~16시/소재5영업일/위약금있음"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:"도급100위이내/9:30~16시/소재5영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대"},
   {name:"신한카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",extra2:"신한카드고객만을위한이벤트필요",
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 160","PUSH 60"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 70"],min:"500만원",note:"9~17:30/소재7영업일/취소2영업일이내10%"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 70"],min:"500만원",note:"9~17:30/소재7영업일/취소2영업일이내10%"},dhRestrict:"지역주택조합 / 사회이슈 매물"},
   {name:"삼성카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:true,
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
-    dh:{types:["LMS 100"],min:"300만원",note:"도급50위이내/9~17시/소재5영업일"}},
+    dh:{types:["LMS 100"],min:"300만원",note:"도급50위이내/9~17시/소재5영업일"},dhRestrict:"지역주택조합"},
   {name:"롯데카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"도급순위 상위50위",ilbanOk:true,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR데이터제공"},
     dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 60"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일/테스트수신후취소불가"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 60"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일/테스트수신후취소불가"},dhRestrict:"지역주택조합 / 민간임대 / 아파트(주상복합)만 / 지정지역한정"},
   {name:"우리카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100"],min:"5만건",note:""},
-    dh:{types:["LMS 100"],min:"500만원",note:"분양업종불가"}},
+    dh:{types:["LMS 100"],min:"500만원",note:"분양업종불가"},dhRestrict:"분양업종불가"},
   {name:"하나카드",cat:"카드사",rankRule:(r,reg)=>{if(!["수도권","광역시","세종시"].includes(reg))return"unavailable";return r<=50?"available":"unavailable";},rankDesc:"수도권+광역시+세종시/50위",ilbanOk:true,extra:"회사채등급B0이상",
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150","PUSH 25"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일"},dhRestrict:"태영건설 / 지역주택조합"},
   {name:"BC카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dh:{types:["LMS 100","MMS 150","PUSH 별도협의"],min:"300만원",note:"도급50위이하협의/9~17시/소재7영업일/위약금있음"}},
   {name:"현대카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100"],min:"5만건",note:""},
-    dc:null,dh:null},
+    dc:null,dh:null,dhRestrict:"민간임대(건축허가현장가능) / 지역주택조합 / 백산건설 / 사회이슈 매물"},
   {name:"SKT",cat:"통신사",rankRule:(r,reg)=>{if(reg==="수도권"&&r<=100)return"available";if(reg!=="수도권"&&r<=150)return"review";return"unavailable";},rankDesc:"수도권100위/지방150위",ilbanOk:true,
     biz:{types:["LMS 100","MMS 120"],min:"4만건",note:"버튼CTR및로그분석/최초3건한정진행가능"},
     dc:{types:["LMS(RCS) 100","MMS(RCS) 120"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 120"],min:"200만원",note:"도급150위이내(또는브랜드평판24위)/9~19:50/소재4영업일"}},
+    dh:{types:["LMS 100","MMS 120"],min:"200만원",note:"도급150위이내(또는브랜드평판24위)/9~19:50/소재4영업일"},dhRestrict:"지역주택조합(일반분양가능)"},
   {name:"KT",cat:"통신사",rankRule:()=>"available",rankDesc:"순위무관(분양1년이내)",ilbanOk:true,extra:"분양1년이내",
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS(RCS) 150"],min:"100만원",note:"CTR로그분석제공"},
-    dh:{types:["LMS 100","MMS 150"],min:"100만원",note:"분양1년이내만가능/9~17:50/소재4영업일/취소2일전까지"}},
+    dh:{types:["LMS 100","MMS 150"],min:"100만원",note:"분양1년이내만가능/9~17:50/소재4영업일/취소2일전까지"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물 / 분양1년이내만가능"},
   {name:"LG U+",cat:"통신사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"발송수 5~10% 서비스지원"},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"분양업종불가"}},
+    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"분양업종불가"},dhRestrict:"분양업종불가"},
   {name:"엘포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,
     dc:{types:["LMS 80","MMS 120"],min:"500만원",note:""},
-    dh:{types:["LMS 80","MMS 120","PUSH 50","KAKAO 100"],min:"200만원",note:"도급100위이내/9~20시/소재2영업일"}},
+    dh:{types:["LMS 80","MMS 120","PUSH 50","KAKAO 100"],min:"200만원",note:"도급100위이내/9~20시/소재2영업일"},dhRestrict:"지역주택조합(일반분양가능) / 사회이슈 매물"},
   {name:"CJ ONE",cat:"멤버십",rankRule:(r)=>r<=20?"available":"unavailable",rankDesc:"도급순위 20위이내",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:"도급20위이내/9~20시/소재3영업일/위약금있음"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:"도급20위이내/9~20시/소재3영업일/위약금있음"},dhRestrict:"임직원·VIP타겟팅불가 / 컴플레인우려현장불가 / 지역주택조합 / 연립·다세대"},
   {name:"OK캐쉬백",cat:"멤버십",rankRule:(r)=>r<=100?"available":"review",rankDesc:"100위이내(이외검토)",ilbanOk:true,johabNote:"지주택일반분양만가능",
     biz:{types:["LMS 100","MMS 120"],min:"3만건",note:""},
     dc:null,
-    dh:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~18시/소재별도문의/취소3영업일이내100%"}},
+    dh:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~18시/소재별도문의/취소3영업일이내100%"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물"},
   {name:"신세계포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:null,
     dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"도급72위이내(국토부1등급)/9~16시/소재7영업일/위약금있음"}},
   {name:"롯데멤버스",cat:"멤버십",rankRule:(r)=>r<=100?"available":"unavailable",rankDesc:"도급순위100위이내",ilbanOk:true,
-    biz:{types:["LMS 80"],min:"5만건",note:""},dc:null,dh:null},
+    biz:{types:["LMS 80"],min:"5만건",note:""},dc:null,dh:null,dhRestrict:"지역주택조합"},
   {name:"카카오페이",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:{types:["카플친 100"],min:"5만건",note:""},
     dc:{types:["PUSH 60","KAKAO 100"],min:"17만건",note:""},
-    dh:{types:["PUSH 60","KAKAO 100"],min:"500만원",note:"9~19:30/소재5영업일/위약금있음"}},
+    dh:{types:["PUSH 60","KAKAO 100"],min:"500만원",note:"9~19:30/소재5영업일/위약금있음"},dhRestrict:"지역주택조합 / 민간임대(협동조합형) / 시공사미정 / 사회이슈 매물"},
   {name:"나이스(NICE)",cat:"기타",rankRule:(r)=>{if(r<=100)return"available";if(r<=200)return"review";return"unavailable";},rankDesc:"100위이내(최대200위검토)",ilbanOk:true,johabNote:"조합원모집불가/일반분양가능",
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100"],min:"5만건",note:"타겟할증"},
-    dh:{types:["LMS 100","MMS 250"],min:"300만원",note:"도급200위이내/별도문의"}},
+    dh:{types:["LMS 100","MMS 250"],min:"300만원",note:"도급200위이내/별도문의"},dhRestrict:"지역주택조합 / 사회이슈 매물"},
   {name:"호갱노노",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:{types:["카플친 150"],min:"3.3만",note:"최소금액 500만원"},
     dc:{types:["KAKAO 170"],min:"1만건",note:""},
     dh:{types:["PUSH 100","KAKAO 200"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"}},
   {name:"제로페이",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100"],min:"2만건",note:""},
-    dc:null,dh:null},
+    dc:null,dh:null,dhRestrict:"제한사항 없음"},
   {name:"직방",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:null,
     dc:{types:["KAKAO 120"],min:"1만건",note:""},
-    dh:{types:["PUSH 100","KAKAO 150"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"}},
+    dh:{types:["PUSH 100","KAKAO 150"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"},dhRestrict:"제한사항 없음"},
   {name:"모두의주차장",cat:"모빌리티",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,dc:null,
-    dh:{types:["PUSH 100"],min:"500만원",note:"9~18시/소재10영업일/위약금있음"}},
+    dh:{types:["PUSH 100"],min:"500만원",note:"9~18시/소재10영업일/위약금있음"},dhRestrict:"제한사항 없음"},
   {name:"T맵(TMAP)",cat:"모빌리티",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"300만원",note:"9~18시/소재7영업일/위약금있음"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"300만원",note:"9~18시/소재7영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대 / 사회이슈 매물"},
   {name:"스마트스코어",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,
     dc:{types:["LMS 100","PUSH 100"],min:"5만건",note:""},
@@ -4614,9 +4623,9 @@ const MEDIA = [
   {name:"사람인",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS(개인) 100","LMS(기업) 200"],min:"5만건",note:""},
     dc:null,
-    dh:{types:["LMS 100"],min:"500만원",note:"분양업종불가"}},
+    dh:{types:["LMS 100"],min:"500만원",note:"분양업종불가"},dhRestrict:"분양업종불가"},
   {name:"H.POINT",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
-    biz:null,dh:null,
+    biz:null,dh:null,dhRestrict:"지역주택조합 / 사회이슈 매물",
     dc:{types:["LMS 100","MMS 150","PUSH 80"],min:"5만건",note:""}},
   {name:"SSG PAY",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,dh:null,
@@ -5035,7 +5044,7 @@ function renderResult(sorted,counts,rankNum,agencyKeys){
 
   // table head
   const isJ=state.isJohab;
-  document.getElementById('sms-result-thead').innerHTML=`<tr>${['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','비고'].map((h,i)=>`<th style="text-align:${i===0||i===(['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','비고'].length-1)===i?'left':'center'}">${h}</th>`).join('')}</tr>`;
+  document.getElementById('sms-result-thead').innerHTML=`<tr>${['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','제한사항','비고'].map((h,i)=>{const cols=['매체사','분류','상태',...(isJ?['조합']:[]),'대행사','유형','단가(VAT별도)','최소집행','제한사항','비고'];return`<th style="text-align:${i===0||i===cols.length-1?'left':'center'}">${h}</th>`;}).join('')}</tr>`;
 
   // table body
   let tbody='';
@@ -5051,16 +5060,23 @@ function renderResult(sorted,counts,rankNum,agencyKeys){
       const unavail=m.status==='unavailable';
       tbody+=`<tr class="${unavail?'unavailable':''}">`;
       if(isFirst){
-        tbody+=`<td rowspan="${span}" style="font-weight:700;font-size:11px;white-space:nowrap;border-right:1px solid #F1F5F9">${esc(m.name)}</td>`;
-        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${catBadge(m.cat)}</td>`;
-        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${statusBadge(m.status)}</td>`;
-        if(isJ) tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid #F1F5F9">${johabBadge(m,state.johabType)}</td>`;
+        tbody+=`<td rowspan="${span}" style="font-weight:700;font-size:11px;white-space:nowrap;border-right:1px solid var(--sms-border)">${esc(m.name)}</td>`;
+        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid var(--sms-border)">${catBadge(m.cat)}</td>`;
+        tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid var(--sms-border)">${statusBadge(m.status)}</td>`;
+        if(isJ) tbody+=`<td rowspan="${span}" style="text-align:center;border-right:1px solid var(--sms-border)">${johabBadge(m,state.johabType)}</td>`;
       }
-      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><span class="sms-badge ${info.cls}">${info.label}</span></td>`;
-      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><div class="sms-type-list">${parsed.map(p=>typeBadge(p.name)).join('')}</div></td>`;
-      tbody+=`<td style="text-align:center;border-right:1px solid #F1F5F9"><div class="sms-price-list">${parsed.map(p=>`<span style="font-size:11px;font-weight:600;white-space:nowrap">${esc(p.price)}${p.isPromo?'<span style="color:var(--red);font-size:8px;margin-left:2px">*프로모션</span>':''}</span>`).join('')}</div></td>`;
-      tbody+=`<td style="text-align:center;font-weight:600;font-size:11px;border-right:1px solid #F1F5F9;white-space:nowrap">${esc(data.min)}</td>`;
-      tbody+=`<td style="font-size:9px;color:var(--text2);line-height:1.4;max-width:180px">`;
+      tbody+=`<td style="text-align:center;border-right:1px solid var(--sms-border)"><span class="sms-badge ${info.cls}">${info.label}</span></td>`;
+      tbody+=`<td style="text-align:center;border-right:1px solid var(--sms-border)"><div class="sms-type-list">${parsed.map(p=>typeBadge(p.name)).join('')}</div></td>`;
+      tbody+=`<td style="text-align:center;border-right:1px solid var(--sms-border)"><div class="sms-price-list">${parsed.map(p=>`<span style="font-size:11px;font-weight:600;white-space:nowrap">${esc(p.price)}${p.isPromo?'<span style="color:var(--red);font-size:8px;margin-left:2px">*프로모션</span>':''}</span>`).join('')}</div></td>`;
+      tbody+=`<td style="text-align:center;font-weight:600;font-size:11px;border-right:1px solid var(--sms-border);white-space:nowrap">${esc(data.min)}</td>`;
+      // 제한사항 열 (대행사가 dh이고 dhRestrict 있을 때만 표시, 첫 행에만 rowspan)
+      if(isFirst){
+        const restrict=m.dhRestrict||'';
+        const isBan=restrict.includes('불가');
+        const restrictHtml=restrict?restrict.split(' / ').map(r=>`<span class="sms-restrict-chip${r.includes('불가')?'-ban':''}">${esc(r)}</span>`).join(''):'<span style="color:var(--sms-text3);font-size:10px">—</span>';
+        tbody+=`<td rowspan="${span}" style="vertical-align:top;padding:6px 8px;border-right:1px solid var(--sms-border);max-width:220px;line-height:1.6">${restrictHtml}</td>`;
+      }
+      tbody+=`<td style="font-size:10px;color:var(--sms-text2);line-height:1.5;max-width:200px;vertical-align:top;padding:6px 8px">`;
       if(isFirst){
         tbody+=`<div>${esc(m.rankDesc)}</div>`;
         if(isJ&&m.johabNote) tbody+=`<div style="color:var(--red);font-weight:700;margin-top:1px">${esc(m.johabNote)}</div>`;
