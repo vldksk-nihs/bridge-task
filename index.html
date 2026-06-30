@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.9">
+<meta name="version" content="v4.19.11">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1017,7 +1017,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.9</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.11</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -2740,6 +2740,9 @@ function switchAdTab(tab){
 let zbLoaded=false;
 let zbBrinRows=[];   // 직방/호갱노노(브릿지) 시트 파싱 결과
 let zbZbContracts=[]; // 직방(선계약 목록)
+let zbContractFilter='all';  // all | active | done
+let zbExecFilter='all';      // all | match | estimated | diff | unmatched
+let zbYearFilter='all';      // all | YYYY
 let zbZbDetails=[];   // 직방(상품 차감내역)
 
 async function fetchZigbangData(){
@@ -3076,7 +3079,8 @@ function renderZigbang(){
 
   // 통계 (건수)
   const exMatch=executions.filter(e=>e.status==='match').length;
-  const exDiff =executions.filter(e=>e.status==='diff').length;
+  // 오차: 매칭 성공(match/estimated)했으나 금액 차이가 1,000원 초과인 항목
+  const exDiff =executions.filter(e=>(e.status==='match'||e.status==='estimated')&&Math.abs(e.diff||0)>1000).length;
   const exEstimated=executions.filter(e=>e.status==='estimated').length;
   const exUnmatched=executions.filter(e=>e.status==='brin_only'||e.status==='zb_only').length;
 
@@ -3201,7 +3205,7 @@ function renderZigbang(){
             else if(e.status==='match')diffCell='<span style="color:var(--green)">—</span>';
             else if(e.status==='estimated')diffCell='<span style="color:var(--blue);font-size:10px" title="금액 일치로 추정 매칭됨">금액일치</span>';
             else diffCell=`<span style="color:var(--tx3);font-size:10px">${e.reason||''}</span>`;
-            return `<tr class="zb-exec-row" data-status="${e.status}">
+            return `<tr class="zb-exec-row" data-status="${e.status}" data-isdiff="${(e.status==='match'||e.status==='estimated')&&Math.abs(e.diff||0)>1000?1:0}">
               <td style="color:var(--tx3)">${e.date||'<span style="color:var(--tx3)">—</span>'}</td>
               <td><span class="zb-status-badge ${statusInfo.cls}">${statusInfo.label}</span></td>
               <td style="font-weight:600">${e.campaign}</td>
@@ -3328,6 +3332,53 @@ function renderZigbang(){
   if(zbContractFilter!=='all')switchZbContractFilter(zbContractFilter);
   if(zbExecFilter!=='all')switchZbExecFilter(zbExecFilter);
   if(zbYearFilter!=='all')switchZbYearFilter(zbYearFilter);
+}
+
+// ─── 직방 필터 토글 함수 ──────────────────
+function switchZbContractFilter(f){
+  zbContractFilter=f;
+  ['all','active','done'].forEach(k=>{
+    const btn=document.getElementById('zbCF_'+k);
+    if(btn)btn.classList.toggle('on',k===f);
+  });
+  document.querySelectorAll('.zb-contract-card').forEach(card=>{
+    const done=card.getAttribute('data-done')==='1';
+    let show=true;
+    if(f==='active')show=!done;
+    else if(f==='done')show=done;
+    card.style.display=show?'':'none';
+  });
+}
+
+function switchZbExecFilter(f){
+  zbExecFilter=f;
+  ['all','match','estimated','diff','unmatched'].forEach(k=>{
+    const btn=document.getElementById('zbEF_'+k);
+    if(btn)btn.classList.toggle('on',k===f);
+  });
+  document.querySelectorAll('.zb-exec-row').forEach(row=>{
+    const st=row.getAttribute('data-status');
+    const isDiff=row.getAttribute('data-isdiff')==='1';
+    let show=true;
+    if(f==='match')show=st==='match';
+    else if(f==='estimated')show=st==='estimated';
+    else if(f==='diff')show=isDiff;
+    else if(f==='unmatched')show=(st==='brin_only'||st==='zb_only');
+    row.style.display=show?'':'none';
+  });
+}
+
+function switchZbYearFilter(f){
+  zbYearFilter=f;
+  // 버튼 활성화 토글
+  document.querySelectorAll('[id^="zbYF_"]').forEach(btn=>{
+    btn.classList.toggle('on',btn.id==='zbYF_'+f);
+  });
+  // 월별 행 + 연도 라벨 표시/숨김
+  document.querySelectorAll('.zb-month-row,.zb-month-year-label').forEach(el=>{
+    const yr=el.getAttribute('data-year');
+    el.style.display=(f==='all'||yr===f)?'':'none';
+  });
 }
 
 // ─── 키워드광고 잔액 ────────────────────────────
