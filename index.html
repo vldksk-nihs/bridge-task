@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.11">
+<meta name="version" content="v4.19.12">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -472,11 +472,17 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .zb-contract-card.active{border-color:var(--pri);background:rgba(79,110,247,.06);}
 .zb-contract-title{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:4px;}
 .zb-contract-amt{font-size:13px;font-weight:800;color:var(--tx);}
+.zb-contract-used{font-size:10.5px;color:var(--tx3);margin-top:2px;}
+.zb-contract-used strong{color:var(--tx2);font-weight:700;}
+.zb-contract-pct-txt{color:var(--tx3);}
+.zb-contract-card.done .zb-contract-pct-txt{color:var(--green);}
+.zb-contract-card.active .zb-contract-pct-txt{color:#99aaff;}
 .zb-contract-badge{font-size:10px;padding:2px 7px;border-radius:10px;margin-top:4px;display:inline-block;}
 .zb-contract-badge.done{background:rgba(45,217,143,.12);color:var(--green);}
 .zb-contract-badge.active{background:rgba(79,110,247,.14);color:#99aaff;}
 .zb-contract-pct{width:100%;height:4px;background:var(--sur2);border-radius:2px;margin-top:6px;overflow:hidden;}
 .zb-contract-pct-fill{height:100%;border-radius:2px;background:var(--pri);}
+.zb-contract-card.done .zb-contract-pct-fill{background:var(--green);}
 
 /* 섹션 공통 */
 .zb-section{background:var(--sur);border:1px solid var(--bd);border-radius:10px;margin-bottom:14px;overflow:hidden;}
@@ -1017,7 +1023,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.11</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.12</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3140,6 +3146,7 @@ function renderZigbang(){
             <div class="zb-contract-card ${c.isDone?'done':'active'}" data-done="${c.isDone?1:0}">
               <div class="zb-contract-title">${c.num}차 선계약</div>
               <div class="zb-contract-amt">${fmtMoney(c.supply)}</div>
+              <div class="zb-contract-used">소진 <strong>${fmtMoney(c.used)}</strong> <span class="zb-contract-pct-txt">(${c.pct}%)</span></div>
               <span class="zb-contract-badge ${c.isDone?'done':'active'}">${c.isDone?'✅ 소진완료':'진행중'}</span>
               <div class="zb-contract-pct"><div class="zb-contract-pct-fill" style="width:${c.pct}%"></div></div>
             </div>`).join('')}
