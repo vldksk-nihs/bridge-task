@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.12">
+<meta name="version" content="v4.19.13">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -434,7 +434,27 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kwc-grand-lbl{font-size:11px;color:var(--tx);position:sticky;left:0;background:var(--sur2);z-index:1;}
 .kwc-td-grand.has-val{color:var(--tx);}
 
-.kwc-empty{padding:40px;text-align:center;color:var(--tx3);font-size:13px;}
+.kwch-cell{cursor:pointer;}
+.kwch-cell:hover{background:rgba(245,160,51,.15)!important;color:var(--orange)!important;}
+.kwch-detail{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-top:14px;}
+.kwch-detail-header{display:flex;align-items:center;margin-bottom:12px;}
+.kwch-detail-title{font-size:14px;font-weight:800;color:var(--tx);}
+.kwch-close-btn{margin-left:auto;background:none;border:1px solid var(--bd);border-radius:6px;color:var(--tx3);cursor:pointer;padding:3px 9px;font-size:11px;}
+.kwch-close-btn:hover{color:var(--tx);border-color:var(--tx2);}
+.kwch-detail-summary{display:flex;gap:16px;flex-wrap:wrap;padding:10px 14px;background:var(--sur2);border-radius:8px;margin-bottom:12px;}
+.kwch-detail-summary div{display:flex;align-items:center;gap:6px;}
+.kwch-lbl{font-size:11px;color:var(--tx3);}
+.kwch-val{font-size:14px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;}
+.kwch-detail-sec{margin-bottom:12px;}
+.kwch-sec-title{font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;letter-spacing:.03em;}
+.kwch-camp-chip{display:inline-block;font-size:11px;padding:3px 8px;background:rgba(79,110,247,.12);color:#99aaff;border-radius:4px;margin:2px 4px 2px 0;}
+.kwch-log-table{width:100%;border-collapse:collapse;font-size:12px;}
+.kwch-log-table th{padding:6px 8px;text-align:left;color:var(--tx3);font-size:10px;font-weight:700;border-bottom:1px solid var(--bd);}
+.kwch-log-table td{padding:6px 8px;border-bottom:1px solid var(--bd);color:var(--tx);}
+.kwch-log-table tr:last-child td{border-bottom:none;}
+.kwch-method-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.kwch-method-badge.manual{background:rgba(79,110,247,.12);color:#99aaff;}
+.kwch-method-badge.auto{background:rgba(45,217,143,.12);color:var(--green);}
 
 @media(max-width:700px){
   .kwc-pivot-table{font-size:11px;}
@@ -637,6 +657,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .dp-prog-sublbl{font-size:10px;color:var(--tx3);margin-top:4px;text-align:right;}
 
 .gbar-note{font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;vertical-align:middle;}
+.kwc-empty{padding:40px;text-align:center;color:var(--tx3);font-size:13px;}
 .hide{display:none!important;}
 
 /* LOADING OVERLAY */
@@ -1023,7 +1044,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.12</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.13</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1205,10 +1226,11 @@ body.light .sms-tool{
     </div>
     <!-- 네이버 키워드광고 -->
     <div id="adNaverView">
-      <!-- 서브탭: 잔액 / 캠페인별 월비용 -->
+      <!-- 서브탭: 잔액 / 캠페인별 월비용 / 충전 내역 -->
       <div class="kw-subtabs">
         <button class="kw-subtab on" id="kwSubTabBalance" onclick="switchNaverSubTab('balance')">💳 잔액 현황</button>
         <button class="kw-subtab" id="kwSubTabCampaign" onclick="switchNaverSubTab('campaign')">📊 캠페인별 월비용</button>
+        <button class="kw-subtab" id="kwSubTabCharge" onclick="switchNaverSubTab('charge')">💰 충전 내역</button>
       </div>
 
       <!-- 잔액 현황 (기존) -->
@@ -1249,6 +1271,24 @@ body.light .sms-tool{
         </div>
         <div class="kwc-summary" id="kwcSummary"></div>
         <div id="kwcContent"></div>
+      </div>
+
+      <!-- 충전 내역 -->
+      <div id="kwChargeView" class="hide">
+        <div class="kw-header">
+          <div class="kw-header-l">
+            <span class="kw-title">💰 충전 내역</span>
+            <span class="kw-sync" id="kwchSync">—</span>
+          </div>
+          <div class="kw-header-r" style="gap:8px">
+            <select id="kwchYearSel" class="kwc-filter" onchange="renderKeywordCharge()"></select>
+            <select id="kwchAcctSel" class="kwc-filter" onchange="renderKeywordCharge()"></select>
+          </div>
+        </div>
+        <div class="kwc-summary" id="kwchSummary"></div>
+        <div id="kwchContent"></div>
+        <!-- 드릴다운 패널 -->
+        <div id="kwchDetail" class="kwch-detail hide"></div>
       </div>
     </div>
     <!-- 직방/호갱노노 -->
@@ -1882,6 +1922,7 @@ async function fetchData(isManual){
       '직방/호갱노노(브릿지)!A:K',
       '직방/호갱노노(직방)!A:K',
       '키워드광고_캠페인비용!A:F',
+      '키워드광고_충전내역!A:F',
     ];
     const rangeParams=ranges.map(r=>`ranges=${encodeURIComponent(r)}`).join('&');
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values:batchGet?${rangeParams}&valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING`;
@@ -1925,6 +1966,10 @@ async function fetchData(isManual){
       parseKeywordCampaign((valueRanges[5]&&valueRanges[5].values)||[]);
       if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='campaign')renderKeywordCampaign();
     }catch(e){console.warn('[BRIN-kwc] parse',e);}
+    try{
+      parseKeywordCharge((valueRanges[6]&&valueRanges[6].values)||[]);
+      if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='charge')renderKeywordCharge();
+    }catch(e){console.warn('[BRIN-kwch] parse',e);}
     // [3][4] 직방/호갱노노 — 항상 최신 데이터로 갱신
     try{
       parseZbBrin((valueRanges[3]&&valueRanges[3].values)||[]);
@@ -3458,10 +3503,100 @@ function switchNaverSubTab(tab){
   naverSubTab=tab;
   document.getElementById('kwSubTabBalance').classList.toggle('on',tab==='balance');
   document.getElementById('kwSubTabCampaign').classList.toggle('on',tab==='campaign');
+  document.getElementById('kwSubTabCharge').classList.toggle('on',tab==='charge');
   document.getElementById('kwBalanceView').classList.toggle('hide',tab!=='balance');
   document.getElementById('kwCampaignView').classList.toggle('hide',tab!=='campaign');
+  document.getElementById('kwChargeView').classList.toggle('hide',tab!=='charge');
   if(tab==='campaign')renderKeywordCampaign();
+  if(tab==='charge')renderKeywordCharge();
   haptic(8);
+}
+
+// ── 충전 내역 파싱 + 렌더 ─────────────────────────────
+let kwchData=[];
+let kwchLastSync='';
+function parseKeywordCharge(values){
+  kwchData=[];
+  if(!values||values.length<2)return;
+  let hdrIdx=values.findIndex(r=>String(r[0]||'').includes('계정'));
+  if(hdrIdx<0)hdrIdx=0;
+  for(let i=hdrIdx+1;i<values.length;i++){
+    const r=values[i];if(!r||!r[0])continue;
+    const amt=parseMoney(r[3]);if(amt<=0)continue;
+    const rawMonth=String(r[2]||'').trim();
+    const month=normalizeYearMonth(rawMonth)||rawMonth.slice(0,7);
+    if(!month)continue;
+    kwchData.push({acctId:String(r[0]).trim(),chargeDate:String(r[1]||'').trim(),month,amount:amt,method:String(r[4]||'').trim()||'수동충전',updatedAt:String(r[5]||'').trim()});
+  }
+  kwchLastSync=kwchData.reduce((mx,r)=>r.updatedAt>mx?r.updatedAt:mx,'');
+}
+
+function renderKeywordCharge(){
+  const content=document.getElementById('kwchContent');
+  const summary=document.getElementById('kwchSummary');
+  const syncEl=document.getElementById('kwchSync');
+  const detail=document.getElementById('kwchDetail');
+  if(!kwchData.length){
+    content.innerHTML=`<div class="kwc-empty"><p>아직 충전 내역 데이터가 없습니다.</p><p style="font-size:11px;color:var(--tx3);margin-top:6px">Apps Script에서 <b>fetchChargeLogs</b> 실행 후 표시됩니다.<br>먼저 <b>debugFetchCharge</b>로 API 응답을 확인하세요.</p></div>`;
+    if(summary)summary.innerHTML='';if(detail)detail.classList.add('hide');if(syncEl)syncEl.textContent='—';return;
+  }
+  if(syncEl)syncEl.textContent=kwchLastSync?`마지막 갱신 ${kwchLastSync}`:'';
+  const years=[...new Set(kwchData.map(r=>r.month.slice(0,4)))].sort().reverse();
+  const accts=[...new Set(kwchData.map(r=>r.acctId))].sort();
+  const yearSel=document.getElementById('kwchYearSel');
+  const acctSel=document.getElementById('kwchAcctSel');
+  const prevYear=yearSel?yearSel.value:'';const prevAcct=acctSel?acctSel.value:'';
+  if(yearSel){yearSel.innerHTML=years.map(y=>`<option value="${y}">${y}년</option>`).join('');yearSel.value=years.includes(prevYear)?prevYear:years[0];}
+  if(acctSel){acctSel.innerHTML=`<option value="">전체 계정</option>`+accts.map(a=>`<option value="${a}">${a}</option>`).join('');acctSel.value=accts.includes(prevAcct)?prevAcct:'';}
+  const selYear=(yearSel&&yearSel.value)||years[0];
+  const selAcct=(acctSel&&acctSel.value)||'';
+  const MONTHS=['01','02','03','04','05','06','07','08','09','10','11','12'];
+  const MO_LBL=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  let filtered=kwchData.filter(r=>r.month.startsWith(selYear));
+  if(selAcct)filtered=filtered.filter(r=>r.acctId===selAcct);
+  if(!filtered.length){if(content)content.innerHTML=`<div class="kwc-empty">${selYear}년 충전 내역이 없습니다.</div>`;if(summary)summary.innerHTML='';if(detail)detail.classList.add('hide');return;}
+  const yearTotal=filtered.reduce((s,r)=>s+r.amount,0);
+  const manualTotal=filtered.filter(r=>r.method==='수동충전').reduce((s,r)=>s+r.amount,0);
+  const autoTotal=filtered.filter(r=>r.method==='자동충전').reduce((s,r)=>s+r.amount,0);
+  const activeMonths=[...new Set(filtered.map(r=>r.month.slice(5,7)))];
+  if(summary)summary.innerHTML=`<div class="kwc-year-summary"><span class="kwc-year-lbl">${selYear}년 전체 충전금액</span><span class="kwc-year-val">${fmtMoney(yearTotal)}</span><span class="kwc-year-sub" style="margin-left:0">수동 ${fmtMoney(manualTotal)} · 자동 ${fmtMoney(autoTotal)}</span><span class="kwc-year-sub" style="margin-left:auto">${filtered.length}건 · ${activeMonths.length}개월</span></div>`;
+  const pivot={};
+  filtered.forEach(r=>{if(!pivot[r.acctId])pivot[r.acctId]={};const mo=r.month.slice(5,7);if(!pivot[r.acctId][mo])pivot[r.acctId][mo]={total:0,count:0};pivot[r.acctId][mo].total+=r.amount;pivot[r.acctId][mo].count++;});
+  const grandTotal={};MONTHS.forEach(mo=>{grandTotal[mo]=0;});
+  const acctOrder=Object.keys(pivot).sort();
+  try{
+    let html='<div class="kwc-pivot-wrap"><table class="kwc-pivot-table"><colgroup><col style="min-width:130px">'+MONTHS.map(()=>'<col style="min-width:80px">').join('')+'<col style="min-width:90px"></colgroup><thead><tr class="kwc-pivot-hdr"><th class="kwc-th-name">계정</th>'+MO_LBL.map((l,i)=>`<th class="kwc-th-mo${activeMonths.includes(MONTHS[i])?' active':''}">${l}</th>`).join('')+'<th class="kwc-th-total">합계</th></tr></thead><tbody>';
+    acctOrder.forEach(aid=>{
+      let acctTotal=0;let tds='';
+      MONTHS.forEach(mo=>{
+        const cell=pivot[aid][mo];const v=cell?cell.total:0;
+        acctTotal+=v;grandTotal[mo]+=v;
+        tds+=v?`<td class="kwc-td-mo has-val kwch-cell" onclick="showChargeDetail('${aid}','${selYear}-${mo}')" title="클릭하면 상세보기">${fmtMoney(v)}<br><small style="opacity:.6;font-size:9px">${cell.count}건</small></td>`:`<td class="kwc-td-mo">—</td>`;
+      });
+      html+=`<tr class="kwc-camp-row"><td class="kwc-camp-name">${aid}</td>${tds}<td class="kwc-td-sum">${fmtMoney(acctTotal)}</td></tr>`;
+    });
+    const totalSum=Object.values(grandTotal).reduce((s,v)=>s+v,0);
+    let gTds='';MONTHS.forEach(mo=>{const v=grandTotal[mo];gTds+=`<td class="kwc-td-mo kwc-td-grand${v?' has-val':''}">${v?fmtMoney(v):'—'}</td>`;});
+    html+=`<tr class="kwc-grand-row"><td class="kwc-grand-lbl">전체 합계</td>${gTds}<td class="kwc-td-sum kwc-td-grand">${fmtMoney(totalSum)}</td></tr></tbody></table></div>`;
+    if(content)content.innerHTML=html;
+  }catch(err){if(content)content.innerHTML=`<div class="kwc-empty" style="color:var(--red)">오류: ${err.message}</div>`;console.error('[BRIN-kwch]',err);}
+  if(detail)detail.classList.add('hide');
+}
+
+function showChargeDetail(acctId,month){
+  const detail=document.getElementById('kwchDetail');if(!detail)return;
+  const rows=kwchData.filter(r=>r.acctId===acctId&&r.month===month);
+  if(!rows.length){detail.classList.add('hide');return;}
+  const total=rows.reduce((s,r)=>s+r.amount,0);
+  const manual=rows.filter(r=>r.method==='수동충전').reduce((s,r)=>s+r.amount,0);
+  const auto=rows.filter(r=>r.method==='자동충전').reduce((s,r)=>s+r.amount,0);
+  const campaigns=[...new Set(kwcData.filter(r=>r.acctId===acctId&&r.month===month&&r.amount>0).map(r=>r.campaignName))];
+  const sorted=[...rows].sort((a,b)=>a.chargeDate.localeCompare(b.chargeDate));
+  let html=`<div class="kwch-detail-header"><span class="kwch-detail-title">💰 ${month} · ${acctId}</span><button class="kwch-close-btn" onclick="document.getElementById('kwchDetail').classList.add('hide')">✕</button></div><div class="kwch-detail-summary"><div><span class="kwch-lbl">충전 합계</span><span class="kwch-val">${fmtMoney(total)}</span></div>${manual?`<div><span class="kwch-lbl">수동충전</span><span class="kwch-val">${fmtMoney(manual)}</span></div>`:''} ${auto?`<div><span class="kwch-lbl">자동충전</span><span class="kwch-val">${fmtMoney(auto)}</span></div>`:''}</div>`;
+  if(campaigns.length)html+=`<div class="kwch-detail-sec"><div class="kwch-sec-title">📋 해당 월 집행 캠페인</div>${campaigns.map(c=>`<span class="kwch-camp-chip">${c.replace(/</g,'&lt;')}</span>`).join('')}</div>`;
+  html+=`<div class="kwch-detail-sec"><div class="kwch-sec-title">📅 충전 내역 (${sorted.length}건)</div><table class="kwch-log-table"><thead><tr><th>충전일시</th><th>방식</th><th style="text-align:right">금액</th></tr></thead><tbody>${sorted.map(r=>`<tr><td>${r.chargeDate}</td><td><span class="kwch-method-badge ${r.method==='자동충전'?'auto':'manual'}">${r.method}</span></td><td style="text-align:right;font-weight:700">${fmtMoney(r.amount)}</td></tr>`).join('')}</tbody></table></div>`;
+  detail.innerHTML=html;detail.classList.remove('hide');
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 // ── 키워드 캠페인비용 시트 파싱 ──────────────────────
