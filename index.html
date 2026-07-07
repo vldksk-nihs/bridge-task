@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.16">
+<meta name="version" content="v4.19.17">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -439,6 +439,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kwc-grand-lbl{font-size:11px;color:var(--tx);position:sticky;left:0;background:var(--sur2);z-index:1;}
 .kwc-td-grand.has-val{color:var(--tx);}
 
+.kwch-dl-btn{font-size:11px;padding:5px 12px;font-weight:700;white-space:nowrap;}
 .kwch-cell{cursor:pointer;}
 .kwch-cell:hover{background:rgba(245,160,51,.15)!important;color:var(--orange)!important;}
 .kwch-detail{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-top:14px;}
@@ -1045,11 +1046,12 @@ body.light .sms-tool{
 .sms-tool .sms-fade-up{animation:smsFadeUp .3s ease-out forwards;}
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.16</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.17</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1288,6 +1290,14 @@ body.light .sms-tool{
           <div class="kw-header-r" style="gap:8px">
             <select id="kwchYearSel" class="kwc-filter" onchange="renderKeywordCharge()"></select>
             <select id="kwchAcctSel" class="kwc-filter" onchange="renderKeywordCharge()"></select>
+            <select id="kwchQtrSel" class="kwc-filter">
+              <option value="all">전체 분기</option>
+              <option value="Q1">1분기 (1~3월)</option>
+              <option value="Q2">2분기 (4~6월)</option>
+              <option value="Q3">3분기 (7~9월)</option>
+              <option value="Q4">4분기 (10~12월)</option>
+            </select>
+            <button class="btn btn-g kwch-dl-btn" onclick="downloadChargeExcel()" title="엑셀 다운로드">📥 엑셀 다운로드</button>
           </div>
         </div>
         <div class="kwc-summary" id="kwchSummary"></div>
@@ -3640,6 +3650,114 @@ function renderKeywordCharge(){
     if(content)content.innerHTML=html;
   }catch(err){if(content)content.innerHTML=`<div class="kwc-empty" style="color:var(--red)">오류: ${err.message}</div>`;console.error('[BRIN-kwch]',err);}
   if(detail)detail.classList.add('hide');
+}
+
+// ── 충전내역 엑셀 다운로드 ─────────────────────────────
+function downloadChargeExcel(){
+  if(!kwchData.length){showToast('충전 내역 데이터가 없습니다.','warn');return;}
+  if(typeof XLSX==='undefined'){showToast('엑셀 라이브러리 로드 중입니다. 잠시 후 다시 시도해주세요.','warn');return;}
+
+  const yearSel=document.getElementById('kwchYearSel');
+  const acctSel=document.getElementById('kwchAcctSel');
+  const qtrSel =document.getElementById('kwchQtrSel');
+  const selYear=(yearSel&&yearSel.value)||'';
+  const selAcct=(acctSel&&acctSel.value)||'';
+  const selQtr =(qtrSel&&qtrSel.value)||'all';
+
+  // 분기 → 월 범위
+  const QTR_MONTHS={Q1:['01','02','03'],Q2:['04','05','06'],Q3:['07','08','09'],Q4:['10','11','12']};
+
+  // 데이터 필터
+  let filtered=[...kwchData];
+  if(selYear)filtered=filtered.filter(r=>r.month.startsWith(selYear));
+  if(selAcct)filtered=filtered.filter(r=>r.acctId===selAcct);
+  if(selQtr!=='all'){
+    const allowed=QTR_MONTHS[selQtr]||[];
+    filtered=filtered.filter(r=>allowed.includes(r.month.slice(5,7)));
+  }
+  if(!filtered.length){showToast('해당 조건의 데이터가 없습니다.','warn');return;}
+
+  // 날짜 오름차순 정렬
+  filtered.sort((a,b)=>a.chargeDate.localeCompare(b.chargeDate));
+
+  // ── 시트 데이터 구성 ──
+  const wb=XLSX.utils.book_new();
+  const rows=[];
+
+  // 타이틀
+  const qtrLabel=selQtr==='all'?'전체':({Q1:'1분기',Q2:'2분기',Q3:'3분기',Q4:'4분기'}[selQtr]);
+  const title=`네이버 키워드광고 충전 내역 정산서 - ${selYear}년 ${qtrLabel}${selAcct?' ('+selAcct+')':''}`;
+  rows.push([title]);
+  rows.push([`생성일시: ${new Date().toLocaleString('ko-KR')}`]);
+  rows.push([]); // 빈 행
+
+  // 헤더
+  rows.push(['분기','계정ID','충전일','충전금액(원)','충전유형','충전후잔액(원)']);
+
+  // 분기별 그룹 소계
+  const qtrGroups={Q1:[],Q2:[],Q3:[],Q4:[]};
+  filtered.forEach(r=>{
+    const mo=r.month.slice(5,7);
+    const q=parseInt(mo)<=3?'Q1':parseInt(mo)<=6?'Q2':parseInt(mo)<=9?'Q3':'Q4';
+    qtrGroups[q].push(r);
+  });
+
+  const qtrNames={Q1:'1분기',Q2:'2분기',Q3:'3분기',Q4:'4분기'};
+  let grandTotal=0;
+
+  ['Q1','Q2','Q3','Q4'].forEach(q=>{
+    const grp=qtrGroups[q];
+    if(!grp.length)return;
+    let qTotal=0;
+    grp.forEach(r=>{
+      rows.push([
+        qtrNames[q],
+        r.acctId,
+        r.chargeDate,
+        r.amount,
+        r.method||'충전',
+        r.amount, // 잔액 데이터가 있으면 사용
+      ]);
+      qTotal+=r.amount;
+    });
+    grandTotal+=qTotal;
+    // 분기 소계 행
+    rows.push(['','','◀ '+qtrNames[q]+' 소계',qTotal,'','']);
+    rows.push([]); // 빈 행
+  });
+
+  // 총합계
+  rows.push(['','','▶ 총합계',grandTotal,'','']);
+
+  // 워크시트 생성
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+
+  // 컬럼 너비 설정
+  ws['!cols']=[{wch:8},{wch:14},{wch:22},{wch:18},{wch:12},{wch:18}];
+
+  // 스타일 (타이틀/헤더 굵게, 금액 오른쪽 정렬은 xlsx 기본값)
+  // 숫자 형식 지정 (D열, F열 = 금액)
+  const range=XLSX.utils.decode_range(ws['!ref']||'A1');
+  for(let R=4;R<=range.e.r;R++){
+    // D열(index 3), F열(index 5) 숫자 서식
+    ['D','F'].forEach(col=>{
+      const addr=col+(R+1);
+      if(ws[addr]&&typeof ws[addr].v==='number'){
+        ws[addr].t='n';
+        ws[addr].z='#,##0';
+      }
+    });
+  }
+
+  XLSX.utils.book_append_sheet(wb,ws,'충전내역');
+
+  // 파일명
+  const qLabel=selQtr==='all'?'전체분기':({Q1:'1분기',Q2:'2분기',Q3:'3분기',Q4:'4분기'}[selQtr]);
+  const acctLabel=selAcct?`_${selAcct}`:'';
+  const fileName=`BRIN_충전내역_${selYear}년_${qLabel}${acctLabel}.xlsx`;
+
+  XLSX.writeFile(wb,fileName);
+  showToast(`📥 ${fileName} 다운로드 완료`,'ok');
 }
 
 function showChargeDetail(acctId,month){
