@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.13">
+<meta name="version" content="v4.19.14">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1044,7 +1044,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.13</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.14</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1915,6 +1915,7 @@ async function fetchData(isManual){
   if(isManual)showLoading('새로고침 중...');
   try{
     // batchGet으로 6개 시트 한 번에: 매체집행일정 + 연차 + 키워드잔액 + 직방(브릿지) + 직방(직방) + 키워드캠페인비용
+    // ※ 키워드광고_충전내역은 시트가 없을 수 있어서 별도 조회
     const ranges=[
       `${CFG.sheetName}!${CFG.range}`,
       '연차일정!A4:P30',
@@ -1922,7 +1923,6 @@ async function fetchData(isManual){
       '직방/호갱노노(브릿지)!A:K',
       '직방/호갱노노(직방)!A:K',
       '키워드광고_캠페인비용!A:F',
-      '키워드광고_충전내역!A:F',
     ];
     const rangeParams=ranges.map(r=>`ranges=${encodeURIComponent(r)}`).join('&');
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values:batchGet?${rangeParams}&valueRenderOption=FORMATTED_VALUE&dateTimeRenderOption=FORMATTED_STRING`;
@@ -1966,10 +1966,8 @@ async function fetchData(isManual){
       parseKeywordCampaign((valueRanges[5]&&valueRanges[5].values)||[]);
       if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='campaign')renderKeywordCampaign();
     }catch(e){console.warn('[BRIN-kwc] parse',e);}
-    try{
-      parseKeywordCharge((valueRanges[6]&&valueRanges[6].values)||[]);
-      if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='charge')renderKeywordCharge();
-    }catch(e){console.warn('[BRIN-kwch] parse',e);}
+    // 충전내역은 시트가 없을 수 있어서 별도 안전 조회
+    fetchChargeSheetSafe();
     // [3][4] 직방/호갱노노 — 항상 최신 데이터로 갱신
     try{
       parseZbBrin((valueRanges[3]&&valueRanges[3].values)||[]);
@@ -3513,6 +3511,28 @@ function switchNaverSubTab(tab){
 }
 
 // ── 충전 내역 파싱 + 렌더 ─────────────────────────────
+// ── 충전내역 시트 별도 안전 조회 ───────────────────────
+// batchGet에 포함하면 시트 없을 때 전체 실패 → 별도 호출로 분리
+async function fetchChargeSheetSafe(){
+  if(!token||!CFG.sheetId)return;
+  try{
+    const rng=encodeURIComponent('키워드광고_충전내역!A:F');
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${rng}?valueRenderOption=FORMATTED_VALUE`;
+    const res=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
+    if(!res.ok){
+      // 400/404 = 시트 없음, 조용히 무시
+      parseKeywordCharge([]);
+      return;
+    }
+    const data=await res.json();
+    parseKeywordCharge(data.values||[]);
+    if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='charge')renderKeywordCharge();
+  }catch(e){
+    console.warn('[BRIN-kwch]',e);
+    parseKeywordCharge([]);
+  }
+}
+
 let kwchData=[];
 let kwchLastSync='';
 function parseKeywordCharge(values){
