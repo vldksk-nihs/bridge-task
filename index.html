@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.17">
+<meta name="version" content="v4.19.18">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1051,7 +1051,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.17</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.18</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3692,7 +3692,7 @@ function downloadChargeExcel(){
   rows.push([]); // 빈 행
 
   // 헤더
-  rows.push(['분기','계정ID','충전일','충전금액(원)','충전유형','충전후잔액(원)']);
+  rows.push(['계정ID','충전일자','충전금액(원)','충전유형','충전후잔액(원)']);
 
   // 분기별 그룹 소계
   const qtrGroups={Q1:[],Q2:[],Q3:[],Q4:[]};
@@ -3708,39 +3708,38 @@ function downloadChargeExcel(){
   ['Q1','Q2','Q3','Q4'].forEach(q=>{
     const grp=qtrGroups[q];
     if(!grp.length)return;
+    // 분기 구분 행
+    rows.push([`── ${qtrNames[q]} ──`,'','','','']);
     let qTotal=0;
     grp.forEach(r=>{
       rows.push([
-        qtrNames[q],
         r.acctId,
         r.chargeDate,
         r.amount,
         r.method||'충전',
-        r.amount, // 잔액 데이터가 있으면 사용
+        r.amount,
       ]);
       qTotal+=r.amount;
     });
     grandTotal+=qTotal;
     // 분기 소계 행
-    rows.push(['','','◀ '+qtrNames[q]+' 소계',qTotal,'','']);
+    rows.push(['◀ '+qtrNames[q]+' 소계','',qTotal,'','']);
     rows.push([]); // 빈 행
   });
 
   // 총합계
-  rows.push(['','','▶ 총합계',grandTotal,'','']);
+  rows.push(['▶ 총합계','',grandTotal,'','']);
 
   // 워크시트 생성
   const ws=XLSX.utils.aoa_to_sheet(rows);
 
-  // 컬럼 너비 설정
-  ws['!cols']=[{wch:8},{wch:14},{wch:22},{wch:18},{wch:12},{wch:18}];
+  // 컬럼 너비 설정 (5개)
+  ws['!cols']=[{wch:16},{wch:22},{wch:18},{wch:12},{wch:18}];
 
-  // 스타일 (타이틀/헤더 굵게, 금액 오른쪽 정렬은 xlsx 기본값)
-  // 숫자 형식 지정 (D열, F열 = 금액)
+  // 금액 숫자 서식 (C열=충전금액, E열=잔액)
   const range=XLSX.utils.decode_range(ws['!ref']||'A1');
   for(let R=4;R<=range.e.r;R++){
-    // D열(index 3), F열(index 5) 숫자 서식
-    ['D','F'].forEach(col=>{
+    ['C','E'].forEach(col=>{
       const addr=col+(R+1);
       if(ws[addr]&&typeof ws[addr].v==='number'){
         ws[addr].t='n';
