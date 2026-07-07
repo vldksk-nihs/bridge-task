@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.14">
+<meta name="version" content="v4.19.15">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1044,7 +1044,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.14</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.15</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1723,16 +1723,23 @@ function resetDefaults(){
 }
 
 // ── TOKEN ──────────────────────────────────────
-// 토큰 - 새로고침까지만 유지 (sessionStorage)
+// 토큰 - sessionStorage(탭) + localStorage(브라우저) 병행 저장
 function saveToken(t,exp,email){
-  safeSession.set('brin_tk',JSON.stringify({t,exp:Date.now()+(exp-120)*1000,email}));
+  const data=JSON.stringify({t,exp:Date.now()+(exp-120)*1000,email});
+  safeSession.set('brin_tk',data);
+  safeStorage.set('brin_tk',data);  // 브라우저 닫아도 유지
 }
 function loadTokenData(){
-  try{const s=safeSession.get('brin_tk');if(!s)return null;
+  try{
+    // sessionStorage 우선, 없으면 localStorage에서 복원
+    const s=safeSession.get('brin_tk')||safeStorage.get('brin_tk');
+    if(!s)return null;
     const o=JSON.parse(s);
-    if(Date.now()>o.exp){safeSession.remove('brin_tk');return null;}
-    return o;}
-  catch{return null;}
+    if(Date.now()>o.exp){
+      safeSession.remove('brin_tk');safeStorage.remove('brin_tk');return null;
+    }
+    return o;
+  }catch{return null;}
 }
 function clearToken(){safeSession.remove('brin_tk');safeStorage.remove('brin_tk');}
 
@@ -1878,7 +1885,14 @@ function onLoggedIn(){
     :'비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회';
 
   showLoading('데이터를 불러오는 중...');
-  fetchData().finally(hideLoading);
+  fetchData().finally(()=>{
+    hideLoading();
+    // 로그인 후 이전 탭 복원 (URL 해시 기반)
+    const savedHash=location.hash.slice(1);
+    if(['budget','leave','keyword','media'].includes(savedHash)){
+      switchView(savedHash);
+    }
+  });
   clearInterval(pollTimer);
   pollTimer=setInterval(fetchData,CFG.pollMin*60000);
 }
@@ -2693,6 +2707,8 @@ function switchView(v){
     showToast('매체안내는 로그인한 임직원만 접근 가능합니다.','warn');return;
   }
   view=v;
+  // 탭 상태를 URL 해시에 기록 (새로고침 복원용)
+  try{history.replaceState(null,'','#'+v);}catch(e){}
   document.querySelectorAll('.tab').forEach((t,i)=>{
     let on=false;
     if(i===0&&v==='gantt')on=true;
@@ -4677,6 +4693,15 @@ window.addEventListener('load',()=>{
       token=saved.t;userEmail=saved.email||'';
       onLoggedIn();
     }
+    // 토큰 만료 5분 전 자동 갱신 (5분마다 체크)
+    setInterval(()=>{
+      if(!token)return;
+      const d=loadTokenData();
+      if(!d||Date.now()>d.exp-5*60*1000){
+        try{tokenClient.requestAccessToken({prompt:''});}
+        catch(e){console.warn('[BRIN-token] 자동갱신 실패',e);}
+      }
+    },5*60*1000);
   };
   doInit();
 });
