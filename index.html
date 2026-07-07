@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.15">
+<meta name="version" content="v4.19.16">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -408,6 +408,11 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kwc-th-mo{text-align:right;background:var(--sur2);color:var(--tx3);font-size:10px;font-weight:700;min-width:72px;}
 .kwc-th-mo.active{color:var(--pri);}
 .kwc-th-total{text-align:right;background:var(--sur2);color:var(--tx3);font-size:10px;font-weight:700;}
+/* 분기 헤더 */
+.kwc-quarter-hdr .kwc-th-name{border-bottom:1px solid var(--bd);}
+.kwc-th-quarter{text-align:center;background:var(--sur3);color:var(--tx3);font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 8px;border-left:1px solid var(--bd);}
+.kwc-th-quarter.active{color:var(--pri);background:rgba(79,110,247,.08);}
+.kwc-th-total-q{background:var(--sur3);}
 
 /* 계정 헤더 행 */
 .kwc-acct-row td{background:var(--sur3);padding:6px 10px;border-top:2px solid var(--bd);}
@@ -1044,7 +1049,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.15</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.16</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3601,7 +3606,25 @@ function renderKeywordCharge(){
   const grandTotal={};MONTHS.forEach(mo=>{grandTotal[mo]=0;});
   const acctOrder=Object.keys(pivot).sort();
   try{
-    let html='<div class="kwc-pivot-wrap"><table class="kwc-pivot-table"><colgroup><col style="min-width:130px">'+MONTHS.map(()=>'<col style="min-width:80px">').join('')+'<col style="min-width:90px"></colgroup><thead><tr class="kwc-pivot-hdr"><th class="kwc-th-name">계정</th>'+MO_LBL.map((l,i)=>`<th class="kwc-th-mo${activeMonths.includes(MONTHS[i])?' active':''}">${l}</th>`).join('')+'<th class="kwc-th-total">합계</th></tr></thead><tbody>';
+    // 분기별 colspan 헤더 (1Q=3개월, 2Q=3개월, 3Q=3개월, 4Q=3개월)
+    const quarters=[
+      {label:'1분기',months:['01','02','03']},
+      {label:'2분기',months:['04','05','06']},
+      {label:'3분기',months:['07','08','09']},
+      {label:'4분기',months:['10','11','12']},
+    ];
+    const qHdr=quarters.map(q=>{
+      const hasActive=q.months.some(m=>activeMonths.includes(m));
+      return `<th class="kwc-th-quarter${hasActive?' active':''}" colspan="3">${q.label}</th>`;
+    }).join('');
+
+    let html='<div class="kwc-pivot-wrap"><table class="kwc-pivot-table"><colgroup><col style="min-width:130px">'+MONTHS.map(()=>'<col style="min-width:80px">').join('')+'<col style="min-width:90px"></colgroup>'
+      +'<thead>'
+      // 분기 행
+      +`<tr class="kwc-pivot-hdr kwc-quarter-hdr"><th class="kwc-th-name" rowspan="2">계정</th>${qHdr}<th class="kwc-th-total kwc-th-total-q" rowspan="2">합계</th></tr>`
+      // 월 행
+      +`<tr class="kwc-pivot-hdr">`+MO_LBL.map((l,i)=>`<th class="kwc-th-mo${activeMonths.includes(MONTHS[i])?' active':''}">${l}</th>`).join('')+`</tr>`
+      +'</thead><tbody>';
     acctOrder.forEach(aid=>{
       let acctTotal=0;let tds='';
       MONTHS.forEach(mo=>{
@@ -3762,14 +3785,26 @@ function renderKeywordCampaign(){
     const grandTotal={};
     MONTHS.forEach(mo=>{grandTotal[mo]=0;});
 
+    const quarters=[
+      {label:'1분기',months:['01','02','03']},
+      {label:'2분기',months:['04','05','06']},
+      {label:'3분기',months:['07','08','09']},
+      {label:'4분기',months:['10','11','12']},
+    ];
+    const qHdr=quarters.map(q=>{
+      const hasActive=q.months.some(m=>activeMonths.includes(m));
+      return `<th class="kwc-th-quarter${hasActive?' active':''}" colspan="3">${q.label}</th>`;
+    }).join('');
+
     let html='<div class="kwc-pivot-wrap"><table class="kwc-pivot-table"><colgroup>'
       +`<col style="min-width:160px">`
       +MONTHS.map(()=>`<col style="min-width:72px">`).join('')
       +`<col style="min-width:90px"></colgroup>`
-      +`<thead><tr class="kwc-pivot-hdr">`
-      +`<th class="kwc-th-name">캠페인명</th>`
+      +`<thead>`
+      +`<tr class="kwc-pivot-hdr kwc-quarter-hdr"><th class="kwc-th-name" rowspan="2">캠페인명</th>${qHdr}<th class="kwc-th-total kwc-th-total-q" rowspan="2">합계</th></tr>`
+      +`<tr class="kwc-pivot-hdr">`
       +MONTH_LABELS.map((l,i)=>`<th class="kwc-th-mo${activeMonths.includes(MONTHS[i])?' active':''}">${l}</th>`).join('')
-      +`<th class="kwc-th-total">합계</th></tr></thead><tbody>`;
+      +`</tr></thead><tbody>`;
 
     acctOrder.forEach(aid=>{
       const campaigns=pivot[aid];
