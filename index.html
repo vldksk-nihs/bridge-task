@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.20">
+<meta name="version" content="v4.19.21">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -439,26 +439,26 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kwc-grand-lbl{font-size:11px;color:var(--tx);position:sticky;left:0;background:var(--sur2);z-index:1;}
 .kwc-td-grand.has-val{color:var(--tx);}
 
-.kwch-dl-btn{font-size:11px;padding:5px 12px;font-weight:700;white-space:nowrap;}
+.kwch-dl-btn{font-size:14px;padding:5px 12px;font-weight:700;white-space:nowrap;}
 .kwch-cell{cursor:pointer;}
 .kwch-cell:hover{background:rgba(245,160,51,.15)!important;color:var(--orange)!important;}
 .kwch-detail{background:var(--sur);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-top:14px;}
 .kwch-detail-header{display:flex;align-items:center;margin-bottom:12px;}
-.kwch-detail-title{font-size:14px;font-weight:800;color:var(--tx);}
-.kwch-close-btn{margin-left:auto;background:none;border:1px solid var(--bd);border-radius:6px;color:var(--tx3);cursor:pointer;padding:3px 9px;font-size:11px;}
+.kwch-detail-title{font-size:17px;font-weight:800;color:var(--tx);}
+.kwch-close-btn{margin-left:auto;background:none;border:1px solid var(--bd);border-radius:6px;color:var(--tx3);cursor:pointer;padding:3px 9px;font-size:14px;}
 .kwch-close-btn:hover{color:var(--tx);border-color:var(--tx2);}
 .kwch-detail-summary{display:flex;gap:16px;flex-wrap:wrap;padding:10px 14px;background:var(--sur2);border-radius:8px;margin-bottom:12px;}
 .kwch-detail-summary div{display:flex;align-items:center;gap:6px;}
-.kwch-lbl{font-size:11px;color:var(--tx3);}
-.kwch-val{font-size:14px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;}
+.kwch-lbl{font-size:14px;color:var(--tx3);}
+.kwch-val{font-size:17px;font-weight:800;color:var(--tx);font-variant-numeric:tabular-nums;}
 .kwch-detail-sec{margin-bottom:12px;}
-.kwch-sec-title{font-size:11px;font-weight:700;color:var(--tx3);margin-bottom:6px;letter-spacing:.03em;}
-.kwch-camp-chip{display:inline-block;font-size:11px;padding:3px 8px;background:rgba(79,110,247,.12);color:#99aaff;border-radius:4px;margin:2px 4px 2px 0;}
-.kwch-log-table{width:100%;border-collapse:collapse;font-size:12px;}
-.kwch-log-table th{padding:6px 8px;text-align:left;color:var(--tx3);font-size:10px;font-weight:700;border-bottom:1px solid var(--bd);}
+.kwch-sec-title{font-size:14px;font-weight:700;color:var(--tx3);margin-bottom:6px;letter-spacing:.03em;}
+.kwch-camp-chip{display:inline-block;font-size:14px;padding:3px 8px;background:rgba(79,110,247,.12);color:#99aaff;border-radius:4px;margin:2px 4px 2px 0;}
+.kwch-log-table{width:100%;border-collapse:collapse;font-size:15px;}
+.kwch-log-table th{padding:6px 8px;text-align:left;color:var(--tx3);font-size:13px;font-weight:700;border-bottom:1px solid var(--bd);}
 .kwch-log-table td{padding:6px 8px;border-bottom:1px solid var(--bd);color:var(--tx);}
 .kwch-log-table tr:last-child td{border-bottom:none;}
-.kwch-method-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600;}
+.kwch-method-badge{font-size:13px;padding:2px 6px;border-radius:4px;font-weight:600;}
 .kwch-method-badge.manual{background:rgba(79,110,247,.12);color:#99aaff;}
 .kwch-method-badge.auto{background:rgba(45,217,143,.12);color:var(--green);}
 
@@ -882,16 +882,16 @@ body.offline .offline-bar{display:block;}
    WCAG AA (4.5:1) 기준 통과하는 명도값으로 조정
 ──────────────────────────────────────────────────── */
 body:not(.light) .sms-tool{
-  /* 텍스트: 다크모드 가독성 최우선 */
-  --sms-text:  #eef1f8;        /* 본문 텍스트 — 밝게 */
-  --sms-text2: #c2cce0;        /* 보조 텍스트 */
-  --sms-text3: #8e9ab4;        /* 3차 텍스트 */
-  /* 배경/카드: 충분한 레이어 대비 */
+  /* 텍스트: 가독성 최우선 */
+  --sms-text:  #f0f3fa;        /* 본문 — 더 밝게 */
+  --sms-text2: #d4ddf0;        /* 보조 — 충분한 대비 */
+  --sms-text3: #a8b6d0;        /* 3차 — 읽힐 수 있는 밝기 */
+  /* 배경/카드 */
   --sms-bg:    #141929;
-  --sms-card:  #1c2237;        /* 카드 배경 */
-  --sms-card2: #222842;        /* 중첩 카드 */
+  --sms-card:  #1c2237;
+  --sms-card2: #232944;
   --sms-header:#1c2237;
-  --sms-border: #333c58;       /* 테두리: 뚜렷하게 */
+  --sms-border: #363f60;       /* 테두리: 더 뚜렷 */
   /* 활성 상태 */
   --sms-primary-light: rgba(99,130,255,.25);
   --sms-purple-light:  rgba(167,139,250,.28);
@@ -912,11 +912,11 @@ body.light .sms-tool{
 
 /* ── C안: 폰트 크기 계층 재구성 ── */
 .sms-tool .sms-header{background:var(--sms-header);color:var(--sms-text);padding:18px 20px 0;border-radius:10px 10px 0 0;border-bottom:1px solid var(--sms-border);}
-.sms-tool .sms-header-label{font-size:11px;font-weight:700;color:var(--sms-text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}  /* 10→11px */
+.sms-tool .sms-header-label{font-size:14px;font-weight:700;color:var(--sms-text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}  /* 10→11px */
 .sms-tool .sms-h1{font-size:18px;font-weight:900;margin:0;color:var(--sms-text);}
-.sms-tool .sms-sub{font-size:12px;color:var(--sms-text3);margin:2px 0 14px;line-height:1.6;}  /* 11→12px */
+.sms-tool .sms-sub{font-size:15px;color:var(--sms-text3);margin:2px 0 14px;line-height:1.6;}  /* 11→12px */
 .sms-tool .sms-tabs{display:flex;gap:0;}
-.sms-tool .sms-tab-btn{padding:9px 18px;border:none;background:transparent;color:var(--sms-text2);font-weight:700;font-size:12px;cursor:pointer;border-radius:7px 7px 0 0;transition:all .2s;font-family:inherit;}  /* text3→text2 */
+.sms-tool .sms-tab-btn{padding:9px 18px;border:none;background:transparent;color:var(--sms-text2);font-weight:700;font-size:15px;cursor:pointer;border-radius:7px 7px 0 0;transition:all .2s;font-family:inherit;}  /* 12→15px */
 .sms-tool .sms-tab-btn.active{background:var(--sms-bg);color:var(--sms-text);}
 
 .sms-tool .sms-tab-panel{display:none;}
@@ -924,32 +924,32 @@ body.light .sms-tool{
 .sms-tool .sms-content{padding:18px 16px;background:var(--sms-bg);}
 .sms-tool .sms-card{background:var(--sms-card);border-radius:10px;padding:18px;box-shadow:var(--sms-shadow);border:1px solid var(--sms-border);}
 
-.sms-tool .sms-field-label{display:block;font-size:12px;font-weight:700;color:var(--sms-text2);margin-bottom:7px;letter-spacing:.02em;}  /* 11→12px, 간격 추가 */
+.sms-tool .sms-field-label{display:block;font-size:15px;font-weight:700;color:var(--sms-text2);margin-bottom:7px;letter-spacing:.02em;}  /* 11→12px, 간격 추가 */
 .sms-tool .sms-btn-group{display:flex;gap:6px;flex-wrap:wrap;}
-.sms-tool .sms-toggle-btn{padding:7px 14px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:13px;font-weight:700;transition:all .15s;font-family:inherit;cursor:pointer;}  /* 12→13px, 패딩 조금 키움 */
+.sms-tool .sms-toggle-btn{padding:7px 14px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:16px;font-weight:700;transition:all .15s;font-family:inherit;cursor:pointer;}  /* 12→13px, 패딩 조금 키움 */
 .sms-tool .sms-toggle-btn:hover{border-color:var(--sms-primary);color:var(--sms-text);}  /* hover 시 text도 밝아짐 */
 .sms-tool .sms-toggle-btn.active{border-color:var(--sms-primary);background:var(--sms-primary-light);color:var(--sms-primary);border-width:2px;}
 .sms-tool .sms-toggle-btn.active-purple{border-color:var(--sms-purple);background:var(--sms-purple-light);color:var(--sms-purple);border-width:2px;}
 .sms-tool .sms-input-wrap{position:relative;}
-.sms-tool .sms-search-input{width:100%;padding:10px 14px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:14px;font-weight:500;background:var(--sms-card2);color:var(--sms-text);transition:all .15s;font-family:inherit;}
+.sms-tool .sms-search-input{width:100%;padding:10px 14px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:17px;font-weight:500;background:var(--sms-card2);color:var(--sms-text);transition:all .15s;font-family:inherit;}
 .sms-tool .sms-search-input:focus{outline:none;border-color:var(--sms-primary);box-shadow:0 0 0 3px rgba(79,110,247,.18);}
-.sms-tool .sms-rank-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--sms-primary);color:#fff;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:800;}
+.sms-tool .sms-rank-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:var(--sms-primary);color:#fff;padding:3px 10px;border-radius:6px;font-size:15px;font-weight:800;}
 .sms-tool .sms-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--sms-card);border-radius:9px;border:1.5px solid var(--sms-border);box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:200;max-height:280px;overflow-y:auto;}
 .sms-tool .sms-dd-item{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--sms-border);}
 .sms-tool .sms-dd-item:last-child{border-bottom:none;}
 .sms-tool .sms-dd-item:hover{background:var(--sms-primary-light);}
-.sms-tool .sms-dd-item-name{font-weight:600;font-size:13px;color:var(--sms-text);}
-.sms-tool .sms-dd-item-rank{background:var(--sms-gray-light);padding:2px 10px;border-radius:6px;font-size:11px;font-weight:700;color:var(--sms-primary);}
-.sms-tool .sms-dd-empty{padding:14px;color:var(--sms-text2);font-size:13px;}  /* text3→text2, 11→13px */
-.sms-tool .sms-main-btn{width:100%;padding:12px;border-radius:9px;border:none;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--sms-primary),var(--sms-primary-deep));transition:all .2s;font-family:inherit;cursor:pointer;}
+.sms-tool .sms-dd-item-name{font-weight:600;font-size:16px;color:var(--sms-text);}
+.sms-tool .sms-dd-item-rank{background:var(--sms-gray-light);padding:2px 10px;border-radius:6px;font-size:14px;font-weight:700;color:var(--sms-primary);}
+.sms-tool .sms-dd-empty{padding:14px;color:var(--sms-text2);font-size:16px;}  /* text3→text2, 11→13px */
+.sms-tool .sms-main-btn{width:100%;padding:12px;border-radius:9px;border:none;font-size:17px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--sms-primary),var(--sms-primary-deep));transition:all .2s;font-family:inherit;cursor:pointer;}
 .sms-tool .sms-main-btn:disabled{background:var(--sms-gray);cursor:not-allowed;opacity:.5;}
 .sms-tool .sms-main-btn.purple{background:linear-gradient(135deg,var(--sms-purple),#8b6dee);}
 
-.sms-tool .sms-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;white-space:nowrap;}
-.sms-tool .sms-badge-status-available{background:var(--sms-green);color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;}  /* 10→11px */
-.sms-tool .sms-badge-status-review{background:var(--sms-amber);color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;}
-.sms-tool .sms-badge-status-unavailable{background:var(--sms-red);color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;}
-.sms-tool .sms-badge-status-unknown{background:var(--sms-gray);color:#fff;border-radius:999px;padding:2px 8px;font-size:11px;}
+.sms-tool .sms-badge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:12px;font-weight:700;white-space:nowrap;}
+.sms-tool .sms-badge-status-available{background:var(--sms-green);color:#fff;border-radius:999px;padding:2px 8px;font-size:14px;}  /* 10→11px */
+.sms-tool .sms-badge-status-review{background:var(--sms-amber);color:#fff;border-radius:999px;padding:2px 8px;font-size:14px;}
+.sms-tool .sms-badge-status-unavailable{background:var(--sms-red);color:#fff;border-radius:999px;padding:2px 8px;font-size:14px;}
+.sms-tool .sms-badge-status-unknown{background:var(--sms-gray);color:#fff;border-radius:999px;padding:2px 8px;font-size:14px;}
 .sms-tool .sms-badge-cat-card{background:rgba(91,163,245,.22);color:var(--sms-primary);}   /* .18→.22 */
 .sms-tool .sms-badge-cat-tel{background:rgba(167,139,250,.22);color:var(--sms-purple);}
 .sms-tool .sms-badge-cat-member{background:rgba(251,191,36,.22);color:var(--sms-amber);}
@@ -962,57 +962,73 @@ body.light .sms-tool{
 .sms-tool .sms-badge-agency-biz{background:rgba(251,191,36,.18);color:var(--sms-amber);border:1px solid rgba(251,191,36,.4);}
 .sms-tool .sms-badge-agency-dc{background:rgba(91,163,245,.18);color:var(--sms-primary);border:1px solid rgba(91,163,245,.4);}
 .sms-tool .sms-badge-agency-dh{background:rgba(240,101,101,.18);color:var(--sms-red);border:1px solid rgba(240,101,101,.4);}
+.sms-tool .sms-badge-agency-bm{background:rgba(52,211,153,.18);color:#34d399;border:1px solid rgba(52,211,153,.4);}
+
+/* 분양 상세 가이드 테이블 */
+.sms-guide-table{width:100%;border-collapse:collapse;font-size:16px;white-space:nowrap;}
+.sms-guide-table .sg-th{padding:9px 10px;background:var(--sms-card2);color:var(--sms-text2);font-size:14px;font-weight:700;text-align:center;border-bottom:2px solid var(--sms-border);letter-spacing:.02em;line-height:1.4;}
+.sms-guide-table .sg-th-fix{text-align:left;}
+.sms-guide-table td{padding:8px 10px;border-bottom:1px solid var(--sms-border);vertical-align:middle;}
+.sms-guide-table .sg-row:hover td{background:var(--sms-card2);}
+.sms-guide-table .sg-ban td{opacity:.5;}
+.sms-guide-table .sg-cat{background:var(--sms-card2);font-weight:800;font-size:14px;color:var(--sms-text2);text-align:center;letter-spacing:.05em;border-right:2px solid var(--sms-border);}
+.sms-guide-table .sg-name{font-weight:700;color:var(--sms-text);min-width:100px;}
+.sg-o{display:inline-block;font-weight:800;color:#34d399;font-size:16px;}
+.sg-x{display:inline-block;font-weight:800;color:#f87171;font-size:16px;}
+.sg-d{display:inline-block;font-weight:700;color:#fbbf24;font-size:16px;}
+.sg-n{color:var(--sms-text3);font-size:15px;}
+.sg-p{font-size:13px;color:var(--sms-text2);line-height:1.3;white-space:normal;max-width:120px;display:inline-block;}
 
 .sms-tool .sms-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
 @media(max-width:600px){.sms-tool .sms-summary-grid{grid-template-columns:repeat(2,1fr);}}
 .sms-tool .sms-summary-card{border-radius:9px;padding:12px 10px;text-align:center;background:var(--sms-card);border:1px solid var(--sms-border);}
 .sms-tool .sms-summary-card .sms-num{font-size:22px;font-weight:800;display:block;}
-.sms-tool .sms-summary-card .sms-lbl{font-size:11px;font-weight:600;display:block;margin-top:2px;color:var(--sms-text2);}  /* 10→11px, 색 명시 */
+.sms-tool .sms-summary-card .sms-lbl{font-size:14px;font-weight:600;display:block;margin-top:2px;color:var(--sms-text2);}  /* 10→11px, 색 명시 */
 
 .sms-tool .sms-info-bar{background:var(--sms-header);color:var(--sms-text);border-radius:9px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;border:1px solid var(--sms-border);}
-.sms-tool .sms-info-bar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;}  /* 12→13px */
+.sms-tool .sms-info-bar-left{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:16px;}  /* 12→13px */
 
 .sms-tool .sms-table-wrap{background:var(--sms-card);border-radius:10px;box-shadow:var(--sms-shadow);overflow-x:auto;border:1px solid var(--sms-border);}
-.sms-tool #sms-result-table th{background:var(--sms-card2);color:var(--sms-text2);font-size:10px;font-weight:700;padding:9px 10px;border-bottom:1px solid var(--sms-border);white-space:nowrap;letter-spacing:.03em;}
-.sms-tool #sms-result-table td{border-bottom:1px solid var(--sms-border);color:var(--sms-text);padding:7px 10px;font-size:11px;}
+.sms-tool #sms-result-table th{background:var(--sms-card2);color:var(--sms-text2);font-size:13px;font-weight:700;padding:9px 10px;border-bottom:1px solid var(--sms-border);white-space:nowrap;letter-spacing:.03em;}
+.sms-tool #sms-result-table td{border-bottom:1px solid var(--sms-border);color:var(--sms-text);padding:7px 10px;font-size:14px;}
 .sms-tool #sms-result-table tr:hover td{background:rgba(99,130,255,.05);}
 .sms-tool #sms-result-table tr.unavailable td{opacity:.55;}
-.sms-restrict-chip{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(245,160,51,.13);color:#e8a020;line-height:1.5;}
-.sms-restrict-chip-ban{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(240,101,101,.15);color:#e85555;line-height:1.5;}
-.sms-tool table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px;}
+.sms-restrict-chip{display:inline-block;font-size:13px;font-weight:600;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(245,160,51,.13);color:#e8a020;line-height:1.5;}
+.sms-restrict-chip-ban{display:inline-block;font-size:13px;font-weight:700;padding:2px 7px;border-radius:4px;margin:1px 2px 1px 0;background:rgba(240,101,101,.15);color:#e85555;line-height:1.5;}
+.sms-tool table{width:100%;border-collapse:collapse;font-size:15px;min-width:800px;}
 .sms-tool thead tr{background:var(--sms-card2);}
-.sms-tool th{padding:10px 6px;font-weight:700;color:var(--sms-text2);font-size:10px;border-bottom:2px solid var(--sms-border);white-space:nowrap;text-align:left;}  /* 9→10px */
+.sms-tool th{padding:10px 6px;font-weight:700;color:var(--sms-text2);font-size:13px;border-bottom:2px solid var(--sms-border);white-space:nowrap;text-align:left;}  /* 9→10px */
 .sms-tool td{padding:8px 6px;border-bottom:1px solid var(--sms-border);vertical-align:middle;color:var(--sms-text);}  /* padding 7→8px */
 .sms-tool tr.sms-unavailable{opacity:0.5;background:rgba(0,0,0,.06);}  /* .45→.5 (약간 덜 흐리게) */
 .sms-tool .sms-type-list{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;}
 .sms-tool .sms-price-list{display:flex;flex-direction:column;align-items:center;gap:2px;}
 
-.sms-tool .sms-johab-banner{margin-bottom:14px;padding:12px 16px;border-radius:9px;font-size:13px;font-weight:800;}  /* 12→13px */
+.sms-tool .sms-johab-banner{margin-bottom:14px;padding:12px 16px;border-radius:9px;font-size:16px;font-weight:800;}  /* 12→13px */
 .sms-tool .sms-notice-box{margin-top:12px;padding:10px 14px;background:var(--sms-amber-light);border-radius:7px;border:1px solid rgba(251,191,36,.4);}
-.sms-tool .sms-notice-box li{font-size:11px;color:var(--sms-text2);line-height:1.8;margin-left:14px;}  /* 10→11px, 줄간격 1.7→1.8 */
+.sms-tool .sms-notice-box li{font-size:14px;color:var(--sms-text2);line-height:1.8;margin-left:14px;}  /* 10→11px, 줄간격 1.7→1.8 */
 
 .sms-tool .sms-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media(max-width:700px){.sms-tool .sms-editor-grid{grid-template-columns:1fr;}}
 .sms-tool .sms-guide-preview{margin-bottom:14px;padding:12px 14px;background:var(--sms-card2);border-radius:9px;border:1px solid var(--sms-border);}  /* padding 10→12 */
-.sms-tool .sms-guide-preview .sms-title{font-size:11px;font-weight:700;color:var(--sms-text2);margin-bottom:8px;}  /* 10→11px, 간격 6→8px */
-.sms-tool .sms-guide-preview .sms-row{font-size:11px;color:var(--sms-text2);line-height:1.9;}  /* 10→11px, 줄간격 1.8→1.9 */
-.sms-tool textarea.sms-msg-input{width:100%;height:180px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:13px;line-height:1.8;resize:vertical;background:var(--sms-card2);color:var(--sms-text);font-family:inherit;}  /* 12→13px, 줄간격 1.7→1.8 */
+.sms-tool .sms-guide-preview .sms-title{font-size:14px;font-weight:700;color:var(--sms-text2);margin-bottom:8px;}  /* 10→11px, 간격 6→8px */
+.sms-tool .sms-guide-preview .sms-row{font-size:14px;color:var(--sms-text2);line-height:1.9;}  /* 10→11px, 줄간격 1.8→1.9 */
+.sms-tool textarea.sms-msg-input{width:100%;height:180px;padding:10px 12px;border-radius:9px;border:1.5px solid var(--sms-border);font-size:16px;line-height:1.8;resize:vertical;background:var(--sms-card2);color:var(--sms-text);font-family:inherit;}  /* 12→13px, 줄간격 1.7→1.8 */
 .sms-tool textarea.sms-msg-input:focus{outline:none;border-color:var(--sms-primary);box-shadow:0 0 0 3px rgba(79,110,247,.18);}
 .sms-tool .sms-result-area-inner{min-height:320px;}
 .sms-tool .sms-result-block{margin-bottom:14px;}  /* 12→14px */
-.sms-tool .sms-result-block .sms-blabel{font-size:11px;font-weight:700;color:var(--sms-text2);margin-bottom:5px;display:flex;align-items:center;gap:6px;}  /* 10→11px */
-.sms-tool .sms-result-title-box{padding:10px 12px;background:rgba(91,163,245,.10);border-radius:8px;border:1.5px solid rgba(91,163,245,.35);font-size:15px;line-height:1.7;white-space:pre-wrap;color:var(--sms-text);}
-.sms-tool .sms-result-body-box{padding:10px 12px;background:var(--sms-card2);border-radius:8px;border:1.5px solid var(--sms-border);font-size:15px;line-height:1.9;white-space:pre-wrap;max-height:360px;overflow-y:auto;color:var(--sms-text);}
+.sms-tool .sms-result-block .sms-blabel{font-size:14px;font-weight:700;color:var(--sms-text2);margin-bottom:5px;display:flex;align-items:center;gap:6px;}  /* 10→11px */
+.sms-tool .sms-result-title-box{padding:10px 12px;background:rgba(91,163,245,.10);border-radius:8px;border:1.5px solid rgba(91,163,245,.35);font-size:18px;line-height:1.7;white-space:pre-wrap;color:var(--sms-text);}
+.sms-tool .sms-result-body-box{padding:10px 12px;background:var(--sms-card2);border-radius:8px;border:1.5px solid var(--sms-border);font-size:18px;line-height:1.9;white-space:pre-wrap;max-height:360px;overflow-y:auto;color:var(--sms-text);}
 .sms-tool .sms-byte-row{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;}
-.sms-tool .sms-byte-tag{font-size:11px;background:var(--sms-card2);color:var(--sms-text2);padding:3px 9px;border-radius:5px;}  /* 10→11px, padding 2→3px */
+.sms-tool .sms-byte-tag{font-size:14px;background:var(--sms-card2);color:var(--sms-text2);padding:3px 9px;border-radius:5px;}  /* 10→11px, padding 2→3px */
 .sms-tool .sms-byte-tag.ok{background:var(--sms-green-light);color:var(--sms-green);font-weight:600;}
 /* 가이드 체크 블록 */
 .sms-guide-check{margin-top:14px;padding:10px 13px;background:rgba(245,160,51,.07);border:1px solid rgba(245,160,51,.25);border-radius:8px;}
 .sms-guide-check.sms-guide-all-ok{background:rgba(45,217,143,.07);border-color:rgba(45,217,143,.25);}
-.sms-guide-check-title{font-size:11px;font-weight:700;color:var(--sms-text2);margin-bottom:7px;letter-spacing:.02em;}
-.sms-guide-warn{font-size:11px;color:#f59e0b;padding:3px 0;border-bottom:1px solid rgba(245,160,51,.12);line-height:1.5;}
+.sms-guide-check-title{font-size:14px;font-weight:700;color:var(--sms-text2);margin-bottom:7px;letter-spacing:.02em;}
+.sms-guide-warn{font-size:14px;color:#f59e0b;padding:3px 0;border-bottom:1px solid rgba(245,160,51,.12);line-height:1.5;}
 .sms-guide-warn:last-child{border-bottom:none;}
-.sms-guide-ok{font-size:11px;color:var(--sms-green);padding:2px 0;}
+.sms-guide-ok{font-size:14px;color:var(--sms-green);padding:2px 0;}
 .sms-tool .sms-byte-tag.over{background:var(--sms-red-light);color:var(--sms-red);font-weight:600;}
 .sms-tool .sms-empty-state{height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--sms-text2);gap:10px;text-align:center;}  /* text3→text2 */
 .sms-tool .sms-empty-state .sms-icon{font-size:36px;}
@@ -1022,11 +1038,11 @@ body.light .sms-tool{
 .sms-tool .sms-guide-detail{margin-top:16px;background:var(--sms-card);border-radius:10px;padding:16px 20px;box-shadow:var(--sms-shadow);border:1px solid var(--sms-border);}
 .sms-tool .sms-guide-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;}  /* gap 12→16px */
 @media(max-width:600px){.sms-tool .sms-guide-detail-grid{grid-template-columns:1fr;}}
-.sms-tool .sms-guide-rule{font-size:12px;color:var(--sms-text2);line-height:1.8;display:flex;gap:6px;margin-bottom:4px;}  /* 11→12px, 1.7→1.8, 간격 2→4px */
+.sms-tool .sms-guide-rule{font-size:15px;color:var(--sms-text2);line-height:1.8;display:flex;gap:6px;margin-bottom:4px;}  /* 11→12px, 1.7→1.8, 간격 2→4px */
 .sms-tool .sms-rule-num{color:var(--sms-red);font-weight:700;flex-shrink:0;}
-.sms-tool .sms-required-box{padding:10px 12px;background:var(--sms-amber-light);border-radius:7px;border:1px solid rgba(251,191,36,.4);font-size:11px;color:var(--sms-text);line-height:1.9;white-space:pre-wrap;}  /* 10→11px, text2→text (더 밝게), 줄간격 1.8→1.9 */
+.sms-tool .sms-required-box{padding:10px 12px;background:var(--sms-amber-light);border-radius:7px;border:1px solid rgba(251,191,36,.4);font-size:14px;color:var(--sms-text);line-height:1.9;white-space:pre-wrap;}  /* 10→11px, text2→text (더 밝게), 줄간격 1.8→1.9 */
 
-.sms-tool .sms-copy-btn{padding:5px 12px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}  /* 11→12px */
+.sms-tool .sms-copy-btn{padding:5px 12px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text2);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}  /* 11→12px */
 .sms-tool .sms-copy-btn.copied{background:var(--sms-green-light);color:var(--sms-green);border-color:var(--sms-green);}
 
 .sms-tool .sms-johab-type-btn{flex:1;padding:9px 10px;border-radius:7px;border:1.5px solid var(--sms-border);background:var(--sms-card2);cursor:pointer;text-align:left;font-family:inherit;}  /* padding 8→9px */
@@ -1035,7 +1051,7 @@ body.light .sms-tool{
 
 .sms-tool .sms-sigo-section{margin-top:14px;padding:14px;background:rgba(91,163,245,.09);border-radius:10px;border:1.5px solid rgba(91,163,245,.32);position:relative;}  /* .07→.09 */
 
-.sms-tool .sms-error-box{margin-top:8px;padding:10px 14px;background:var(--sms-red-light);border-radius:7px;font-size:12px;color:var(--sms-red);line-height:1.7;}  /* 11→12px, padding 추가, 줄간격 추가 */
+.sms-tool .sms-error-box{margin-top:8px;padding:10px 14px;background:var(--sms-red-light);border-radius:7px;font-size:15px;color:var(--sms-red);line-height:1.7;}  /* 11→12px, padding 추가, 줄간격 추가 */
 
 .sms-tool .sms-manual-box{margin-top:12px;padding:12px;background:var(--sms-amber-light);border-radius:9px;border:1px solid rgba(251,191,36,.4);}
 
@@ -1051,7 +1067,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.20</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.21</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1326,10 +1342,11 @@ body.light .sms-tool{
         <div class="sms-header">
           <div class="sms-header-label">SMS AD Management Tool</div>
           <h2 class="sms-h1">문자광고 집행 관리 시스템</h2>
-          <p class="sms-sub" id="smsSub">비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회</p>
+          <p class="sms-sub" id="smsSub">비즈그리다 · 디지털캠프 · 대홍기획 · 바나나몽키즈 — 집행가능여부 조회</p>
           <div class="sms-tabs">
             <button class="sms-tab-btn active" onclick="SmsTool.switchTab('check')">① 집행 가능여부 조회</button>
             <button class="sms-tab-btn hide" id="smsTabEditBtn" onclick="SmsTool.switchTab('edit')">② 매체 가이드 문구 수정</button>
+            <button class="sms-tab-btn" onclick="SmsTool.switchTab('guide')">③ 분양 상세 가이드</button>
           </div>
         </div>
 
@@ -1345,6 +1362,7 @@ body.light .sms-tool{
                 <button class="sms-toggle-btn" onclick="SmsTool.setAgency('biz',this)">비즈그리다</button>
                 <button class="sms-toggle-btn" onclick="SmsTool.setAgency('dc',this)">디지털캠프</button>
                 <button class="sms-toggle-btn" onclick="SmsTool.setAgency('dh',this)">대홍기획</button>
+                <button class="sms-toggle-btn" onclick="SmsTool.setAgency('bm',this)">바나나몽키즈</button>
               </div>
             </div>
 
@@ -1482,6 +1500,51 @@ body.light .sms-tool{
         </div>
       </div>
     </div>
+
+        <div id="sms-tab-guide" class="sms-tab-panel">
+          <div class="sms-content">
+            <div class="sms-card" style="padding:0;overflow:hidden">
+              <div style="padding:14px 18px;border-bottom:1px solid var(--sms-border);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                <span style="font-size:15px;font-weight:800;color:var(--sms-text)">📋 분양 상세 가이드</span>
+                <span style="font-size:11px;color:var(--sms-text2)">채널사별 업종 집행 가능 여부 · 바나나몽키즈(딜링) 기준</span>
+                <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap" id="guideFilterBtns">
+                  <button class="sms-toggle-btn active" onclick="filterGuide('all',this)" style="font-size:11px;padding:4px 10px">전체</button>
+                  <button class="sms-toggle-btn" onclick="filterGuide('통신사',this)" style="font-size:11px;padding:4px 10px">통신사</button>
+                  <button class="sms-toggle-btn" onclick="filterGuide('카드사',this)" style="font-size:11px;padding:4px 10px">카드사</button>
+                  <button class="sms-toggle-btn" onclick="filterGuide('멤버십',this)" style="font-size:11px;padding:4px 10px">멤버십</button>
+                  <button class="sms-toggle-btn" onclick="filterGuide('기타',this)" style="font-size:11px;padding:4px 10px">기타</button>
+                </div>
+              </div>
+              <div style="overflow-x:auto">
+                <table class="sms-guide-table" id="smsGuideTable">
+                  <thead>
+                    <tr>
+                      <th class="sg-th sg-th-fix">채널</th>
+                      <th class="sg-th">도급순위</th>
+                      <th class="sg-th">오피스텔</th>
+                      <th class="sg-th">지식<br>산업센터</th>
+                      <th class="sg-th">지역<br>주택조합</th>
+                      <th class="sg-th">민간임대</th>
+                      <th class="sg-th">상가</th>
+                      <th class="sg-th">공동/<br>연립</th>
+                      <th class="sg-th">동단위<br>타겟</th>
+                      <th class="sg-th">주말<br>발송</th>
+                      <th class="sg-th">RCS</th>
+                      <th class="sg-th">비고</th>
+                    </tr>
+                  </thead>
+                  <tbody id="smsGuideBody"></tbody>
+                </table>
+              </div>
+              <div style="padding:10px 16px;font-size:11px;color:var(--sms-text3);border-top:1px solid var(--sms-border)">
+                <span style="margin-right:16px"><span class="sg-o">O</span> 가능</span>
+                <span style="margin-right:16px"><span class="sg-x">X</span> 불가</span>
+                <span style="margin-right:16px"><span class="sg-d">△</span> 개별 검토</span>
+                <span style="color:var(--sms-amber)">★ 전 채널 당일 취소 불가</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
     <!-- 향후 추가 영역 -->
   </div>
@@ -4942,19 +5005,22 @@ const MEDIA = [
   {name:"KB국민카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:false,johabNote:"지역주택조합 전체 불가",
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:"도급100위이내/9:30~16시/소재5영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대"},
+    dh:{types:["LMS 100","MMS 150","PUSH 40"],min:"300만원",note:"도급100위이내/9:30~16시/소재5영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대",bm:{types:["LMS 100","MMS 150"],min:"300만원",note:"도급100위이내/9:30~16시/D-1 50%"}},
+
   {name:"신한카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",extra2:"신한카드고객만을위한이벤트필요",
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 160","PUSH 60"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 70"],min:"500만원",note:"9~17:30/소재7영업일/취소2영업일이내10%"},dhRestrict:"지역주택조합 / 사회이슈 매물"},
+    dh:{types:["LMS 100","MMS 150","PUSH 70"],min:"500만원",note:"9~17:30/소재7영업일/취소2영업일이내10%"},dhRestrict:"지역주택조합 / 사회이슈 매물",bm:{types:["LMS 100","MMS 170"],min:"500만원",note:"9~17:30/D-2 10%·D-1 10%"}},
   {name:"삼성카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"하도급순위 50위이내",ilbanOk:true,
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
-    dh:{types:["LMS 100"],min:"300만원",note:"도급50위이내/9~17시/소재5영업일"},dhRestrict:"지역주택조합"},
+    dh:{types:["LMS 100"],min:"300만원",note:"도급50위이내/9~17시/소재5영업일"},dhRestrict:"지역주택조합",bm:{types:["LMS 100","MMS 150"],min:"300만원",note:"도급50위이내/10~17시/D-1취소불가"}},
+
   {name:"롯데카드",cat:"카드사",rankRule:(r)=>r<=50?"available":"unavailable",rankDesc:"도급순위 상위50위",ilbanOk:true,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR데이터제공"},
     dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 60"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일/테스트수신후취소불가"},dhRestrict:"지역주택조합 / 민간임대 / 아파트(주상복합)만 / 지정지역한정"},
+    dh:{types:["LMS 100","MMS 150","PUSH 60"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일/테스트수신후취소불가"},dhRestrict:"지역주택조합 / 민간임대 / 아파트(주상복합)만 / 지정지역한정",bm:{types:["LMS 100","MMS 150"],min:"500만원",note:"도급50위이내/수도권+광역시/9~17시/D-1취소불가"}},
+
   {name:"우리카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100"],min:"5만건",note:""},
@@ -4962,26 +5028,29 @@ const MEDIA = [
   {name:"하나카드",cat:"카드사",rankRule:(r,reg)=>{if(!["수도권","광역시","세종시"].includes(reg))return"unavailable";return r<=50?"available":"unavailable";},rankDesc:"수도권+광역시+세종시/50위",ilbanOk:true,extra:"회사채등급B0이상",
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150","PUSH 25"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일"},dhRestrict:"태영건설 / 지역주택조합"},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"500만원",note:"도급50위이내/9~17시/소재7영업일"},dhRestrict:"태영건설 / 지역주택조합",bm:{types:["LMS 100","MMS 170"],min:"500만원",note:"도급50위이내/9~17시/D-2 30%·D-1 40%"}},
   {name:"BC카드",cat:"카드사",rankRule:()=>"available",rankDesc:"순위무관, 부정적기사없으면가능",ilbanOk:true,extra:"부정적기사여부확인",
     biz:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"3만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 별도협의"],min:"300만원",note:"도급50위이하협의/9~17시/소재7영업일/위약금있음"}},
+    dh:{types:["LMS 100","MMS 150","PUSH 별도협의"],min:"300만원",note:"도급50위이하협의/9~17시/소재7영업일/위약금있음"},bm:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~17시/소재3영업일/D-3 10%·D-2 20%·D-1 30%"}},
   {name:"현대카드",cat:"카드사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:null,dh:null,dhRestrict:"민간임대(건축허가현장가능) / 지역주택조합 / 백산건설 / 사회이슈 매물"},
   {name:"SKT",cat:"통신사",rankRule:(r,reg)=>{if(reg==="수도권"&&r<=100)return"available";if(reg!=="수도권"&&r<=150)return"review";return"unavailable";},rankDesc:"수도권100위/지방150위",ilbanOk:true,
     biz:{types:["LMS 100","MMS 120"],min:"4만건",note:"버튼CTR및로그분석/최초3건한정진행가능"},
     dc:{types:["LMS(RCS) 100","MMS(RCS) 120"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 120"],min:"200만원",note:"도급150위이내(또는브랜드평판24위)/9~19:50/소재4영업일"},dhRestrict:"지역주택조합(일반분양가능)"},
+    dh:{types:["LMS 100","MMS 120"],min:"200만원",note:"도급150위이내(또는브랜드평판24위)/9~19:50/소재4영업일"},dhRestrict:"지역주택조합(일반분양가능)",bm:{types:["LMS 100","MMS 150"],min:"200만원",note:"도급150위이내/8~19:50/당일취소불가"}},
+
   {name:"KT",cat:"통신사",rankRule:()=>"available",rankDesc:"순위무관(분양1년이내)",ilbanOk:true,extra:"분양1년이내",
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"CTR및로그분석데이터제공"},
     dc:{types:["LMS 100","MMS(RCS) 150"],min:"100만원",note:"CTR로그분석제공"},
-    dh:{types:["LMS 100","MMS 150"],min:"100만원",note:"분양1년이내만가능/9~17:50/소재4영업일/취소2일전까지"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물 / 분양1년이내만가능"},
+    dh:{types:["LMS 100","MMS 150"],min:"100만원",note:"분양1년이내만가능/9~17:50/소재4영업일/취소2일전까지"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물 / 분양1년이내만가능",bm:{types:["LMS 100","MMS 150"],min:"500만원",note:"분양2년이내/9~17:50/D-1취소불가"}},
+
   {name:"LG U+",cat:"통신사",rankRule:()=>"unknown",rankDesc:"별도기준(개별확인)",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:"발송수 5~10% 서비스지원"},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"분양업종불가"},dhRestrict:"분양업종불가"},
+    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"분양업종불가"},dhRestrict:"분양업종불가",bm:{types:["LMS 100"],min:"500만원",note:"도급100위이내(브랜드평판24위)/8~18시"}},
+
   {name:"엘포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,
     dc:{types:["LMS 80","MMS 120"],min:"500만원",note:""},
@@ -4989,47 +5058,63 @@ const MEDIA = [
   {name:"CJ ONE",cat:"멤버십",rankRule:(r)=>r<=20?"available":"unavailable",rankDesc:"도급순위 20위이내",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:{types:["LMS 100","MMS 150"],min:"500만원",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:"도급20위이내/9~20시/소재3영업일/위약금있음"},dhRestrict:"임직원·VIP타겟팅불가 / 컴플레인우려현장불가 / 지역주택조합 / 연립·다세대"},
+    dh:{types:["LMS 100","MMS 150","PUSH 100","KAKAO 100"],min:"500만원",note:"도급20위이내/9~20시/소재3영업일/위약금있음"},dhRestrict:"임직원·VIP타겟팅불가 / 컴플레인우려현장불가 / 지역주택조합 / 연립·다세대",bm:{types:["LMS 100"],min:"500만원",note:"도급20위이내/시단위타겟/10만건이상시단가인하"}},
+
   {name:"OK캐쉬백",cat:"멤버십",rankRule:(r)=>r<=100?"available":"review",rankDesc:"100위이내(이외검토)",ilbanOk:true,johabNote:"지주택일반분양만가능",
     biz:{types:["LMS 100","MMS 120"],min:"3만건",note:""},
     dc:null,
-    dh:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~18시/소재별도문의/취소3영업일이내100%"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물"},
+    dh:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~18시/소재별도문의/취소3영업일이내100%"},dhRestrict:"지역주택조합 / 민간임대 / 사회이슈 매물",bm:{types:["LMS 100","MMS 120"],min:"300만원",note:"도급150위이내/9~18시/D-2 20%"}},
   {name:"신세계포인트",cat:"멤버십",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100","MMS 150"],min:"5만건",note:""},
     dc:null,
-    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"도급72위이내(국토부1등급)/9~16시/소재7영업일/위약금있음"}},
+    dh:{types:["LMS 100","MMS 150"],min:"500만원",note:"도급72위이내(국토부1등급)/9~16시/소재7영업일/위약금있음"},bm:{types:["LMS 100","MMS 150"],min:"500만원",note:"도급72위이내/10~16시/D-1 100%·D-3 50%·D-5 30%"}},
   {name:"롯데멤버스",cat:"멤버십",rankRule:(r)=>r<=100?"available":"unavailable",rankDesc:"도급순위100위이내",ilbanOk:true,
     biz:{types:["LMS 80"],min:"5만건",note:""},dc:null,dh:null,dhRestrict:"지역주택조합"},
   {name:"카카오페이",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:{types:["카플친 100"],min:"5만건",note:""},
     dc:{types:["PUSH 60","KAKAO 100"],min:"17만건",note:""},
-    dh:{types:["PUSH 60","KAKAO 100"],min:"500만원",note:"9~19:30/소재5영업일/위약금있음"},dhRestrict:"지역주택조합 / 민간임대(협동조합형) / 시공사미정 / 사회이슈 매물"},
+    dh:{types:["PUSH 60","KAKAO 100"],min:"500만원",note:"9~19:30/소재5영업일/위약금있음"},dhRestrict:"지역주택조합 / 민간임대(협동조합형) / 시공사미정 / 사회이슈 매물",bm:{types:["LMS 100"],min:"500만원",note:"도급100위이내/9~19:30/D-20 10%·D-5 20%·D-1 40%"}},
+
   {name:"나이스(NICE)",cat:"기타",rankRule:(r)=>{if(r<=100)return"available";if(r<=200)return"review";return"unavailable";},rankDesc:"100위이내(최대200위검토)",ilbanOk:true,johabNote:"조합원모집불가/일반분양가능",
     biz:{types:["LMS 100"],min:"5만건",note:""},
     dc:{types:["LMS 100"],min:"5만건",note:"타겟할증"},
-    dh:{types:["LMS 100","MMS 250"],min:"300만원",note:"도급200위이내/별도문의"},dhRestrict:"지역주택조합 / 사회이슈 매물"},
+    dh:{types:["LMS 100","MMS 250"],min:"300만원",note:"도급200위이내/별도문의"},dhRestrict:"지역주택조합 / 사회이슈 매물",bm:{types:["LMS 100"],min:"300만원",note:"도급200위이내/11:30~14:30/D-1취소불가"}},
   {name:"호갱노노",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:{types:["카플친 150"],min:"3.3만",note:"최소금액 500만원"},
     dc:{types:["KAKAO 170"],min:"1만건",note:""},
-    dh:{types:["PUSH 100","KAKAO 200"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"}},
+    dh:{types:["PUSH 100","KAKAO 200"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"},bm:{types:["LMS 150"],min:"150만원",note:"9~16시/최소1만건/D-1취소불가"}},
   {name:"제로페이",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100"],min:"2만건",note:""},
     dc:null,dh:null,dhRestrict:"제한사항 없음"},
   {name:"직방",cat:"기타",rankRule:()=>"available",rankDesc:"순위무관",ilbanOk:true,
     biz:null,
     dc:{types:["KAKAO 120"],min:"1만건",note:""},
-    dh:{types:["PUSH 100","KAKAO 150"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"},dhRestrict:"제한사항 없음"},
+    dh:{types:["PUSH 100","KAKAO 150"],min:"500만원",note:"9~16시/소재3영업일/취소7일이내50%"},dhRestrict:"제한사항 없음",bm:{types:["LMS 100"],min:"100만원",note:"9~16시/최소1만건/D-1취소불가"}},
+
+  {name:"롯데멤버스",cat:"멤버십",rankRule:(r)=>r<=100?"available":"unavailable",rankDesc:"도급순위 100위이내",ilbanOk:false,
+    biz:null,dc:null,dh:null,
+    bm:{types:["LMS 80","MMS 120"],min:"240만원",note:"도급100위이내/9~20:20/D-1취소불가/최소LMS3만건"}},
+  {name:"분양통",cat:"기타",rankRule:()=>"unknown",rankDesc:"제한없음",ilbanOk:true,
+    biz:null,dc:null,dh:null,
+    bm:{types:["LMS 150"],min:"150만원",note:"9~16시/최소1만건/D-1취소불가"}},
+  {name:"토스(머니알림)",cat:"기타",rankRule:()=>"unknown",rankDesc:"제한없음",ilbanOk:true,
+    biz:null,dc:null,dh:null,
+    bm:{types:["PUSH 30"],min:"90만원",note:"앱푸시/최소3만건/D-1취소불가"}},
+  {name:"호갱노노(앱푸시)",cat:"기타",rankRule:()=>"unknown",rankDesc:"제한없음",ilbanOk:true,
+    biz:null,dc:null,dh:null,
+    bm:{types:["PUSH 80"],min:"80만원",note:"앱푸시/10~15:30/최소1만건/D-1취소불가"}},
   {name:"모두의주차장",cat:"모빌리티",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,dc:null,
     dh:{types:["PUSH 100"],min:"500만원",note:"9~18시/소재10영업일/위약금있음"},dhRestrict:"제한사항 없음"},
   {name:"T맵(TMAP)",cat:"모빌리티",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS 100"],min:"3만건",note:""},
     dc:{types:["LMS 100","MMS 150","PUSH 50"],min:"5만건",note:""},
-    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"300만원",note:"9~18시/소재7영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대 / 사회이슈 매물"},
+    dh:{types:["LMS 100","MMS 150","PUSH 50"],min:"300만원",note:"9~18시/소재7영업일/위약금있음"},dhRestrict:"상가 / 도시형생활주택 / 업무형오피스텔 / 연립·다세대 / 사회이슈 매물",bm:{types:["LMS 100","MMS 150"],min:"300만원",note:"9~18시/D-10이후30%"}},
+
   {name:"스마트스코어",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:null,
     dc:{types:["LMS 100","PUSH 100"],min:"5만건",note:""},
-    dh:{types:["LMS 100","PUSH 100","KAKAO 100"],min:"300만원",note:"화수목금9~18시/소재3영업일"}},
+    dh:{types:["LMS 100","PUSH 100","KAKAO 100"],min:"300만원",note:"화수목금9~18시/소재3영업일"},bm:{types:["LMS 100"],min:"300만원",note:"9~19시/D-1취소불가"}},
   {name:"사람인",cat:"기타",rankRule:()=>"unknown",rankDesc:"별도기준",ilbanOk:false,
     biz:{types:["LMS(개인) 100","LMS(기업) 200"],min:"5만건",note:""},
     dc:null,
@@ -5073,6 +5158,7 @@ const AGENCIES_INFO = {
   biz:{label:"비즈그리다",cls:"badge-agency-biz"},
   dc:{label:"디지털캠프",cls:"sms-badge-agency-dc"},
   dh:{label:"대홍기획",cls:"badge-agency-dh"},
+  bm:{label:"바나나몽키즈",cls:"sms-badge-agency-bm"},
 };
 
 const MEDIA_GUIDES = {
@@ -5167,9 +5253,75 @@ const MEDIA_GUIDES = {
   },
 };
 
-/* ═══════════════════════════════════════
-   STATE
-═══════════════════════════════════════ */
+/* ── 분양 상세 가이드 ─────────────────────────────────── */
+const JIBUL_GUIDE=[
+  {cat:"통신사",name:"SKT",rank:"150위이내",rcs:"O",opst:"O",jisan:"X",johab:"일반분양만",lind:"△",sang:"△",condo:"O",dong:"O",wkend:"O",note:"벽산엔지니어링 불가"},
+  {cat:"통신사",name:"KT",rank:"제한없음",rcs:"O",opst:"O",jisan:"O",johab:"X",lind:"△",sang:"△",condo:"O",dong:"O",wkend:"X",note:"최초분양일 2년이내만"},
+  {cat:"통신사",name:"LG U+",rank:"100위이내",rcs:"—",opst:"△",jisan:"X",johab:"일반분양만",lind:"X",sang:"X",condo:"X",dong:"X",wkend:"X",note:"서희스타힐스 불가"},
+  {cat:"카드사",name:"삼성카드",rank:"50위이내",rcs:"X",opst:"O",jisan:"X",johab:"완공미분양만",lind:"O",sang:"O",condo:"O",dong:"O",wkend:"O",note:""},
+  {cat:"카드사",name:"하나카드",rank:"50위이내",rcs:"△",opst:"O",jisan:"X",johab:"X",lind:"△",sang:"X",condo:"O",dong:"X",wkend:"X",note:"태영건설 불가"},
+  {cat:"카드사",name:"롯데카드",rank:"50위이내",rcs:"O",opst:"O(수도권주거용)",jisan:"X",johab:"일반분양만",lind:"X",sang:"X",condo:"O",dong:"X",wkend:"X",note:"수도권+광역시만"},
+  {cat:"카드사",name:"신한카드",rank:"개별협의",rcs:"O",opst:"O",jisan:"X",johab:"일반분양만",lind:"O",sang:"O",condo:"O",dong:"X",wkend:"O",note:""},
+  {cat:"카드사",name:"KB국민카드",rank:"100위이내",rcs:"O",opst:"O",jisan:"X",johab:"X",lind:"△",sang:"X",condo:"X",dong:"X",wkend:"X",note:"51~100위 청약홈or책임준공확약"},
+  {cat:"카드사",name:"BC카드",rank:"개별협의",rcs:"X",opst:"O",jisan:"O",johab:"일반분양만",lind:"O(협동조합불가)",sang:"O",condo:"O",dong:"O",wkend:"X",note:"벽산건설계열 불가"},
+  {cat:"카드사",name:"우리카드",rank:"분양불가",rcs:"—",opst:"—",jisan:"—",johab:"—",lind:"—",sang:"—",condo:"—",dong:"—",wkend:"O",note:"분양 광고 집행 불가"},
+  {cat:"멤버십",name:"롯데멤버스",rank:"100위이내",rcs:"O",opst:"O",jisan:"X",johab:"일반분양만",lind:"O",sang:"△",condo:"O",dong:"O",wkend:"O",note:""},
+  {cat:"멤버십",name:"신세계포인트",rank:"72위이내",rcs:"X",opst:"O",jisan:"X",johab:"일반분양만",lind:"O",sang:"X",condo:"O",dong:"O",wkend:"O",note:"방문고객위한 문구 필수"},
+  {cat:"멤버십",name:"OK캐쉬백",rank:"150위이내",rcs:"△",opst:"O",jisan:"X",johab:"X",lind:"X",sang:"O(인허가진행중)",condo:"O",dong:"X",wkend:"X",note:""},
+  {cat:"멤버십",name:"CJ ONE",rank:"20위이내",rcs:"—",opst:"—",jisan:"—",johab:"—",lind:"—",sang:"—",condo:"—",dong:"X",wkend:"—",note:"시단위타겟만/10만건이상 단가인하"},
+  {cat:"기타",name:"카카오페이",rank:"100위이내",rcs:"O",opst:"O",jisan:"O",johab:"일반분양만",lind:"O(공공임대가능)",sang:"O",condo:"O",dong:"O",wkend:"O",note:"시공사미정 불가"},
+  {cat:"기타",name:"호갱노노",rank:"제한없음",rcs:"O",opst:"O",jisan:"O",johab:"O",lind:"O",sang:"O",condo:"O",dong:"O",wkend:"O",note:"지주택·민간임대 시행사/시공사 표기필수"},
+  {cat:"기타",name:"직방",rank:"제한없음",rcs:"O",opst:"O",jisan:"O",johab:"O",lind:"O",sang:"O",condo:"O",dong:"O",wkend:"O",note:"지주택·민간임대 시행사/시공사 표기필수"},
+  {cat:"기타",name:"스마트스코어",rank:"제한없음",rcs:"△",opst:"O",jisan:"O",johab:"X",lind:"O",sang:"O",condo:"O",dong:"O",wkend:"O",note:""},
+  {cat:"기타",name:"티맵",rank:"개별협의",rcs:"X",opst:"O",jisan:"X",johab:"일반분양만",lind:"O",sang:"O",condo:"X",dong:"X",wkend:"X",note:"5만건이상 분할발송가능"},
+  {cat:"기타",name:"나이스평가정보",rank:"200위이내",rcs:"△",opst:"O",jisan:"O",johab:"X",lind:"O",sang:"O",condo:"O",dong:"X",wkend:"X",note:"11:30~14:30발송"},
+  {cat:"기타",name:"분양통",rank:"제한없음",rcs:"—",opst:"—",jisan:"—",johab:"—",lind:"—",sang:"—",condo:"—",dong:"—",wkend:"—",note:"가이드 별도문의"},
+  {cat:"기타",name:"토스(머니알림)",rank:"제한없음",rcs:"—",opst:"—",jisan:"—",johab:"—",lind:"—",sang:"—",condo:"—",dong:"—",wkend:"—",note:"앱푸시 전용"},
+  {cat:"기타",name:"호갱노노(앱푸시)",rank:"제한없음",rcs:"—",opst:"—",jisan:"—",johab:"—",lind:"—",sang:"—",condo:"—",dong:"—",wkend:"—",note:"앱푸시/지역·관심모수"},
+];
+
+function renderJibulGuide(cat='all'){
+  const tbody=document.getElementById('smsGuideBody');
+  if(!tbody)return;
+  const rows=cat==='all'?JIBUL_GUIDE:JIBUL_GUIDE.filter(r=>r.cat===cat);
+  const badge=(v)=>{
+    if(v==='O')return`<span class="sg-o">O</span>`;
+    if(v==='X')return`<span class="sg-x">X</span>`;
+    if(v==='△')return`<span class="sg-d">△</span>`;
+    if(v==='—')return`<span class="sg-n">—</span>`;
+    return`<span class="sg-p">${v.replace(/</g,'&lt;')}</span>`;
+  };
+  let prev='';
+  tbody.innerHTML=rows.map(r=>{
+    const catCell=r.cat!==prev?`<td class="sg-cat" rowspan="${rows.filter(x=>x.cat===r.cat).length}">${r.cat}</td>`:'';
+    prev=r.cat;
+    const isBan=r.rank==='분양불가';
+    const rankBadge=isBan?`<span class="sg-x">${r.rank}</span>`:`<span style="font-size:10px">${r.rank}</span>`;
+    return`<tr class="sg-row${isBan?' sg-ban':''}" data-cat="${r.cat}">
+      ${catCell}
+      <td class="sg-name">${r.name}</td>
+      <td style="text-align:center;font-size:11px">${rankBadge}</td>
+      <td style="text-align:center">${badge(r.rcs)}</td>
+      <td style="text-align:center">${badge(r.opst)}</td>
+      <td style="text-align:center">${badge(r.jisan)}</td>
+      <td style="text-align:center">${badge(r.johab)}</td>
+      <td style="text-align:center">${badge(r.lind)}</td>
+      <td style="text-align:center">${badge(r.sang)}</td>
+      <td style="text-align:center">${badge(r.condo)}</td>
+      <td style="text-align:center">${badge(r.dong)}</td>
+      <td style="text-align:center">${badge(r.wkend)}</td>
+      <td style="font-size:11px;color:var(--sms-text2)">${r.note}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterGuide(cat,btn){
+  document.querySelectorAll('#guideFilterBtns .sms-toggle-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderJibulGuide(cat);
+}
+
+
 let state = {
   agency: 'all',
   region: '수도권',
@@ -5202,7 +5354,7 @@ function getRankNum(){
   if(state.useManual) return state.manualRank||0;
   return 0;
 }
-function getAgencyKeys(){ return state.agency==='all'?['biz','dc','dh']:[state.agency]; }
+function getAgencyKeys(){ return state.agency==='all'?['biz','dc','dh','bm']:[state.agency]; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function parseType(str){
@@ -5246,6 +5398,7 @@ function switchTab(tab){
     if(oc.indexOf("'"+tab+"'")>=0)b.classList.add('active');
   });
   if(tab==='edit') renderGuidePreview();
+  if(tab==='guide') renderJibulGuide();
 }
 
 /* ═══════════════════════════════════════
