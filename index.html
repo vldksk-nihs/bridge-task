@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.21">
+<meta name="version" content="v4.19.22">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -964,6 +964,38 @@ body.light .sms-tool{
 .sms-tool .sms-badge-agency-dh{background:rgba(240,101,101,.18);color:var(--sms-red);border:1px solid rgba(240,101,101,.4);}
 .sms-tool .sms-badge-agency-bm{background:rgba(52,211,153,.18);color:#34d399;border:1px solid rgba(52,211,153,.4);}
 
+/* ── UTM 생성기 ── */
+.utm-section{margin-bottom:14px;}
+.utm-section-title{font-size:15px;font-weight:800;color:var(--sms-text);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.utm-row{display:flex;gap:12px;flex-wrap:wrap;}
+.utm-field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px;}
+.utm-label{font-size:12px;font-weight:700;color:var(--sms-text2);}
+.utm-input{padding:9px 12px;border-radius:8px;border:1px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text);font-size:13px;font-family:inherit;width:100%;box-sizing:border-box;}
+.utm-input:focus{outline:none;border-color:var(--sms-primary);}
+.utm-select{padding:8px 10px;border-radius:7px;border:1px solid var(--sms-border);background:var(--sms-card2);color:var(--sms-text);font-size:13px;font-family:inherit;}
+.utm-page-list{display:flex;flex-direction:column;gap:6px;}
+.utm-page-row{display:flex;align-items:center;gap:8px;}
+.utm-del-btn{background:none;border:1px solid var(--sms-border);border-radius:6px;color:var(--sms-text3);cursor:pointer;padding:4px 9px;font-size:12px;}
+.utm-del-btn:hover{color:var(--sms-red);border-color:var(--sms-red);}
+.utm-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.utm-media-group{background:var(--sms-card2);border:1px solid var(--sms-border);border-radius:9px;padding:12px;}
+.utm-media-cat{font-size:12px;font-weight:800;color:var(--sms-primary);margin-bottom:8px;letter-spacing:.04em;}
+.utm-check-label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--sms-text2);cursor:pointer;padding:3px 0;}
+.utm-check-label:hover{color:var(--sms-text);}
+.utm-check-label input[type=checkbox]{width:15px;height:15px;accent-color:var(--sms-primary);cursor:pointer;}
+.utm-sms-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.utm-sms-preview{font-size:11px;color:var(--sms-primary);font-family:monospace;background:var(--sms-card2);padding:4px 8px;border-radius:5px;}
+.utm-result-wrap{margin-top:8px;}
+.utm-table{width:100%;border-collapse:collapse;font-size:13px;}
+.utm-table thead th{padding:9px 10px;background:var(--sms-card2);color:var(--sms-text2);font-size:11px;font-weight:700;border-bottom:2px solid var(--sms-border);white-space:nowrap;text-align:left;}
+.utm-td{padding:8px 10px;border-bottom:1px solid var(--sms-border);color:var(--sms-text);vertical-align:middle;}
+.utm-mono{font-family:monospace;font-size:12px;}
+.utm-url{max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace;font-size:11px;color:#7cb8ff;cursor:default;}
+.utm-table tr:hover .utm-td{background:var(--sms-card2);}
+.utm-copy-btn{background:none;border:1px solid var(--sms-border);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:13px;}
+.utm-copy-btn:hover{border-color:var(--sms-primary);}
+@media(max-width:700px){.utm-media-grid{grid-template-columns:1fr 1fr;}.utm-row{flex-direction:column;}}
+
 /* 분양 상세 가이드 테이블 */
 .sms-guide-table{width:100%;border-collapse:collapse;font-size:16px;white-space:nowrap;}
 .sms-guide-table .sg-th{padding:9px 10px;background:var(--sms-card2);color:var(--sms-text2);font-size:14px;font-weight:700;text-align:center;border-bottom:2px solid var(--sms-border);letter-spacing:.02em;line-height:1.4;}
@@ -1067,7 +1099,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.21</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.22</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1347,6 +1379,7 @@ body.light .sms-tool{
             <button class="sms-tab-btn active" onclick="SmsTool.switchTab('check')">① 집행 가능여부 조회</button>
             <button class="sms-tab-btn hide" id="smsTabEditBtn" onclick="SmsTool.switchTab('edit')">② 매체 가이드 문구 수정</button>
             <button class="sms-tab-btn" onclick="SmsTool.switchTab('guide')">③ 분양 상세 가이드</button>
+            <button class="sms-tab-btn" onclick="SmsTool.switchTab('utm')">④ UTM 생성</button>
           </div>
         </div>
 
@@ -1547,6 +1580,84 @@ body.light .sms-tool{
         </div>
 
     <!-- 향후 추가 영역 -->
+        <!-- ④ UTM 생성 탭 -->
+        <div id="sms-tab-utm" class="sms-tab-panel">
+          <div class="sms-content">
+            <!-- 기본 정보 -->
+            <div class="sms-card utm-section">
+              <div class="utm-section-title">📌 기본 정보</div>
+              <div class="utm-row">
+                <div class="utm-field">
+                  <label class="utm-label">현장명</label>
+                  <input type="text" id="utmProjectName" class="utm-input" placeholder="예: 거제 푸르지오 마린피스">
+                </div>
+                <div class="utm-field" style="flex:2">
+                  <label class="utm-label">기본 랜딩 URL (메인)</label>
+                  <input type="text" id="utmBaseUrl" class="utm-input" placeholder="https://www.prugio.com/hb/2026/marinepiece/" oninput="utmPreviewBase()">
+                </div>
+              </div>
+              <!-- 추가 랜딩 URL -->
+              <div style="margin-top:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                  <span class="utm-label" style="margin:0">추가 랜딩 페이지</span>
+                  <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="addUtmPage()">+ 페이지 추가</button>
+                </div>
+                <div id="utmPageList" class="utm-page-list">
+                  <!-- 동적 추가 -->
+                </div>
+              </div>
+            </div>
+
+            <!-- 매체 선택 -->
+            <div class="sms-card utm-section">
+              <div class="utm-section-title">📡 매체 선택</div>
+              <div class="utm-media-grid" id="utmMediaGrid">
+                <!-- JS로 렌더 -->
+              </div>
+            </div>
+
+            <!-- 문자광고 설정 -->
+            <div class="sms-card utm-section" id="utmSmsCard" style="display:none">
+              <div class="utm-section-title">💬 문자광고 설정</div>
+              <div style="font-size:13px;color:var(--sms-text2);margin-bottom:12px">매체사별 campaign 코드가 자동 생성됩니다. <span style="color:var(--sms-text3)">(예: lms_cjone, mms_sinsegae)</span></div>
+              <div id="utmSmsRows">
+                <!-- 동적 추가 -->
+              </div>
+              <button class="btn btn-g" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="addUtmSmsRow()">+ 문자광고 추가</button>
+            </div>
+
+            <!-- 생성 버튼 -->
+            <div style="text-align:center;margin:16px 0">
+              <button class="sms-main-btn" onclick="generateUtm()" style="font-size:15px;padding:14px 48px">🔗 UTM 생성</button>
+            </div>
+
+            <!-- 결과 -->
+            <div id="utmResult" class="utm-result-wrap" style="display:none">
+              <div class="sms-card" style="padding:0;overflow:hidden">
+                <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--sms-border)">
+                  <span style="font-size:15px;font-weight:800;color:var(--sms-text)">🔗 생성된 UTM 목록</span>
+                  <span id="utmResultCount" style="font-size:12px;color:var(--sms-text3)"></span>
+                  <button class="btn btn-g" style="margin-left:auto;font-size:12px;padding:6px 14px;font-weight:700" onclick="downloadUtmExcel()">📥 엑셀 다운로드</button>
+                  <button class="btn btn-g" style="font-size:12px;padding:6px 14px" onclick="copyAllUtm()">📋 전체 복사</button>
+                </div>
+                <div style="overflow-x:auto">
+                  <table class="utm-table" id="utmTable">
+                    <thead>
+                      <tr>
+                        <th>구분1</th><th>구분2</th><th>구분3(랜딩)</th>
+                        <th>source</th><th>medium</th><th>campaign</th>
+                        <th>content</th><th>term</th>
+                        <th style="min-width:300px">최종 URL</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="utmTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
 </div>
 
@@ -5253,7 +5364,243 @@ const MEDIA_GUIDES = {
   },
 };
 
-/* ── 분양 상세 가이드 ─────────────────────────────────── */
+/* ── UTM 생성기 ─────────────────────────────────────── */
+const UTM_MEDIA_PRESETS=[
+  {cat:"네이버",name:"브랜드검색 PC",source:"naver",medium:"CPT",campaign:"naver_br",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"브랜드검색 MO",source:"naver",medium:"CPT",campaign:"naver_brmo",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"키워드 PC",source:"naver",medium:"cpc",campaign:"naver_sa",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"키워드 MO",source:"naver",medium:"cpc",campaign:"naver_samo",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"GFA",source:"naver",medium:"cpc",campaign:"naver_GFA",content:"",term:""},
+  {cat:"네이버",name:"GFA 스마트채널",source:"naver",medium:"cpc",campaign:"naver_GFA_smartch",content:"",term:""},
+  {cat:"네이버",name:"롤링보드",source:"naver",medium:"cpc",campaign:"naver_rolling",content:"",term:""},
+  {cat:"구글",name:"GDN PC",source:"google",medium:"cpc",campaign:"google_gdn",content:"",term:""},
+  {cat:"구글",name:"GDN MO",source:"google",medium:"cpc",campaign:"google_gdnmo",content:"",term:""},
+  {cat:"구글",name:"PMAX PC",source:"google",medium:"cpc",campaign:"google_pmax",content:"",term:""},
+  {cat:"구글",name:"PMAX MO",source:"google",medium:"cpc",campaign:"google_pmaxmo",content:"",term:""},
+  {cat:"구글",name:"디멘드젠 PC",source:"google",medium:"cpc",campaign:"google_demand",content:"",term:""},
+  {cat:"구글",name:"디멘드젠 MO",source:"google",medium:"cpc",campaign:"google_demandmo",content:"",term:""},
+  {cat:"구글",name:"유튜브 VRC PC",source:"google",medium:"cpc",campaign:"google_ytbvrc",content:"",term:""},
+  {cat:"구글",name:"유튜브 VRC MO",source:"google",medium:"cpc",campaign:"google_ytbvrcmo",content:"",term:""},
+  {cat:"메타",name:"인스타그램",source:"meta",medium:"cpc",campaign:"meta_insta",content:"",term:""},
+  {cat:"메타",name:"페이스북",source:"meta",medium:"cpc",campaign:"meta_FB",content:"",term:""},
+  {cat:"카카오",name:"디스플레이",source:"kakao",medium:"cpm",campaign:"kakao_moment",content:"",term:""},
+  {cat:"카카오",name:"비즈보드",source:"kakao",medium:"cpm",campaign:"kakao_biz",content:"",term:""},
+  {cat:"호갱노노",name:"단지마커",source:"hogang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
+  {cat:"호갱노노",name:"DA배너패키지",source:"hogang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
+  {cat:"호갱노노",name:"앱푸시",source:"hogang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
+  {cat:"호갱노노",name:"채널톡",source:"hogang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
+  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
+  {cat:"직방",name:"DA배너패키지",source:"zigbang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
+  {cat:"직방",name:"앱푸시",source:"zigbang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
+  {cat:"직방",name:"채널톡",source:"zigbang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
+  {cat:"TMAP",name:"내비홈배너",source:"tmap",medium:"app",campaign:"tmap_nv",content:"",term:""},
+  {cat:"디지털캠프",name:"DA PC",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_da",content:"",term:""},
+  {cat:"디지털캠프",name:"DA MO",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_damo",content:"",term:""},
+  {cat:"당근마켓",name:"피드",source:"danggeun",medium:"app",campaign:"danggeun_feed",content:"",term:""},
+  {cat:"블라인드",name:"DA",source:"blind",medium:"app",campaign:"blind_da",content:"",term:""},
+  {cat:"키즈노트",name:"키즈노트",source:"kidsnote",medium:"app",campaign:"kidsnote_main",content:"",term:""},
+];
+
+// 문자광고 매체사 코드
+const SMS_CODES={
+  "BC카드":"bccard","삼성카드":"samsung","하나카드":"hana","KB국민카드":"kb",
+  "롯데카드":"lotte","신한카드":"shinhan","우리카드":"woori","SKT":"skt",
+  "KT":"kt","LG U+":"lgu","신세계포인트":"sinsegae","OK캐시백":"ok",
+  "CJ ONE":"cjone","엘포인트":"elpoint","롯데멤버스":"lottem",
+  "호갱노노":"hogang","직방":"zigbang","카카오페이":"kakaopay",
+  "T맵":"tmap","스마트스코어":"smartscore","나이스평가정보":"nice",
+  "분양통":"byangtong","토스":"toss","바나나몽키즈":"bm",
+};
+
+let utmPageCount=0;
+let utmSmsRowCount=0;
+let utmInited=false;
+
+function initUtmTab(){
+  if(utmInited)return;
+  utmInited=true;
+  // 매체 그리드 렌더
+  const grid=document.getElementById('utmMediaGrid');
+  if(!grid)return;
+  const cats=[...new Set(UTM_MEDIA_PRESETS.map(m=>m.cat))];
+  grid.innerHTML=cats.map(cat=>{
+    const items=UTM_MEDIA_PRESETS.filter(m=>m.cat===cat);
+    return`<div class="utm-media-group">
+      <div class="utm-media-cat">${cat}</div>
+      ${items.map(m=>`<label class="utm-check-label">
+        <input type="checkbox" class="utm-media-chk" value="${m.name}" data-cat="${cat}" onchange="onUtmMediaChange()">
+        <span>${m.name}</span>
+      </label>`).join('')}
+    </div>`;
+  }).join('');
+  // 문자광고 카드 체크박스
+  grid.innerHTML+=`<div class="utm-media-group">
+    <div class="utm-media-cat">문자광고</div>
+    <label class="utm-check-label">
+      <input type="checkbox" id="utmSmsCheck" onchange="onUtmSmsToggle(this)">
+      <span>문자광고 (LMS/MMS)</span>
+    </label>
+  </div>`;
+  // 기본 페이지 예시
+  addUtmPage('메인',''); addUtmPage('오시는길','pages/location.asp');
+}
+
+function addUtmPage(pageName='',pagePath=''){
+  utmPageCount++;
+  const id='utmPage'+utmPageCount;
+  const row=document.createElement('div');
+  row.className='utm-page-row';row.id=id;
+  row.innerHTML=`
+    <input type="text" class="utm-input utm-page-name" placeholder="페이지명 (예: 오시는길)" value="${pageName}" style="width:130px;flex:none">
+    <input type="text" class="utm-input utm-page-path" placeholder="URL 경로 (비우면 기본URL 사용)" value="${pagePath}" style="flex:1">
+    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
+  document.getElementById('utmPageList').appendChild(row);
+}
+
+function addUtmSmsRow(){
+  utmSmsRowCount++;
+  const id='utmSmsRow'+utmSmsRowCount;
+  const row=document.createElement('div');
+  row.className='utm-sms-row';row.id=id;
+  const mediaOptions=Object.keys(SMS_CODES).map(k=>`<option value="${k}">${k}</option>`).join('');
+  row.innerHTML=`
+    <select class="utm-select utm-sms-type">
+      <option value="lms">LMS</option>
+      <option value="mms">MMS</option>
+    </select>
+    <select class="utm-select utm-sms-media">${mediaOptions}</select>
+    <span class="utm-sms-preview"></span>
+    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
+  // 미리보기 업데이트
+  row.querySelectorAll('select').forEach(s=>s.addEventListener('change',()=>updateSmsPreview(row)));
+  document.getElementById('utmSmsRows').appendChild(row);
+  updateSmsPreview(row);
+}
+
+function updateSmsPreview(row){
+  const type=row.querySelector('.utm-sms-type').value;
+  const media=row.querySelector('.utm-sms-media').value;
+  const code=SMS_CODES[media]||media.toLowerCase();
+  const preview=row.querySelector('.utm-sms-preview');
+  if(preview)preview.textContent=`→ campaign: ${type}_${code}`;
+}
+
+function onUtmSmsToggle(chk){
+  const card=document.getElementById('utmSmsCard');
+  card.style.display=chk.checked?'':'none';
+  if(chk.checked&&document.getElementById('utmSmsRows').children.length===0)addUtmSmsRow();
+}
+function onUtmMediaChange(){}
+
+function getUtmPages(baseUrl){
+  const pages=[];
+  document.querySelectorAll('.utm-page-row').forEach(row=>{
+    const name=row.querySelector('.utm-page-name').value.trim()||'메인';
+    const path=row.querySelector('.utm-page-path').value.trim();
+    const url=path?(baseUrl.replace(/\/$/,'')+'/'+path.replace(/^\//,'')):baseUrl;
+    pages.push({name,url});
+  });
+  if(pages.length===0)pages.push({name:'메인',url:baseUrl});
+  return pages;
+}
+
+function buildUtmUrl(baseUrl,params){
+  if(!baseUrl)return'?'+new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([,v])=>v))).toString();
+  const sep=baseUrl.includes('?')?'&':'?';
+  const qs=Object.entries(params).filter(([,v])=>v).map(([k,v])=>`${k}=${v}`).join('&');
+  return baseUrl+(qs?sep+qs:'');
+}
+
+function generateUtm(){
+  const project=document.getElementById('utmProjectName').value.trim()||'현장명';
+  const baseUrl=(document.getElementById('utmBaseUrl').value||'').trim();
+  const pages=getUtmPages(baseUrl);
+  const rows=[];
+
+  // 일반 매체
+  document.querySelectorAll('.utm-media-chk:checked').forEach(chk=>{
+    const preset=UTM_MEDIA_PRESETS.find(m=>m.name===chk.value);
+    if(!preset)return;
+    pages.forEach(page=>{
+      const params={utm_source:preset.source,utm_medium:preset.medium,utm_campaign:preset.campaign};
+      if(preset.content)params.utm_content=preset.content;
+      if(preset.term)params.utm_term=preset.term;
+      rows.push({cat1:preset.cat,cat2:preset.name,cat3:page.name,url:page.url,
+        source:preset.source,medium:preset.medium,campaign:preset.campaign,
+        content:preset.content,term:preset.term,
+        full:buildUtmUrl(page.url,params)});
+    });
+  });
+
+  // 문자광고
+  document.querySelectorAll('.utm-sms-row').forEach(row=>{
+    const type=row.querySelector('.utm-sms-type').value;
+    const media=row.querySelector('.utm-sms-media').value;
+    const code=SMS_CODES[media]||media.toLowerCase();
+    const campaign=`${type}_${code}`;
+    pages.forEach(page=>{
+      const params={utm_source:'dm',utm_medium:'cpm',utm_campaign:campaign};
+      rows.push({cat1:'문자광고',cat2:`${type.toUpperCase()} - ${media}`,cat3:page.name,url:page.url,
+        source:'dm',medium:'cpm',campaign,content:'',term:'',
+        full:buildUtmUrl(page.url,params)});
+    });
+  });
+
+  if(!rows.length){showToast('매체를 1개 이상 선택해주세요.','warn');return;}
+
+  // 테이블 렌더
+  const tbody=document.getElementById('utmTableBody');
+  tbody.innerHTML=rows.map((r,i)=>`<tr>
+    <td class="utm-td">${r.cat1}</td>
+    <td class="utm-td">${r.cat2}</td>
+    <td class="utm-td">${r.cat3}</td>
+    <td class="utm-td utm-mono">${r.source}</td>
+    <td class="utm-td utm-mono">${r.medium}</td>
+    <td class="utm-td utm-mono">${r.campaign}</td>
+    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.content||'—'}</td>
+    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.term||'—'}</td>
+    <td class="utm-td utm-url" title="${r.full}">${r.full}</td>
+    <td><button class="utm-copy-btn" onclick="copyUtmRow(this,'${encodeURIComponent(r.full)}')" title="복사">📋</button></td>
+  </tr>`).join('');
+
+  document.getElementById('utmResultCount').textContent=`총 ${rows.length}개`;
+  document.getElementById('utmResult').style.display='';
+  document.getElementById('utmResult').scrollIntoView({behavior:'smooth',block:'start'});
+  // 현재 rows 저장 (엑셀 다운로드용)
+  window._utmRows=rows;window._utmProject=project;
+}
+
+function copyUtmRow(btn,encoded){
+  navigator.clipboard.writeText(decodeURIComponent(encoded)).then(()=>{
+    btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);
+  });
+}
+
+function copyAllUtm(){
+  if(!window._utmRows)return;
+  const text=window._utmRows.map(r=>r.full).join('\n');
+  navigator.clipboard.writeText(text).then(()=>showToast('전체 URL 복사 완료','ok'));
+}
+
+function downloadUtmExcel(){
+  if(!window._utmRows||!window._utmRows.length){showToast('먼저 UTM을 생성해주세요.','warn');return;}
+  if(typeof XLSX==='undefined'){showToast('엑셀 라이브러리 로드 중...','warn');return;}
+  const project=window._utmProject||'현장';
+  const wb=XLSX.utils.book_new();
+  const header=[project,'구분1','구분2','구분3(랜딩)','URL','?/&','utm_source=','&utm_medium=','&utm_campaign=','&utm_content=','&utm_term=','최종 URL'];
+  const rows=[header];
+  window._utmRows.forEach(r=>{
+    const sep=r.url&&r.url.includes('?')?'&':'?';
+    rows.push(['',r.cat1,r.cat2,r.cat3,r.url||'',sep,r.source,r.medium,r.campaign,r.content,r.term,r.full]);
+  });
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:16},{wch:14},{wch:18},{wch:14},{wch:40},{wch:4},{wch:14},{wch:10},{wch:24},{wch:12},{wch:10},{wch:80}];
+  XLSX.utils.book_append_sheet(wb,ws,'UTM');
+  XLSX.writeFile(wb,`BRIN_UTM_${project}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showToast('📥 엑셀 다운로드 완료','ok');
+}
+
+
 const JIBUL_GUIDE=[
   {cat:"통신사",name:"SKT",rank:"150위이내",rcs:"O",opst:"O",jisan:"X",johab:"일반분양만",lind:"△",sang:"△",condo:"O",dong:"O",wkend:"O",note:"벽산엔지니어링 불가"},
   {cat:"통신사",name:"KT",rank:"제한없음",rcs:"O",opst:"O",jisan:"O",johab:"X",lind:"△",sang:"△",condo:"O",dong:"O",wkend:"X",note:"최초분양일 2년이내만"},
@@ -5399,6 +5746,7 @@ function switchTab(tab){
   });
   if(tab==='edit') renderGuidePreview();
   if(tab==='guide') renderJibulGuide();
+  if(tab==='utm') initUtmTab();
 }
 
 /* ═══════════════════════════════════════
