@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.25">
+<meta name="version" content="v4.19.26">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1099,7 +1099,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.25</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.26</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1623,6 +1623,14 @@ body.light .sms-tool{
             <div style="font-size:13px;color:var(--sms-text2);margin-bottom:12px">매체사별 campaign 코드가 자동 생성됩니다. <span style="color:var(--sms-text3)">(예: lms_cjone, mms_sinsegae)</span></div>
             <div id="utmSmsRows"></div>
             <button class="btn btn-g" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="addUtmSmsRow()">+ 문자광고 추가</button>
+          </div>
+
+          <!-- 카페배너 설정 -->
+          <div class="sms-card utm-section" id="utmCafeCard" style="display:none">
+            <div class="utm-section-title">☕ 카페배너 설정</div>
+            <div style="font-size:13px;color:var(--sms-text2);margin-bottom:12px">카페명과 코드를 입력하면 campaign이 자동 생성됩니다. <span style="color:var(--sms-text3)">(예: naver_cafe_kjmstr)</span></div>
+            <div id="utmCafeRows"></div>
+            <button class="btn btn-g" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="addUtmCafeRow()">+ 카페 추가</button>
           </div>
 
           <!-- 생성 버튼 -->
@@ -6270,6 +6278,14 @@ function initUtmTab(){
       <span>문자광고 (LMS/MMS)</span>
     </label>
   </div>`;
+  // 카페배너 카드 체크박스
+  grid.innerHTML+=`<div class="utm-media-group">
+    <div class="utm-media-cat">카페배너</div>
+    <label class="utm-check-label">
+      <input type="checkbox" id="utmCafeCheck" onchange="onUtmCafeToggle(this)">
+      <span>카페배너 (네이버 카페)</span>
+    </label>
+  </div>`;
   // 기본 페이지 예시
   addUtmPage('메인',''); addUtmPage('오시는길','pages/location.asp');
 }
@@ -6318,6 +6334,39 @@ function onUtmSmsToggle(chk){
   const card=document.getElementById('utmSmsCard');
   card.style.display=chk.checked?'':'none';
   if(chk.checked&&document.getElementById('utmSmsRows').children.length===0)addUtmSmsRow();
+}
+
+/* ── 카페배너 ── */
+let utmCafeRowCount=0;
+
+function addUtmCafeRow(cafeName='',cafeCode=''){
+  utmCafeRowCount++;
+  const id='utmCafeRow'+utmCafeRowCount;
+  const row=document.createElement('div');
+  row.className='utm-cafe-row';row.id=id;
+  row.innerHTML=`
+    <input type="text" class="utm-input utm-cafe-name" placeholder="카페명 (예: 광주맘스토리)" value="${cafeName}" style="width:170px;flex:none">
+    <input type="text" class="utm-input utm-cafe-code" placeholder="코드 (예: kjmstr)" value="${cafeCode}" style="width:130px;flex:none">
+    <span class="utm-sms-preview"></span>
+    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
+  const nameInp=row.querySelector('.utm-cafe-name');
+  const codeInp=row.querySelector('.utm-cafe-code');
+  nameInp.addEventListener('input',()=>updateCafePreview(row));
+  codeInp.addEventListener('input',()=>updateCafePreview(row));
+  document.getElementById('utmCafeRows').appendChild(row);
+  updateCafePreview(row);
+}
+
+function updateCafePreview(row){
+  const code=row.querySelector('.utm-cafe-code').value.trim();
+  const preview=row.querySelector('.utm-sms-preview');
+  if(preview)preview.textContent=`→ naver_cafe_${code||'코드입력'}`;
+}
+
+function onUtmCafeToggle(chk){
+  const card=document.getElementById('utmCafeCard');
+  card.style.display=chk.checked?'':'none';
+  if(chk.checked&&document.getElementById('utmCafeRows').children.length===0)addUtmCafeRow();
 }
 function onUtmMediaChange(){}
 
@@ -6371,6 +6420,20 @@ function generateUtm(){
       const params={utm_source:'dm',utm_medium:'cpm',utm_campaign:campaign};
       rows.push({cat1:'문자광고',cat2:`${type.toUpperCase()} - ${media}`,cat3:page.name,url:page.url,
         source:'dm',medium:'cpm',campaign,content:'',term:'',
+        full:buildUtmUrl(page.url,params)});
+    });
+  });
+
+  // 카페배너
+  document.querySelectorAll('.utm-cafe-row').forEach(row=>{
+    const cafeName=row.querySelector('.utm-cafe-name').value.trim();
+    const cafeCode=row.querySelector('.utm-cafe-code').value.trim();
+    if(!cafeCode)return;
+    const campaign=`naver_cafe_${cafeCode}`;
+    pages.forEach(page=>{
+      const params={utm_source:'naver',utm_medium:'cpt',utm_campaign:campaign};
+      rows.push({cat1:'카페배너',cat2:cafeName||cafeCode,cat3:page.name,url:page.url,
+        source:'naver',medium:'cpt',campaign,content:'',term:'',
         full:buildUtmUrl(page.url,params)});
     });
   });
