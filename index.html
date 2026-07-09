@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.24">
+<meta name="version" content="v4.19.25">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1099,7 +1099,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.24</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.25</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -5368,301 +5368,7 @@ const MEDIA_GUIDES = {
   },
 };
 
-/* ── UTM 생성기 ─────────────────────────────────────── */
-const UTM_MEDIA_PRESETS=[
-  {cat:"네이버",name:"브랜드검색 PC",source:"naver",medium:"CPT",campaign:"naver_br",content:"{keyword}",term:"{query}"},
-  {cat:"네이버",name:"브랜드검색 MO",source:"naver",medium:"CPT",campaign:"naver_brmo",content:"{keyword}",term:"{query}"},
-  {cat:"네이버",name:"키워드 PC",source:"naver",medium:"cpc",campaign:"naver_sa",content:"{keyword}",term:"{query}"},
-  {cat:"네이버",name:"키워드 MO",source:"naver",medium:"cpc",campaign:"naver_samo",content:"{keyword}",term:"{query}"},
-  {cat:"네이버",name:"GFA",source:"naver",medium:"cpc",campaign:"naver_GFA",content:"",term:""},
-  {cat:"네이버",name:"GFA 스마트채널",source:"naver",medium:"cpc",campaign:"naver_GFA_smartch",content:"",term:""},
-  {cat:"네이버",name:"롤링보드",source:"naver",medium:"cpc",campaign:"naver_rolling",content:"",term:""},
-  {cat:"구글",name:"GDN PC",source:"google",medium:"cpc",campaign:"google_gdn",content:"",term:""},
-  {cat:"구글",name:"GDN MO",source:"google",medium:"cpc",campaign:"google_gdnmo",content:"",term:""},
-  {cat:"구글",name:"PMAX PC",source:"google",medium:"cpc",campaign:"google_pmax",content:"",term:""},
-  {cat:"구글",name:"PMAX MO",source:"google",medium:"cpc",campaign:"google_pmaxmo",content:"",term:""},
-  {cat:"구글",name:"디멘드젠 PC",source:"google",medium:"cpc",campaign:"google_demand",content:"",term:""},
-  {cat:"구글",name:"디멘드젠 MO",source:"google",medium:"cpc",campaign:"google_demandmo",content:"",term:""},
-  {cat:"구글",name:"유튜브 VRC PC",source:"google",medium:"cpc",campaign:"google_ytbvrc",content:"",term:""},
-  {cat:"구글",name:"유튜브 VRC MO",source:"google",medium:"cpc",campaign:"google_ytbvrcmo",content:"",term:""},
-  {cat:"메타",name:"인스타그램",source:"meta",medium:"cpc",campaign:"meta_insta",content:"",term:""},
-  {cat:"메타",name:"페이스북",source:"meta",medium:"cpc",campaign:"meta_FB",content:"",term:""},
-  {cat:"카카오",name:"디스플레이",source:"kakao",medium:"cpm",campaign:"kakao_moment",content:"",term:""},
-  {cat:"카카오",name:"비즈보드",source:"kakao",medium:"cpm",campaign:"kakao_biz",content:"",term:""},
-  {cat:"호갱노노",name:"단지마커",source:"hogang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
-  {cat:"호갱노노",name:"DA배너패키지",source:"hogang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
-  {cat:"호갱노노",name:"앱푸시",source:"hogang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
-  {cat:"호갱노노",name:"채널톡",source:"hogang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
-  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
-  {cat:"직방",name:"DA배너패키지",source:"zigbang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
-  {cat:"직방",name:"앱푸시",source:"zigbang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
-  {cat:"직방",name:"채널톡",source:"zigbang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
-  {cat:"TMAP",name:"내비홈배너",source:"tmap",medium:"app",campaign:"tmap_nv",content:"",term:""},
-  {cat:"디지털캠프",name:"DA PC",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_da",content:"",term:""},
-  {cat:"디지털캠프",name:"DA MO",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_damo",content:"",term:""},
-  {cat:"당근마켓",name:"피드",source:"danggeun",medium:"app",campaign:"danggeun_feed",content:"",term:""},
-  {cat:"블라인드",name:"DA",source:"blind",medium:"app",campaign:"blind_da",content:"",term:""},
-  {cat:"키즈노트",name:"키즈노트",source:"kidsnote",medium:"app",campaign:"kidsnote_main",content:"",term:""},
-  // ── 네이버 추가 ──
-  {cat:"네이버",name:"스마트채널",source:"naver",medium:"cpc",campaign:"naver_smartch",content:"",term:""},
-  {cat:"네이버",name:"브랜딩DA (cpc)",source:"naver",medium:"cpc",campaign:"naver_brdda",content:"",term:""},
-  {cat:"네이버",name:"브랜딩DA (cpm)",source:"naver",medium:"cpm",campaign:"naver_bd",content:"",term:""},
-  {cat:"네이버",name:"롤링보드 (cpm)",source:"naver",medium:"cpm",campaign:"naver_rb",content:"",term:""},
-  {cat:"네이버",name:"스페셜DA",source:"naver",medium:"cpm",campaign:"naver_spda",content:"",term:""},
-  {cat:"네이버",name:"GFA (별도)",source:"GFA",medium:"cpc",campaign:"naver_gfa",content:"",term:""},
-  {cat:"네이버",name:"카페배너(개별)",source:"navercafe1",medium:"display",campaign:"navercafe1",content:"",term:""},
-  // ── 다음 (신규) ──
-  {cat:"다음",name:"키워드 PC",source:"kakao",medium:"cpc",campaign:"kakao_sad",content:"{keyword}",term:"{query}"},
-  {cat:"다음",name:"키워드 MO",source:"kakao",medium:"cpc",campaign:"kakao_sadmo",content:"{keyword}",term:"{query}"},
-  {cat:"다음",name:"브랜드검색",source:"daumbs",medium:"cpm",campaign:"daumbs",content:"{keyword}",term:"{query}"},
-  // ── 카카오 추가 ──
-  {cat:"카카오",name:"채널메시지",source:"kakao",medium:"cpm",campaign:"kakao_ch_msg",content:"",term:""},
-  {cat:"카카오",name:"채널 홈",source:"kakao",medium:"cpm",campaign:"kakao_ch",content:"",term:""},
-  {cat:"카카오",name:"채널 컨텐츠",source:"kakao",medium:"cpm",campaign:"kakao_ch_con",content:"",term:""},
-  {cat:"카카오",name:"모먼트(별도)",source:"kkobiz",medium:"display",campaign:"kkobiz",content:"",term:""},
-  // ── 구글 추가 ──
-  {cat:"구글",name:"유튜브 트루뷰 PC",source:"google",medium:"cpc",campaign:"google_ytb",content:"",term:""},
-  {cat:"구글",name:"유튜브 트루뷰 MO",source:"google",medium:"cpc",campaign:"google_ytbmo",content:"",term:""},
-  // ── 메타 추가 ──
-  {cat:"메타",name:"인스타그램 (cpm)",source:"meta",medium:"cpm",campaign:"meta_insta",content:"",term:""},
-  {cat:"메타",name:"페이스북 (cpm)",source:"meta",medium:"cpm",campaign:"meta_FB",content:"",term:""},
-  {cat:"메타",name:"피드",source:"meta",medium:"cpc",campaign:"meta_feed",content:"",term:""},
-  // ── 틱톡 (신규) ──
-  {cat:"틱톡",name:"틱톡 DA",source:"tiktok",medium:"app",campaign:"tiktok_da",content:"",term:""},
-  // ── 호갱노노 추가 ──
-  {cat:"호갱노노",name:"원데이패키지",source:"zigbang",medium:"cpt",campaign:"hogang_bpkg",content:"",term:""},
-  {cat:"호갱노노",name:"비즈마커",source:"zigbang",medium:"cpc",campaign:"hogang_bizmarker",content:"",term:""},
-  {cat:"호갱노노",name:"채널메시지",source:"zigbang",medium:"cpc",campaign:"hogang_message",content:"",term:""},
-  // ── 직방 추가 ──
-  {cat:"직방",name:"DA",source:"zigbang",medium:"cpc",campaign:"zigbang_da",content:"",term:""},
-  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpc",campaign:"zigbang_marker",content:"",term:""},
-  // ── 리멤버 (신규) ──
-  {cat:"리멤버",name:"리멤버",source:"remember",medium:"cpm",campaign:"remember_main",content:"",term:""},
-  // ── 부린이톡 (신규) ──
-  {cat:"부린이톡",name:"부린이톡",source:"burin2talk",medium:"cpc",campaign:"burin2talk",content:"",term:""},
-  // ── KB부동산 (신규) ──
-  {cat:"KB부동산",name:"단지마커",source:"kb",medium:"cpc",campaign:"kb_marker",content:"",term:""},
-  // ── 스크린뷰 (신규) ──
-  {cat:"스크린뷰",name:"스크린뷰",source:"scrv",medium:"cpc",campaign:"scrv_da",content:"",term:""},
-  // ── 앱 매체 (신규) ──
-  {cat:"아이엠스쿨",name:"아이엠스쿨",source:"app",medium:"cpm",campaign:"iam_school",content:"",term:""},
-  {cat:"마미톡",name:"마미톡",source:"app",medium:"cpc",campaign:"mommy_talk",content:"",term:""},
-  {cat:"SKT ASUM",name:"SKT ASUM",source:"app",medium:"cpc",campaign:"skt_da",content:"",term:""},
-  {cat:"TOSS",name:"TOSS",source:"app",medium:"cpc",campaign:"toss_alarm",content:"",term:""},
-  {cat:"T맵(앱)",name:"T맵 알람",source:"app",medium:"cpc",campaign:"T_map",content:"",term:""},
-  // ── QR / 오프라인 (신규) ──
-  {cat:"QR/오프라인",name:"QR_거점영업",source:"offQR",medium:"off",campaign:"off_qr_booth",content:"",term:""},
-  {cat:"QR/오프라인",name:"QR_판촉물",source:"offQR",medium:"off",campaign:"off_qr_goods",content:"",term:""},
-  {cat:"QR/오프라인",name:"QR_리플렛",source:"offQR",medium:"off",campaign:"off_qr_leaflet",content:"",term:""},
-  {cat:"QR/오프라인",name:"QR_옥외광고",source:"offQR",medium:"off",campaign:"off_qr_ooh",content:"",term:""},
-  {cat:"QR/오프라인",name:"EDM 유입",source:"edm",medium:"cpt",campaign:"edm_email",content:"",term:""},
-  // ── 타게팅게이츠 (신규) ──
-  {cat:"타게팅게이츠",name:"타게팅게이츠",source:"googletg",medium:"cpc",campaign:"open",content:"",term:""},
-  // ── 메디게이트 (신규) ──
-  {cat:"메디게이트",name:"고정",source:"mdgte",medium:"cpm",campaign:"Bid",content:"",term:""},
-  {cat:"메디게이트",name:"CPC",source:"mdgte",medium:"cpc",campaign:"Bid",content:"",term:""},
-];
 
-// 문자광고 매체사 코드
-const SMS_CODES={
-  "BC카드":"bccard","삼성카드":"samsung","하나카드":"hana","KB국민카드":"kb",
-  "롯데카드":"lotte","신한카드":"shinhan","우리카드":"woori","SKT":"skt",
-  "KT":"kt","LG U+":"lgu","신세계포인트":"sinsegae","OK캐시백":"ok",
-  "CJ ONE":"cjone","엘포인트":"elpoint","롯데멤버스":"lottem",
-  "호갱노노":"hogang","직방":"zigbang","카카오페이":"kakaopay",
-  "T맵":"tmap","스마트스코어":"smartscore","나이스평가정보":"nice",
-  "분양통":"byangtong","토스":"toss","바나나몽키즈":"bm",
-};
-
-let utmPageCount=0;
-let utmSmsRowCount=0;
-let utmInited=false;
-
-function utmPreviewBase(){/* URL 미리보기 - 향후 사용 */}
-
-function initUtmTab(){
-  if(utmInited)return;
-  utmInited=true;
-  // 매체 그리드 렌더
-  const grid=document.getElementById('utmMediaGrid');
-  if(!grid)return;
-  const cats=[...new Set(UTM_MEDIA_PRESETS.map(m=>m.cat))];
-  grid.innerHTML=cats.map(cat=>{
-    const items=UTM_MEDIA_PRESETS.filter(m=>m.cat===cat);
-    return`<div class="utm-media-group">
-      <div class="utm-media-cat">${cat}</div>
-      ${items.map(m=>`<label class="utm-check-label">
-        <input type="checkbox" class="utm-media-chk" value="${m.name}" data-cat="${cat}" onchange="onUtmMediaChange()">
-        <span>${m.name}</span>
-      </label>`).join('')}
-    </div>`;
-  }).join('');
-  // 문자광고 카드 체크박스
-  grid.innerHTML+=`<div class="utm-media-group">
-    <div class="utm-media-cat">문자광고</div>
-    <label class="utm-check-label">
-      <input type="checkbox" id="utmSmsCheck" onchange="onUtmSmsToggle(this)">
-      <span>문자광고 (LMS/MMS)</span>
-    </label>
-  </div>`;
-  // 기본 페이지 예시
-  addUtmPage('메인',''); addUtmPage('오시는길','pages/location.asp');
-}
-
-function addUtmPage(pageName='',pagePath=''){
-  utmPageCount++;
-  const id='utmPage'+utmPageCount;
-  const row=document.createElement('div');
-  row.className='utm-page-row';row.id=id;
-  row.innerHTML=`
-    <input type="text" class="utm-input utm-page-name" placeholder="페이지명 (예: 오시는길)" value="${pageName}" style="width:130px;flex:none">
-    <input type="text" class="utm-input utm-page-path" placeholder="URL 경로 (비우면 기본URL 사용)" value="${pagePath}" style="flex:1">
-    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
-  document.getElementById('utmPageList').appendChild(row);
-}
-
-function addUtmSmsRow(){
-  utmSmsRowCount++;
-  const id='utmSmsRow'+utmSmsRowCount;
-  const row=document.createElement('div');
-  row.className='utm-sms-row';row.id=id;
-  const mediaOptions=Object.keys(SMS_CODES).map(k=>`<option value="${k}">${k}</option>`).join('');
-  row.innerHTML=`
-    <select class="utm-select utm-sms-type">
-      <option value="lms">LMS</option>
-      <option value="mms">MMS</option>
-    </select>
-    <select class="utm-select utm-sms-media">${mediaOptions}</select>
-    <span class="utm-sms-preview"></span>
-    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
-  // 미리보기 업데이트
-  row.querySelectorAll('select').forEach(s=>s.addEventListener('change',()=>updateSmsPreview(row)));
-  document.getElementById('utmSmsRows').appendChild(row);
-  updateSmsPreview(row);
-}
-
-function updateSmsPreview(row){
-  const type=row.querySelector('.utm-sms-type').value;
-  const media=row.querySelector('.utm-sms-media').value;
-  const code=SMS_CODES[media]||media.toLowerCase();
-  const preview=row.querySelector('.utm-sms-preview');
-  if(preview)preview.textContent=`→ campaign: ${type}_${code}`;
-}
-
-function onUtmSmsToggle(chk){
-  const card=document.getElementById('utmSmsCard');
-  card.style.display=chk.checked?'':'none';
-  if(chk.checked&&document.getElementById('utmSmsRows').children.length===0)addUtmSmsRow();
-}
-function onUtmMediaChange(){}
-
-function getUtmPages(baseUrl){
-  const pages=[];
-  document.querySelectorAll('.utm-page-row').forEach(row=>{
-    const name=row.querySelector('.utm-page-name').value.trim()||'메인';
-    const path=row.querySelector('.utm-page-path').value.trim();
-    const url=path?(baseUrl.replace(/\/$/,'')+'/'+path.replace(/^\//,'')):baseUrl;
-    pages.push({name,url});
-  });
-  if(pages.length===0)pages.push({name:'메인',url:baseUrl});
-  return pages;
-}
-
-function buildUtmUrl(baseUrl,params){
-  if(!baseUrl)return'?'+new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([,v])=>v))).toString();
-  const sep=baseUrl.includes('?')?'&':'?';
-  const qs=Object.entries(params).filter(([,v])=>v).map(([k,v])=>`${k}=${v}`).join('&');
-  return baseUrl+(qs?sep+qs:'');
-}
-
-function generateUtm(){
-  const project=document.getElementById('utmProjectName').value.trim()||'현장명';
-  const baseUrl=(document.getElementById('utmBaseUrl').value||'').trim();
-  const pages=getUtmPages(baseUrl);
-  const rows=[];
-
-  // 일반 매체
-  document.querySelectorAll('.utm-media-chk:checked').forEach(chk=>{
-    const preset=UTM_MEDIA_PRESETS.find(m=>m.name===chk.value);
-    if(!preset)return;
-    pages.forEach(page=>{
-      const params={utm_source:preset.source,utm_medium:preset.medium,utm_campaign:preset.campaign};
-      if(preset.content)params.utm_content=preset.content;
-      if(preset.term)params.utm_term=preset.term;
-      rows.push({cat1:preset.cat,cat2:preset.name,cat3:page.name,url:page.url,
-        source:preset.source,medium:preset.medium,campaign:preset.campaign,
-        content:preset.content,term:preset.term,
-        full:buildUtmUrl(page.url,params)});
-    });
-  });
-
-  // 문자광고
-  document.querySelectorAll('.utm-sms-row').forEach(row=>{
-    const type=row.querySelector('.utm-sms-type').value;
-    const media=row.querySelector('.utm-sms-media').value;
-    const code=SMS_CODES[media]||media.toLowerCase();
-    const campaign=`${type}_${code}`;
-    pages.forEach(page=>{
-      const params={utm_source:'dm',utm_medium:'cpm',utm_campaign:campaign};
-      rows.push({cat1:'문자광고',cat2:`${type.toUpperCase()} - ${media}`,cat3:page.name,url:page.url,
-        source:'dm',medium:'cpm',campaign,content:'',term:'',
-        full:buildUtmUrl(page.url,params)});
-    });
-  });
-
-  if(!rows.length){showToast('매체를 1개 이상 선택해주세요.','warn');return;}
-
-  // 테이블 렌더
-  const tbody=document.getElementById('utmTableBody');
-  tbody.innerHTML=rows.map((r,i)=>`<tr>
-    <td class="utm-td">${r.cat1}</td>
-    <td class="utm-td">${r.cat2}</td>
-    <td class="utm-td">${r.cat3}</td>
-    <td class="utm-td utm-mono">${r.source}</td>
-    <td class="utm-td utm-mono">${r.medium}</td>
-    <td class="utm-td utm-mono">${r.campaign}</td>
-    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.content||'—'}</td>
-    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.term||'—'}</td>
-    <td class="utm-td utm-url" title="${r.full}">${r.full}</td>
-    <td><button class="utm-copy-btn" onclick="copyUtmRow(this,'${encodeURIComponent(r.full)}')" title="복사">📋</button></td>
-  </tr>`).join('');
-
-  document.getElementById('utmResultCount').textContent=`총 ${rows.length}개`;
-  document.getElementById('utmResult').style.display='';
-  document.getElementById('utmResult').scrollIntoView({behavior:'smooth',block:'start'});
-  // 현재 rows 저장 (엑셀 다운로드용)
-  window._utmRows=rows;window._utmProject=project;
-}
-
-function copyUtmRow(btn,encoded){
-  navigator.clipboard.writeText(decodeURIComponent(encoded)).then(()=>{
-    btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);
-  });
-}
-
-function copyAllUtm(){
-  if(!window._utmRows)return;
-  const text=window._utmRows.map(r=>r.full).join('\n');
-  navigator.clipboard.writeText(text).then(()=>showToast('전체 URL 복사 완료','ok'));
-}
-
-function downloadUtmExcel(){
-  if(!window._utmRows||!window._utmRows.length){showToast('먼저 UTM을 생성해주세요.','warn');return;}
-  if(typeof XLSX==='undefined'){showToast('엑셀 라이브러리 로드 중...','warn');return;}
-  const project=window._utmProject||'현장';
-  const wb=XLSX.utils.book_new();
-  const header=[project,'구분1','구분2','구분3(랜딩)','URL','?/&','utm_source=','&utm_medium=','&utm_campaign=','&utm_content=','&utm_term=','최종 URL'];
-  const rows=[header];
-  window._utmRows.forEach(r=>{
-    const sep=r.url&&r.url.includes('?')?'&':'?';
-    rows.push(['',r.cat1,r.cat2,r.cat3,r.url||'',sep,r.source,r.medium,r.campaign,r.content,r.term,r.full]);
-  });
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:16},{wch:14},{wch:18},{wch:14},{wch:40},{wch:4},{wch:14},{wch:10},{wch:24},{wch:12},{wch:10},{wch:80}];
-  XLSX.utils.book_append_sheet(wb,ws,'UTM');
-  XLSX.writeFile(wb,`BRIN_UTM_${project}_${new Date().toISOString().slice(0,10)}.xlsx`);
-  showToast('📥 엑셀 다운로드 완료','ok');
-}
 
 
 const JIBUL_GUIDE=[
@@ -6426,6 +6132,302 @@ return {
     showSigoManual: showSigoManual
 };
 })();
+
+/* ── UTM 생성기 ─────────────────────────────────────── */
+const UTM_MEDIA_PRESETS=[
+  {cat:"네이버",name:"브랜드검색 PC",source:"naver",medium:"CPT",campaign:"naver_br",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"브랜드검색 MO",source:"naver",medium:"CPT",campaign:"naver_brmo",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"키워드 PC",source:"naver",medium:"cpc",campaign:"naver_sa",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"키워드 MO",source:"naver",medium:"cpc",campaign:"naver_samo",content:"{keyword}",term:"{query}"},
+  {cat:"네이버",name:"GFA",source:"naver",medium:"cpc",campaign:"naver_GFA",content:"",term:""},
+  {cat:"네이버",name:"GFA 스마트채널",source:"naver",medium:"cpc",campaign:"naver_GFA_smartch",content:"",term:""},
+  {cat:"네이버",name:"롤링보드",source:"naver",medium:"cpc",campaign:"naver_rolling",content:"",term:""},
+  {cat:"구글",name:"GDN PC",source:"google",medium:"cpc",campaign:"google_gdn",content:"",term:""},
+  {cat:"구글",name:"GDN MO",source:"google",medium:"cpc",campaign:"google_gdnmo",content:"",term:""},
+  {cat:"구글",name:"PMAX PC",source:"google",medium:"cpc",campaign:"google_pmax",content:"",term:""},
+  {cat:"구글",name:"PMAX MO",source:"google",medium:"cpc",campaign:"google_pmaxmo",content:"",term:""},
+  {cat:"구글",name:"디멘드젠 PC",source:"google",medium:"cpc",campaign:"google_demand",content:"",term:""},
+  {cat:"구글",name:"디멘드젠 MO",source:"google",medium:"cpc",campaign:"google_demandmo",content:"",term:""},
+  {cat:"구글",name:"유튜브 VRC PC",source:"google",medium:"cpc",campaign:"google_ytbvrc",content:"",term:""},
+  {cat:"구글",name:"유튜브 VRC MO",source:"google",medium:"cpc",campaign:"google_ytbvrcmo",content:"",term:""},
+  {cat:"메타",name:"인스타그램",source:"meta",medium:"cpc",campaign:"meta_insta",content:"",term:""},
+  {cat:"메타",name:"페이스북",source:"meta",medium:"cpc",campaign:"meta_FB",content:"",term:""},
+  {cat:"카카오",name:"디스플레이",source:"kakao",medium:"cpm",campaign:"kakao_moment",content:"",term:""},
+  {cat:"카카오",name:"비즈보드",source:"kakao",medium:"cpm",campaign:"kakao_biz",content:"",term:""},
+  {cat:"호갱노노",name:"단지마커",source:"hogang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
+  {cat:"호갱노노",name:"DA배너패키지",source:"hogang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
+  {cat:"호갱노노",name:"앱푸시",source:"hogang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
+  {cat:"호갱노노",name:"채널톡",source:"hogang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
+  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpt",campaign:"hogang_marker",content:"",term:""},
+  {cat:"직방",name:"DA배너패키지",source:"zigbang",medium:"cpt",campaign:"hogang_da",content:"",term:""},
+  {cat:"직방",name:"앱푸시",source:"zigbang",medium:"cpt",campaign:"hogang_apppush",content:"",term:""},
+  {cat:"직방",name:"채널톡",source:"zigbang",medium:"cpt",campaign:"channeltalk",content:"",term:""},
+  {cat:"TMAP",name:"내비홈배너",source:"tmap",medium:"app",campaign:"tmap_nv",content:"",term:""},
+  {cat:"디지털캠프",name:"DA PC",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_da",content:"",term:""},
+  {cat:"디지털캠프",name:"DA MO",source:"digitalcamp",medium:"cpc",campaign:"digitalcamp_damo",content:"",term:""},
+  {cat:"당근마켓",name:"피드",source:"danggeun",medium:"app",campaign:"danggeun_feed",content:"",term:""},
+  {cat:"블라인드",name:"DA",source:"blind",medium:"app",campaign:"blind_da",content:"",term:""},
+  {cat:"키즈노트",name:"키즈노트",source:"kidsnote",medium:"app",campaign:"kidsnote_main",content:"",term:""},
+  // ── 네이버 추가 ──
+  {cat:"네이버",name:"스마트채널",source:"naver",medium:"cpc",campaign:"naver_smartch",content:"",term:""},
+  {cat:"네이버",name:"브랜딩DA (cpc)",source:"naver",medium:"cpc",campaign:"naver_brdda",content:"",term:""},
+  {cat:"네이버",name:"브랜딩DA (cpm)",source:"naver",medium:"cpm",campaign:"naver_bd",content:"",term:""},
+  {cat:"네이버",name:"롤링보드 (cpm)",source:"naver",medium:"cpm",campaign:"naver_rb",content:"",term:""},
+  {cat:"네이버",name:"스페셜DA",source:"naver",medium:"cpm",campaign:"naver_spda",content:"",term:""},
+  {cat:"네이버",name:"GFA (별도)",source:"GFA",medium:"cpc",campaign:"naver_gfa",content:"",term:""},
+  {cat:"네이버",name:"카페배너(개별)",source:"navercafe1",medium:"display",campaign:"navercafe1",content:"",term:""},
+  // ── 다음 (신규) ──
+  {cat:"다음",name:"키워드 PC",source:"kakao",medium:"cpc",campaign:"kakao_sad",content:"{keyword}",term:"{query}"},
+  {cat:"다음",name:"키워드 MO",source:"kakao",medium:"cpc",campaign:"kakao_sadmo",content:"{keyword}",term:"{query}"},
+  {cat:"다음",name:"브랜드검색",source:"daumbs",medium:"cpm",campaign:"daumbs",content:"{keyword}",term:"{query}"},
+  // ── 카카오 추가 ──
+  {cat:"카카오",name:"채널메시지",source:"kakao",medium:"cpm",campaign:"kakao_ch_msg",content:"",term:""},
+  {cat:"카카오",name:"채널 홈",source:"kakao",medium:"cpm",campaign:"kakao_ch",content:"",term:""},
+  {cat:"카카오",name:"채널 컨텐츠",source:"kakao",medium:"cpm",campaign:"kakao_ch_con",content:"",term:""},
+  {cat:"카카오",name:"모먼트(별도)",source:"kkobiz",medium:"display",campaign:"kkobiz",content:"",term:""},
+  // ── 구글 추가 ──
+  {cat:"구글",name:"유튜브 트루뷰 PC",source:"google",medium:"cpc",campaign:"google_ytb",content:"",term:""},
+  {cat:"구글",name:"유튜브 트루뷰 MO",source:"google",medium:"cpc",campaign:"google_ytbmo",content:"",term:""},
+  // ── 메타 추가 ──
+  {cat:"메타",name:"인스타그램 (cpm)",source:"meta",medium:"cpm",campaign:"meta_insta",content:"",term:""},
+  {cat:"메타",name:"페이스북 (cpm)",source:"meta",medium:"cpm",campaign:"meta_FB",content:"",term:""},
+  {cat:"메타",name:"피드",source:"meta",medium:"cpc",campaign:"meta_feed",content:"",term:""},
+  // ── 틱톡 (신규) ──
+  {cat:"틱톡",name:"틱톡 DA",source:"tiktok",medium:"app",campaign:"tiktok_da",content:"",term:""},
+  // ── 호갱노노 추가 ──
+  {cat:"호갱노노",name:"원데이패키지",source:"zigbang",medium:"cpt",campaign:"hogang_bpkg",content:"",term:""},
+  {cat:"호갱노노",name:"비즈마커",source:"zigbang",medium:"cpc",campaign:"hogang_bizmarker",content:"",term:""},
+  {cat:"호갱노노",name:"채널메시지",source:"zigbang",medium:"cpc",campaign:"hogang_message",content:"",term:""},
+  // ── 직방 추가 ──
+  {cat:"직방",name:"DA",source:"zigbang",medium:"cpc",campaign:"zigbang_da",content:"",term:""},
+  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpc",campaign:"zigbang_marker",content:"",term:""},
+  // ── 리멤버 (신규) ──
+  {cat:"리멤버",name:"리멤버",source:"remember",medium:"cpm",campaign:"remember_main",content:"",term:""},
+  // ── 부린이톡 (신규) ──
+  {cat:"부린이톡",name:"부린이톡",source:"burin2talk",medium:"cpc",campaign:"burin2talk",content:"",term:""},
+  // ── KB부동산 (신규) ──
+  {cat:"KB부동산",name:"단지마커",source:"kb",medium:"cpc",campaign:"kb_marker",content:"",term:""},
+  // ── 스크린뷰 (신규) ──
+  {cat:"스크린뷰",name:"스크린뷰",source:"scrv",medium:"cpc",campaign:"scrv_da",content:"",term:""},
+  // ── 앱 매체 (신규) ──
+  {cat:"아이엠스쿨",name:"아이엠스쿨",source:"app",medium:"cpm",campaign:"iam_school",content:"",term:""},
+  {cat:"마미톡",name:"마미톡",source:"app",medium:"cpc",campaign:"mommy_talk",content:"",term:""},
+  {cat:"SKT ASUM",name:"SKT ASUM",source:"app",medium:"cpc",campaign:"skt_da",content:"",term:""},
+  {cat:"TOSS",name:"TOSS",source:"app",medium:"cpc",campaign:"toss_alarm",content:"",term:""},
+  {cat:"T맵(앱)",name:"T맵 알람",source:"app",medium:"cpc",campaign:"T_map",content:"",term:""},
+  // ── QR / 오프라인 (신규) ──
+  {cat:"QR/오프라인",name:"QR_거점영업",source:"offQR",medium:"off",campaign:"off_qr_booth",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_판촉물",source:"offQR",medium:"off",campaign:"off_qr_goods",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_리플렛",source:"offQR",medium:"off",campaign:"off_qr_leaflet",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_옥외광고",source:"offQR",medium:"off",campaign:"off_qr_ooh",content:"",term:""},
+  {cat:"QR/오프라인",name:"EDM 유입",source:"edm",medium:"cpt",campaign:"edm_email",content:"",term:""},
+  // ── 타게팅게이츠 (신규) ──
+  {cat:"타게팅게이츠",name:"타게팅게이츠",source:"googletg",medium:"cpc",campaign:"open",content:"",term:""},
+  // ── 메디게이트 (신규) ──
+  {cat:"메디게이트",name:"고정",source:"mdgte",medium:"cpm",campaign:"Bid",content:"",term:""},
+  {cat:"메디게이트",name:"CPC",source:"mdgte",medium:"cpc",campaign:"Bid",content:"",term:""},
+];
+
+// 문자광고 매체사 코드
+const SMS_CODES={
+  "BC카드":"bccard","삼성카드":"samsung","하나카드":"hana","KB국민카드":"kb",
+  "롯데카드":"lotte","신한카드":"shinhan","우리카드":"woori","SKT":"skt",
+  "KT":"kt","LG U+":"lgu","신세계포인트":"sinsegae","OK캐시백":"ok",
+  "CJ ONE":"cjone","엘포인트":"elpoint","롯데멤버스":"lottem",
+  "호갱노노":"hogang","직방":"zigbang","카카오페이":"kakaopay",
+  "T맵":"tmap","스마트스코어":"smartscore","나이스평가정보":"nice",
+  "분양통":"byangtong","토스":"toss","바나나몽키즈":"bm",
+};
+
+let utmPageCount=0;
+let utmSmsRowCount=0;
+let utmInited=false;
+
+function utmPreviewBase(){/* URL 미리보기 - 향후 사용 */}
+
+function initUtmTab(){
+  if(utmInited)return;
+  utmInited=true;
+  // 매체 그리드 렌더
+  const grid=document.getElementById('utmMediaGrid');
+  if(!grid)return;
+  const cats=[...new Set(UTM_MEDIA_PRESETS.map(m=>m.cat))];
+  grid.innerHTML=cats.map(cat=>{
+    const items=UTM_MEDIA_PRESETS.filter(m=>m.cat===cat);
+    return`<div class="utm-media-group">
+      <div class="utm-media-cat">${cat}</div>
+      ${items.map(m=>`<label class="utm-check-label">
+        <input type="checkbox" class="utm-media-chk" value="${m.name}" data-cat="${cat}" onchange="onUtmMediaChange()">
+        <span>${m.name}</span>
+      </label>`).join('')}
+    </div>`;
+  }).join('');
+  // 문자광고 카드 체크박스
+  grid.innerHTML+=`<div class="utm-media-group">
+    <div class="utm-media-cat">문자광고</div>
+    <label class="utm-check-label">
+      <input type="checkbox" id="utmSmsCheck" onchange="onUtmSmsToggle(this)">
+      <span>문자광고 (LMS/MMS)</span>
+    </label>
+  </div>`;
+  // 기본 페이지 예시
+  addUtmPage('메인',''); addUtmPage('오시는길','pages/location.asp');
+}
+
+function addUtmPage(pageName='',pagePath=''){
+  utmPageCount++;
+  const id='utmPage'+utmPageCount;
+  const row=document.createElement('div');
+  row.className='utm-page-row';row.id=id;
+  row.innerHTML=`
+    <input type="text" class="utm-input utm-page-name" placeholder="페이지명 (예: 오시는길)" value="${pageName}" style="width:130px;flex:none">
+    <input type="text" class="utm-input utm-page-path" placeholder="URL 경로 (비우면 기본URL 사용)" value="${pagePath}" style="flex:1">
+    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
+  document.getElementById('utmPageList').appendChild(row);
+}
+
+function addUtmSmsRow(){
+  utmSmsRowCount++;
+  const id='utmSmsRow'+utmSmsRowCount;
+  const row=document.createElement('div');
+  row.className='utm-sms-row';row.id=id;
+  const mediaOptions=Object.keys(SMS_CODES).map(k=>`<option value="${k}">${k}</option>`).join('');
+  row.innerHTML=`
+    <select class="utm-select utm-sms-type">
+      <option value="lms">LMS</option>
+      <option value="mms">MMS</option>
+    </select>
+    <select class="utm-select utm-sms-media">${mediaOptions}</select>
+    <span class="utm-sms-preview"></span>
+    <button class="utm-del-btn" onclick="this.parentElement.remove()" title="삭제">✕</button>`;
+  // 미리보기 업데이트
+  row.querySelectorAll('select').forEach(s=>s.addEventListener('change',()=>updateSmsPreview(row)));
+  document.getElementById('utmSmsRows').appendChild(row);
+  updateSmsPreview(row);
+}
+
+function updateSmsPreview(row){
+  const type=row.querySelector('.utm-sms-type').value;
+  const media=row.querySelector('.utm-sms-media').value;
+  const code=SMS_CODES[media]||media.toLowerCase();
+  const preview=row.querySelector('.utm-sms-preview');
+  if(preview)preview.textContent=`→ campaign: ${type}_${code}`;
+}
+
+function onUtmSmsToggle(chk){
+  const card=document.getElementById('utmSmsCard');
+  card.style.display=chk.checked?'':'none';
+  if(chk.checked&&document.getElementById('utmSmsRows').children.length===0)addUtmSmsRow();
+}
+function onUtmMediaChange(){}
+
+function getUtmPages(baseUrl){
+  const pages=[];
+  document.querySelectorAll('.utm-page-row').forEach(row=>{
+    const name=row.querySelector('.utm-page-name').value.trim()||'메인';
+    const path=row.querySelector('.utm-page-path').value.trim();
+    const url=path?(baseUrl.replace(/\/$/,'')+'/'+path.replace(/^\//,'')):baseUrl;
+    pages.push({name,url});
+  });
+  if(pages.length===0)pages.push({name:'메인',url:baseUrl});
+  return pages;
+}
+
+function buildUtmUrl(baseUrl,params){
+  if(!baseUrl)return'?'+new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([,v])=>v))).toString();
+  const sep=baseUrl.includes('?')?'&':'?';
+  const qs=Object.entries(params).filter(([,v])=>v).map(([k,v])=>`${k}=${v}`).join('&');
+  return baseUrl+(qs?sep+qs:'');
+}
+
+function generateUtm(){
+  const project=document.getElementById('utmProjectName').value.trim()||'현장명';
+  const baseUrl=(document.getElementById('utmBaseUrl').value||'').trim();
+  const pages=getUtmPages(baseUrl);
+  const rows=[];
+
+  // 일반 매체
+  document.querySelectorAll('.utm-media-chk:checked').forEach(chk=>{
+    const preset=UTM_MEDIA_PRESETS.find(m=>m.name===chk.value);
+    if(!preset)return;
+    pages.forEach(page=>{
+      const params={utm_source:preset.source,utm_medium:preset.medium,utm_campaign:preset.campaign};
+      if(preset.content)params.utm_content=preset.content;
+      if(preset.term)params.utm_term=preset.term;
+      rows.push({cat1:preset.cat,cat2:preset.name,cat3:page.name,url:page.url,
+        source:preset.source,medium:preset.medium,campaign:preset.campaign,
+        content:preset.content,term:preset.term,
+        full:buildUtmUrl(page.url,params)});
+    });
+  });
+
+  // 문자광고
+  document.querySelectorAll('.utm-sms-row').forEach(row=>{
+    const type=row.querySelector('.utm-sms-type').value;
+    const media=row.querySelector('.utm-sms-media').value;
+    const code=SMS_CODES[media]||media.toLowerCase();
+    const campaign=`${type}_${code}`;
+    pages.forEach(page=>{
+      const params={utm_source:'dm',utm_medium:'cpm',utm_campaign:campaign};
+      rows.push({cat1:'문자광고',cat2:`${type.toUpperCase()} - ${media}`,cat3:page.name,url:page.url,
+        source:'dm',medium:'cpm',campaign,content:'',term:'',
+        full:buildUtmUrl(page.url,params)});
+    });
+  });
+
+  if(!rows.length){showToast('매체를 1개 이상 선택해주세요.','warn');return;}
+
+  // 테이블 렌더
+  const tbody=document.getElementById('utmTableBody');
+  tbody.innerHTML=rows.map((r,i)=>`<tr>
+    <td class="utm-td">${r.cat1}</td>
+    <td class="utm-td">${r.cat2}</td>
+    <td class="utm-td">${r.cat3}</td>
+    <td class="utm-td utm-mono">${r.source}</td>
+    <td class="utm-td utm-mono">${r.medium}</td>
+    <td class="utm-td utm-mono">${r.campaign}</td>
+    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.content||'—'}</td>
+    <td class="utm-td utm-mono" style="color:var(--sms-text3)">${r.term||'—'}</td>
+    <td class="utm-td utm-url" title="${r.full}">${r.full}</td>
+    <td><button class="utm-copy-btn" onclick="copyUtmRow(this,'${encodeURIComponent(r.full)}')" title="복사">📋</button></td>
+  </tr>`).join('');
+
+  document.getElementById('utmResultCount').textContent=`총 ${rows.length}개`;
+  document.getElementById('utmResult').style.display='';
+  document.getElementById('utmResult').scrollIntoView({behavior:'smooth',block:'start'});
+  // 현재 rows 저장 (엑셀 다운로드용)
+  window._utmRows=rows;window._utmProject=project;
+}
+
+function copyUtmRow(btn,encoded){
+  navigator.clipboard.writeText(decodeURIComponent(encoded)).then(()=>{
+    btn.textContent='✅';setTimeout(()=>btn.textContent='📋',1500);
+  });
+}
+
+function copyAllUtm(){
+  if(!window._utmRows)return;
+  const text=window._utmRows.map(r=>r.full).join('\n');
+  navigator.clipboard.writeText(text).then(()=>showToast('전체 URL 복사 완료','ok'));
+}
+
+function downloadUtmExcel(){
+  if(!window._utmRows||!window._utmRows.length){showToast('먼저 UTM을 생성해주세요.','warn');return;}
+  if(typeof XLSX==='undefined'){showToast('엑셀 라이브러리 로드 중...','warn');return;}
+  const project=window._utmProject||'현장';
+  const wb=XLSX.utils.book_new();
+  const header=[project,'구분1','구분2','구분3(랜딩)','URL','?/&','utm_source=','&utm_medium=','&utm_campaign=','&utm_content=','&utm_term=','최종 URL'];
+  const rows=[header];
+  window._utmRows.forEach(r=>{
+    const sep=r.url&&r.url.includes('?')?'&':'?';
+    rows.push(['',r.cat1,r.cat2,r.cat3,r.url||'',sep,r.source,r.medium,r.campaign,r.content,r.term,r.full]);
+  });
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:16},{wch:14},{wch:18},{wch:14},{wch:40},{wch:4},{wch:14},{wch:10},{wch:24},{wch:12},{wch:10},{wch:80}];
+  XLSX.utils.book_append_sheet(wb,ws,'UTM');
+  XLSX.writeFile(wb,`BRIN_UTM_${project}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  showToast('📥 엑셀 다운로드 완료','ok');
+}
 
 
 </script>
