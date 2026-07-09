@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.22">
+<meta name="version" content="v4.19.23">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1099,7 +1099,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.22</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.23</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1365,7 +1365,7 @@ body.light .sms-tool{
     <!-- 서브탭 -->
     <div class="sub-tabs">
       <button class="sub-tab on" id="miSubTabSms" onclick="switchMediaTab('sms')">💬 문자광고</button>
-      <!-- 향후 추가 예정: 디스플레이/검색/영상 등 -->
+      <button class="sub-tab" id="miSubTabUtm" onclick="switchMediaTab('utm')">🔗 UTM 생성</button>
     </div>
 
     <!-- 💬 문자광고 (SMS Checker) -->
@@ -1379,7 +1379,6 @@ body.light .sms-tool{
             <button class="sms-tab-btn active" onclick="SmsTool.switchTab('check')">① 집행 가능여부 조회</button>
             <button class="sms-tab-btn hide" id="smsTabEditBtn" onclick="SmsTool.switchTab('edit')">② 매체 가이드 문구 수정</button>
             <button class="sms-tab-btn" onclick="SmsTool.switchTab('guide')">③ 분양 상세 가이드</button>
-            <button class="sms-tab-btn" onclick="SmsTool.switchTab('utm')">④ UTM 생성</button>
           </div>
         </div>
 
@@ -1579,85 +1578,87 @@ body.light .sms-tool{
           </div>
         </div>
 
-    <!-- 향후 추가 영역 -->
-        <!-- ④ UTM 생성 탭 -->
-        <div id="sms-tab-utm" class="sms-tab-panel">
-          <div class="sms-content">
-            <!-- 기본 정보 -->
-            <div class="sms-card utm-section">
-              <div class="utm-section-title">📌 기본 정보</div>
-              <div class="utm-row">
-                <div class="utm-field">
-                  <label class="utm-label">현장명</label>
-                  <input type="text" id="utmProjectName" class="utm-input" placeholder="예: 거제 푸르지오 마린피스">
-                </div>
-                <div class="utm-field" style="flex:2">
-                  <label class="utm-label">기본 랜딩 URL (메인)</label>
-                  <input type="text" id="utmBaseUrl" class="utm-input" placeholder="https://www.prugio.com/hb/2026/marinepiece/" oninput="utmPreviewBase()">
-                </div>
+    <!-- 🔗 UTM 생성기 -->
+    <div id="miUtmView" class="hide">
+      <div class="sms-tool">
+        <div class="sms-header">
+          <div class="sms-header-label">UTM Builder</div>
+          <h2 class="sms-h1">UTM 파라미터 생성기</h2>
+          <p class="sms-sub">현장별 매체 UTM을 한번에 생성하고 엑셀로 다운로드하세요</p>
+        </div>
+        <div class="sms-content">
+          <!-- 기본 정보 -->
+          <div class="sms-card utm-section">
+            <div class="utm-section-title">📌 기본 정보</div>
+            <div class="utm-row">
+              <div class="utm-field">
+                <label class="utm-label">현장명</label>
+                <input type="text" id="utmProjectName" class="utm-input" placeholder="예: 거제 푸르지오 마린피스">
               </div>
-              <!-- 추가 랜딩 URL -->
-              <div style="margin-top:12px">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                  <span class="utm-label" style="margin:0">추가 랜딩 페이지</span>
-                  <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="addUtmPage()">+ 페이지 추가</button>
-                </div>
-                <div id="utmPageList" class="utm-page-list">
-                  <!-- 동적 추가 -->
-                </div>
+              <div class="utm-field" style="flex:2">
+                <label class="utm-label">기본 랜딩 URL (메인)</label>
+                <input type="text" id="utmBaseUrl" class="utm-input" placeholder="https://www.prugio.com/hb/2026/marinepiece/">
               </div>
             </div>
-
-            <!-- 매체 선택 -->
-            <div class="sms-card utm-section">
-              <div class="utm-section-title">📡 매체 선택</div>
-              <div class="utm-media-grid" id="utmMediaGrid">
-                <!-- JS로 렌더 -->
+            <div style="margin-top:12px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span class="utm-label" style="margin:0">추가 랜딩 페이지</span>
+                <button class="btn btn-g" style="font-size:11px;padding:4px 10px" onclick="addUtmPage()">+ 페이지 추가</button>
               </div>
+              <div id="utmPageList" class="utm-page-list"></div>
             </div>
+          </div>
 
-            <!-- 문자광고 설정 -->
-            <div class="sms-card utm-section" id="utmSmsCard" style="display:none">
-              <div class="utm-section-title">💬 문자광고 설정</div>
-              <div style="font-size:13px;color:var(--sms-text2);margin-bottom:12px">매체사별 campaign 코드가 자동 생성됩니다. <span style="color:var(--sms-text3)">(예: lms_cjone, mms_sinsegae)</span></div>
-              <div id="utmSmsRows">
-                <!-- 동적 추가 -->
+          <!-- 매체 선택 -->
+          <div class="sms-card utm-section">
+            <div class="utm-section-title">📡 매체 선택</div>
+            <div class="utm-media-grid" id="utmMediaGrid"></div>
+          </div>
+
+          <!-- 문자광고 설정 -->
+          <div class="sms-card utm-section" id="utmSmsCard" style="display:none">
+            <div class="utm-section-title">💬 문자광고 설정</div>
+            <div style="font-size:13px;color:var(--sms-text2);margin-bottom:12px">매체사별 campaign 코드가 자동 생성됩니다. <span style="color:var(--sms-text3)">(예: lms_cjone, mms_sinsegae)</span></div>
+            <div id="utmSmsRows"></div>
+            <button class="btn btn-g" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="addUtmSmsRow()">+ 문자광고 추가</button>
+          </div>
+
+          <!-- 생성 버튼 -->
+          <div style="text-align:center;margin:16px 0">
+            <button class="sms-main-btn" onclick="generateUtm()" style="font-size:15px;padding:14px 48px">🔗 UTM 생성</button>
+          </div>
+
+          <!-- 결과 -->
+          <div id="utmResult" class="utm-result-wrap" style="display:none">
+            <div class="sms-card" style="padding:0;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--sms-border)">
+                <span style="font-size:15px;font-weight:800;color:var(--sms-text)">🔗 생성된 UTM 목록</span>
+                <span id="utmResultCount" style="font-size:12px;color:var(--sms-text3)"></span>
+                <button class="btn btn-g" style="margin-left:auto;font-size:12px;padding:6px 14px;font-weight:700" onclick="downloadUtmExcel()">📥 엑셀 다운로드</button>
+                <button class="btn btn-g" style="font-size:12px;padding:6px 14px" onclick="copyAllUtm()">📋 전체 복사</button>
               </div>
-              <button class="btn btn-g" style="font-size:12px;padding:5px 12px;margin-top:8px" onclick="addUtmSmsRow()">+ 문자광고 추가</button>
-            </div>
-
-            <!-- 생성 버튼 -->
-            <div style="text-align:center;margin:16px 0">
-              <button class="sms-main-btn" onclick="generateUtm()" style="font-size:15px;padding:14px 48px">🔗 UTM 생성</button>
-            </div>
-
-            <!-- 결과 -->
-            <div id="utmResult" class="utm-result-wrap" style="display:none">
-              <div class="sms-card" style="padding:0;overflow:hidden">
-                <div style="display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--sms-border)">
-                  <span style="font-size:15px;font-weight:800;color:var(--sms-text)">🔗 생성된 UTM 목록</span>
-                  <span id="utmResultCount" style="font-size:12px;color:var(--sms-text3)"></span>
-                  <button class="btn btn-g" style="margin-left:auto;font-size:12px;padding:6px 14px;font-weight:700" onclick="downloadUtmExcel()">📥 엑셀 다운로드</button>
-                  <button class="btn btn-g" style="font-size:12px;padding:6px 14px" onclick="copyAllUtm()">📋 전체 복사</button>
-                </div>
-                <div style="overflow-x:auto">
-                  <table class="utm-table" id="utmTable">
-                    <thead>
-                      <tr>
-                        <th>구분1</th><th>구분2</th><th>구분3(랜딩)</th>
-                        <th>source</th><th>medium</th><th>campaign</th>
-                        <th>content</th><th>term</th>
-                        <th style="min-width:300px">최종 URL</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody id="utmTableBody"></tbody>
-                  </table>
-                </div>
+              <div style="overflow-x:auto">
+                <table class="utm-table" id="utmTable">
+                  <thead>
+                    <tr>
+                      <th>구분1</th><th>구분2</th><th>구분3(랜딩)</th>
+                      <th>source</th><th>medium</th><th>campaign</th>
+                      <th>content</th><th>term</th>
+                      <th style="min-width:300px">최종 URL</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="utmTableBody"></tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 향후 추가 영역 -->
+
   </div>
 </div>
 
@@ -2926,12 +2927,13 @@ function switchView(v){
 
 // ── 매체안내 서브탭 전환 ─────────────────────
 function switchMediaTab(tab){
-  ['sms'].forEach(t=>{
+  ['sms','utm'].forEach(t=>{
     const btn=document.getElementById('miSubTab'+t.charAt(0).toUpperCase()+t.slice(1));
     if(btn)btn.classList.toggle('on',t===tab);
     const view=document.getElementById('mi'+t.charAt(0).toUpperCase()+t.slice(1)+'View');
     if(view)view.classList.toggle('hide',t!==tab);
   });
+  if(tab==='utm') initUtmTab();
   haptic(8);
 }
 
@@ -5399,6 +5401,64 @@ const UTM_MEDIA_PRESETS=[
   {cat:"당근마켓",name:"피드",source:"danggeun",medium:"app",campaign:"danggeun_feed",content:"",term:""},
   {cat:"블라인드",name:"DA",source:"blind",medium:"app",campaign:"blind_da",content:"",term:""},
   {cat:"키즈노트",name:"키즈노트",source:"kidsnote",medium:"app",campaign:"kidsnote_main",content:"",term:""},
+  // ── 네이버 추가 ──
+  {cat:"네이버",name:"스마트채널",source:"naver",medium:"cpc",campaign:"naver_smartch",content:"",term:""},
+  {cat:"네이버",name:"브랜딩DA (cpc)",source:"naver",medium:"cpc",campaign:"naver_brdda",content:"",term:""},
+  {cat:"네이버",name:"브랜딩DA (cpm)",source:"naver",medium:"cpm",campaign:"naver_bd",content:"",term:""},
+  {cat:"네이버",name:"롤링보드 (cpm)",source:"naver",medium:"cpm",campaign:"naver_rb",content:"",term:""},
+  {cat:"네이버",name:"스페셜DA",source:"naver",medium:"cpm",campaign:"naver_spda",content:"",term:""},
+  {cat:"네이버",name:"GFA (별도)",source:"GFA",medium:"cpc",campaign:"naver_gfa",content:"",term:""},
+  {cat:"네이버",name:"카페배너(개별)",source:"navercafe1",medium:"display",campaign:"navercafe1",content:"",term:""},
+  // ── 다음 (신규) ──
+  {cat:"다음",name:"키워드 PC",source:"kakao",medium:"cpc",campaign:"kakao_sad",content:"{keyword}",term:"{query}"},
+  {cat:"다음",name:"키워드 MO",source:"kakao",medium:"cpc",campaign:"kakao_sadmo",content:"{keyword}",term:"{query}"},
+  {cat:"다음",name:"브랜드검색",source:"daumbs",medium:"cpm",campaign:"daumbs",content:"{keyword}",term:"{query}"},
+  // ── 카카오 추가 ──
+  {cat:"카카오",name:"채널메시지",source:"kakao",medium:"cpm",campaign:"kakao_ch_msg",content:"",term:""},
+  {cat:"카카오",name:"채널 홈",source:"kakao",medium:"cpm",campaign:"kakao_ch",content:"",term:""},
+  {cat:"카카오",name:"채널 컨텐츠",source:"kakao",medium:"cpm",campaign:"kakao_ch_con",content:"",term:""},
+  {cat:"카카오",name:"모먼트(별도)",source:"kkobiz",medium:"display",campaign:"kkobiz",content:"",term:""},
+  // ── 구글 추가 ──
+  {cat:"구글",name:"유튜브 트루뷰 PC",source:"google",medium:"cpc",campaign:"google_ytb",content:"",term:""},
+  {cat:"구글",name:"유튜브 트루뷰 MO",source:"google",medium:"cpc",campaign:"google_ytbmo",content:"",term:""},
+  // ── 메타 추가 ──
+  {cat:"메타",name:"인스타그램 (cpm)",source:"meta",medium:"cpm",campaign:"meta_insta",content:"",term:""},
+  {cat:"메타",name:"페이스북 (cpm)",source:"meta",medium:"cpm",campaign:"meta_FB",content:"",term:""},
+  {cat:"메타",name:"피드",source:"meta",medium:"cpc",campaign:"meta_feed",content:"",term:""},
+  // ── 틱톡 (신규) ──
+  {cat:"틱톡",name:"틱톡 DA",source:"tiktok",medium:"app",campaign:"tiktok_da",content:"",term:""},
+  // ── 호갱노노 추가 ──
+  {cat:"호갱노노",name:"원데이패키지",source:"zigbang",medium:"cpt",campaign:"hogang_bpkg",content:"",term:""},
+  {cat:"호갱노노",name:"비즈마커",source:"zigbang",medium:"cpc",campaign:"hogang_bizmarker",content:"",term:""},
+  {cat:"호갱노노",name:"채널메시지",source:"zigbang",medium:"cpc",campaign:"hogang_message",content:"",term:""},
+  // ── 직방 추가 ──
+  {cat:"직방",name:"DA",source:"zigbang",medium:"cpc",campaign:"zigbang_da",content:"",term:""},
+  {cat:"직방",name:"단지마커",source:"zigbang",medium:"cpc",campaign:"zigbang_marker",content:"",term:""},
+  // ── 리멤버 (신규) ──
+  {cat:"리멤버",name:"리멤버",source:"remember",medium:"cpm",campaign:"remember_main",content:"",term:""},
+  // ── 부린이톡 (신규) ──
+  {cat:"부린이톡",name:"부린이톡",source:"burin2talk",medium:"cpc",campaign:"burin2talk",content:"",term:""},
+  // ── KB부동산 (신규) ──
+  {cat:"KB부동산",name:"단지마커",source:"kb",medium:"cpc",campaign:"kb_marker",content:"",term:""},
+  // ── 스크린뷰 (신규) ──
+  {cat:"스크린뷰",name:"스크린뷰",source:"scrv",medium:"cpc",campaign:"scrv_da",content:"",term:""},
+  // ── 앱 매체 (신규) ──
+  {cat:"아이엠스쿨",name:"아이엠스쿨",source:"app",medium:"cpm",campaign:"iam_school",content:"",term:""},
+  {cat:"마미톡",name:"마미톡",source:"app",medium:"cpc",campaign:"mommy_talk",content:"",term:""},
+  {cat:"SKT ASUM",name:"SKT ASUM",source:"app",medium:"cpc",campaign:"skt_da",content:"",term:""},
+  {cat:"TOSS",name:"TOSS",source:"app",medium:"cpc",campaign:"toss_alarm",content:"",term:""},
+  {cat:"T맵(앱)",name:"T맵 알람",source:"app",medium:"cpc",campaign:"T_map",content:"",term:""},
+  // ── QR / 오프라인 (신규) ──
+  {cat:"QR/오프라인",name:"QR_거점영업",source:"offQR",medium:"off",campaign:"off_qr_booth",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_판촉물",source:"offQR",medium:"off",campaign:"off_qr_goods",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_리플렛",source:"offQR",medium:"off",campaign:"off_qr_leaflet",content:"",term:""},
+  {cat:"QR/오프라인",name:"QR_옥외광고",source:"offQR",medium:"off",campaign:"off_qr_ooh",content:"",term:""},
+  {cat:"QR/오프라인",name:"EDM 유입",source:"edm",medium:"cpt",campaign:"edm_email",content:"",term:""},
+  // ── 타게팅게이츠 (신규) ──
+  {cat:"타게팅게이츠",name:"타게팅게이츠",source:"googletg",medium:"cpc",campaign:"open",content:"",term:""},
+  // ── 메디게이트 (신규) ──
+  {cat:"메디게이트",name:"고정",source:"mdgte",medium:"cpm",campaign:"Bid",content:"",term:""},
+  {cat:"메디게이트",name:"CPC",source:"mdgte",medium:"cpc",campaign:"Bid",content:"",term:""},
 ];
 
 // 문자광고 매체사 코드
@@ -5415,6 +5475,8 @@ const SMS_CODES={
 let utmPageCount=0;
 let utmSmsRowCount=0;
 let utmInited=false;
+
+function utmPreviewBase(){/* URL 미리보기 - 향후 사용 */}
 
 function initUtmTab(){
   if(utmInited)return;
@@ -5746,7 +5808,6 @@ function switchTab(tab){
   });
   if(tab==='edit') renderGuidePreview();
   if(tab==='guide') renderJibulGuide();
-  if(tab==='utm') initUtmTab();
 }
 
 /* ═══════════════════════════════════════
