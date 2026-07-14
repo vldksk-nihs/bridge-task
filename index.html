@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.26">
+<meta name="version" content="v4.19.27">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1093,13 +1093,27 @@ body.light .sms-tool{
 @keyframes smsFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .sms-tool .sms-fade-up{animation:smsFadeUp .3s ease-out forwards;}
 
+
+/* ── 공지사항 관리 (설정 패널) ── */
+#noticeAdminList .notice-item{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px;}
+#noticeAdminList .notice-item-title{flex:1;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#noticeAdminList .notice-item-meta{font-size:11px;color:var(--text3);white-space:nowrap;}
+#noticeAdminList .notice-item-badge{padding:2px 7px;border-radius:4px;font-size:10px;font-weight:800;flex:none;}
+.nbadge-info{background:#1a3a5c;color:#7cb8ff;}
+.nbadge-warn{background:#3a2e00;color:#ffc107;}
+.nbadge-urgent{background:#3a0000;color:#ff6b6b;}
+.nbadge-off{background:var(--card2);color:var(--text3);}
+#noticeAdminList .notice-item-btns{display:flex;gap:5px;flex:none;}
+#noticeAdminList .notice-item-btns button{background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:11px;color:var(--text2);}
+#noticeAdminList .notice-item-btns button:hover{border-color:var(--primary);color:var(--primary);}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.26</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.27</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1730,6 +1744,41 @@ body.light .sms-tool{
     <h3 id="lpTitle">연차 내역</h3>
     <p class="msub" id="lpSub"></p>
     <div id="lpBody"></div>
+
+    <!-- ── 공지 관리 ──────────────────────────────── -->
+    <div class="fsec" style="margin-top:20px">📢 공지사항 관리</div>
+    <div style="margin-bottom:10px;font-size:12px;color:var(--sms-text2)">
+      대상: <code style="font-size:11px">all</code> 또는 이메일 콤마 구분 입력
+    </div>
+    <div id="noticeAdminList" style="margin-bottom:12px"></div>
+    <div id="noticeForm" style="background:var(--card2);border-radius:10px;padding:14px;display:none">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="noticeFormTitle">📝 공지 작성</div>
+      <input type="hidden" id="noticeEditId">
+      <div class="fg"><label class="fl">제목</label>
+        <input class="fi2" id="noticeInputTitle" placeholder="공지 제목"></div>
+      <div class="fg"><label class="fl">내용</label>
+        <textarea class="fi2" id="noticeInputBody" rows="4" style="resize:vertical;font-family:inherit;padding:8px"></textarea></div>
+      <div class="fg"><label class="fl">대상</label>
+        <input class="fi2" id="noticeInputTargets" placeholder="all 또는 a@b.com,c@d.com"></div>
+      <div style="display:flex;gap:8px">
+        <div class="fg" style="flex:1"><label class="fl">시작일</label>
+          <input class="fi2" id="noticeInputStart" type="date"></div>
+        <div class="fg" style="flex:1"><label class="fl">종료일</label>
+          <input class="fi2" id="noticeInputEnd" type="date"></div>
+        <div class="fg" style="flex:1"><label class="fl">중요도</label>
+          <select class="fi2" id="noticeInputLevel" style="height:36px">
+            <option value="info">ℹ 일반</option>
+            <option value="warn">⚠ 주의</option>
+            <option value="urgent">🚨 긴급</option>
+          </select></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-g" style="flex:1" onclick="cancelNoticeForm()">취소</button>
+        <button class="btn btn-p" style="flex:2;padding:9px" onclick="saveNotice()">저장</button>
+      </div>
+    </div>
+    <button class="btn btn-g" id="noticeNewBtn" style="width:100%;margin-top:4px;padding:9px;font-size:13px" onclick="openNoticeForm()">+ 새 공지 작성</button>
+
     <div class="mfoot">
       <button class="btn btn-p" onclick="closeLeavePersonMo()">닫기</button>
     </div>
@@ -1822,6 +1871,8 @@ function setupErrorTracking(){
 
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
+const NOTICE_WEBAPP_URL='https://script.google.com/macros/s/AKfycbxC7w0fF5U2syR_nUTVc7D3Qje9DSj5SE_kqCfj-XFMyMkZ7t5QeXhh2t7S6Erd3D2F/exec'; // Apps Script 배포 URL 입력
+
 
 // ── 팀 구성 ──────────────────────────────────────────────
 // 1팀(관리자): 전체 PJT 확인
@@ -2064,6 +2115,8 @@ function handleLogout(){
 function onLoggedIn(){
   document.getElementById('loginBtn').classList.add('hide');
   ['logoutBtn','refBtn','syncWrap','fbar','userInfo','themeBtn','mediaInfoTab'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hide');});
+  // 공지 팝업 체크 (로그인 후 500ms 지연)
+  setTimeout(checkAndShowNotices, 500);
   // 관리자만 설정버튼 보이기
   const isAdmin=userEmail===ADMIN_EMAIL;
   document.getElementById('settingsBtn').classList.toggle('hide',!isAdmin);
@@ -4681,6 +4734,7 @@ function fillSettingsForm(){
   document.getElementById('cfgGroqModel').value=safeStorage.get('brin_groq_model')||'llama-3.3-70b-versatile';
 }
 function openSettings(){
+  if(userEmail===ADMIN_EMAIL) loadNoticeAdmin();
   if(userEmail&&userEmail!==ADMIN_EMAIL){showToast('관리자만 설정에 접근할 수 있습니다.','warn');return;}
   fillSettingsForm();
   document.getElementById('settingsMo').classList.remove('hide');
@@ -6141,6 +6195,231 @@ return {
 };
 })();
 
+/* ══════════════════════════════════════════════════════
+   📢 공지사항 시스템
+══════════════════════════════════════════════════════ */
+
+// ── 상태 ──
+let _notices = [];       // 전체 공지 (관리자)
+let _activeNotices = []; // 현재 표시 대상 공지
+let _noticeIdx = 0;      // 현재 슬라이드 인덱스
+
+// ── Apps Script 호출 ──
+async function fetchNoticesFromSheet() {
+  if (!NOTICE_WEBAPP_URL) return [];
+  try {
+    const res = await fetch(`${NOTICE_WEBAPP_URL}?action=getNotices&t=${Date.now()}`);
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.warn('공지 로드 실패:', e);
+    return [];
+  }
+}
+
+async function pushNoticeToSheet(notice) {
+  if (!NOTICE_WEBAPP_URL) { showToast('NOTICE_WEBAPP_URL을 설정해주세요.', 'warn'); return false; }
+  try {
+    const res = await fetch(NOTICE_WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveNotice', notice }),
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch (e) {
+    showToast('저장 실패: ' + e.message, 'warn');
+    return false;
+  }
+}
+
+async function deleteNoticeFromSheet(id) {
+  if (!NOTICE_WEBAPP_URL) return false;
+  try {
+    const res = await fetch(NOTICE_WEBAPP_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'deleteNotice', id }),
+    });
+    const data = await res.json();
+    return data.ok === true;
+  } catch (e) {
+    showToast('삭제 실패: ' + e.message, 'warn');
+    return false;
+  }
+}
+
+// ── 팝업 표시 로직 ──
+async function checkAndShowNotices() {
+  const all = await fetchNoticesFromSheet();
+  if (!all.length) return;
+
+  const today = new Date().toISOString().slice(0, 10);
+  const seenKey = `brin_noticed_${today}`;
+  const seenIds = JSON.parse(localStorage.getItem(seenKey) || '[]');
+
+  _activeNotices = all.filter(n => {
+    if (!n.active) return false;
+    if (seenIds.includes(n.id)) return false;
+    if (n.endDate && n.endDate < today) return false;
+    if (n.startDate && n.startDate > today) return false;
+    if (n.targets !== 'all') {
+      const targets = n.targets.split(',').map(t => t.trim().toLowerCase());
+      if (!targets.includes((userEmail || '').toLowerCase())) return false;
+    }
+    return true;
+  }).sort((a, b) => {
+    const lvl = { urgent: 0, warn: 1, info: 2 };
+    return (lvl[a.level] ?? 2) - (lvl[b.level] ?? 2);
+  });
+
+  if (_activeNotices.length > 0) {
+    _noticeIdx = 0;
+    renderNoticePopup();
+    const el = document.getElementById('noticeOverlay');
+    if (el) { el.style.display = 'flex'; }
+  }
+}
+
+function renderNoticePopup() {
+  const n = _activeNotices[_noticeIdx];
+  if (!n) return;
+
+  const total = _activeNotices.length;
+  const navArea = document.getElementById('noticeNavArea');
+  const navLabel = document.getElementById('noticeNavLabel');
+  if (navArea) { navArea.style.display = total > 1 ? 'flex' : 'none'; }
+  if (navLabel) navLabel.textContent = `${_noticeIdx + 1} / ${total}`;
+
+  document.getElementById('noticeModalTitle').textContent = n.title || '';
+  document.getElementById('noticeModalBody').textContent = n.body || '';
+  document.getElementById('noticeModalDate').textContent =
+    `${n.startDate || ''}${n.endDate ? ' ~ ' + n.endDate : ''} · 작성: ${n.author || ''}`;
+
+  const BADGE = { info: ['ℹ 일반', 'nbadge-info'], warn: ['⚠ 주의', 'nbadge-warn'], urgent: ['🚨 긴급', 'nbadge-urgent'] };
+  const [label, cls] = BADGE[n.level] || BADGE.info;
+  document.getElementById('noticeBadgeWrap').innerHTML =
+    `<span class="notice-item-badge ${cls}" style="display:inline-block;margin-bottom:6px">${label}</span>`;
+
+  document.getElementById('noticeDontShow').checked = false;
+}
+
+function noticeNav(dir) {
+  _noticeIdx = Math.max(0, Math.min(_activeNotices.length - 1, _noticeIdx + dir));
+  renderNoticePopup();
+}
+
+function confirmNotice() {
+  const dontShow = document.getElementById('noticeDontShow').checked;
+  if (dontShow) {
+    const today = new Date().toISOString().slice(0, 10);
+    const key = `brin_noticed_${today}`;
+    const seen = JSON.parse(localStorage.getItem(key) || '[]');
+    // 현재 공지 ID를 seen에 추가
+    _activeNotices.forEach(n => { if (!seen.includes(n.id)) seen.push(n.id); });
+    localStorage.setItem(key, JSON.stringify(seen));
+  }
+  closeNoticePopup();
+}
+
+function closeNoticePopup() {
+  const el = document.getElementById('noticeOverlay');
+  if (el) el.style.display = 'none';
+}
+
+// ── 관리자 화면 ──
+async function loadNoticeAdmin() {
+  const list = document.getElementById('noticeAdminList');
+  if (!list) return;
+  list.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:6px">로딩 중...</div>';
+  _notices = await fetchNoticesFromSheet();
+
+  if (!_notices.length) {
+    list.innerHTML = '<div style="font-size:12px;color:var(--text3);padding:6px">등록된 공지가 없습니다.</div>';
+    return;
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  const BADGE = { info: ['ℹ 일반', 'nbadge-info'], warn: ['⚠ 주의', 'nbadge-warn'], urgent: ['🚨 긴급', 'nbadge-urgent'] };
+
+  list.innerHTML = _notices.map((n, i) => {
+    const expired = n.endDate && n.endDate < today;
+    const [label, cls] = BADGE[n.level] || BADGE.info;
+    const activeCls = (!n.active || expired) ? 'nbadge-off' : cls;
+    const activeLabel = !n.active ? '비활성' : expired ? '만료' : label;
+    return `<div class="notice-item">
+      <span class="notice-item-badge ${activeCls}">${activeLabel}</span>
+      <span class="notice-item-title" title="${n.title}">${n.title}</span>
+      <span class="notice-item-meta">${n.targets === 'all' ? '전체' : '지정'} · ${n.endDate || '상시'}</span>
+      <div class="notice-item-btns">
+        <button onclick="editNotice(${i})">${n.active ? '수정' : '수정'}</button>
+        <button onclick="toggleNoticeActive(${i})">${n.active ? '끄기' : '켜기'}</button>
+        <button onclick="deleteNotice('${n.id}')" style="color:#ff6b6b">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNoticeForm(notice = null) {
+  document.getElementById('noticeForm').style.display = '';
+  document.getElementById('noticeNewBtn').style.display = 'none';
+  document.getElementById('noticeFormTitle').textContent = notice ? '✏️ 공지 수정' : '📝 공지 작성';
+  document.getElementById('noticeEditId').value = notice ? notice.id : '';
+  document.getElementById('noticeInputTitle').value = notice ? notice.title : '';
+  document.getElementById('noticeInputBody').value = notice ? notice.body : '';
+  document.getElementById('noticeInputTargets').value = notice ? notice.targets : 'all';
+  document.getElementById('noticeInputStart').value = notice ? notice.startDate : new Date().toISOString().slice(0, 10);
+  document.getElementById('noticeInputEnd').value = notice ? (notice.endDate || '') : '';
+  document.getElementById('noticeInputLevel').value = notice ? notice.level : 'info';
+}
+
+function cancelNoticeForm() {
+  document.getElementById('noticeForm').style.display = 'none';
+  document.getElementById('noticeNewBtn').style.display = '';
+}
+
+function editNotice(idx) {
+  openNoticeForm(_notices[idx]);
+}
+
+async function saveNotice() {
+  const id = document.getElementById('noticeEditId').value;
+  const title = document.getElementById('noticeInputTitle').value.trim();
+  const body = document.getElementById('noticeInputBody').value.trim();
+  if (!title || !body) { showToast('제목과 내용을 입력해주세요.', 'warn'); return; }
+
+  const notice = {
+    id: id || `n_${Date.now()}`,
+    title,
+    body,
+    targets: document.getElementById('noticeInputTargets').value.trim() || 'all',
+    startDate: document.getElementById('noticeInputStart').value,
+    endDate: document.getElementById('noticeInputEnd').value,
+    level: document.getElementById('noticeInputLevel').value,
+    active: true,
+    author: userEmail,
+    createdAt: id ? undefined : new Date().toISOString(),
+  };
+
+  const ok = await pushNoticeToSheet(notice);
+  if (ok) {
+    showToast('공지 저장 완료 ✅', 'ok');
+    cancelNoticeForm();
+    loadNoticeAdmin();
+  }
+}
+
+async function toggleNoticeActive(idx) {
+  const n = { ..._notices[idx], active: !_notices[idx].active };
+  const ok = await pushNoticeToSheet(n);
+  if (ok) { showToast(n.active ? '공지 활성화' : '공지 비활성화', 'ok'); loadNoticeAdmin(); }
+}
+
+async function deleteNotice(id) {
+  if (!confirm('이 공지를 삭제하시겠습니까?')) return;
+  const ok = await deleteNoticeFromSheet(id);
+  if (ok) { showToast('삭제 완료', 'ok'); loadNoticeAdmin(); }
+}
+
+
 /* ── UTM 생성기 ─────────────────────────────────────── */
 const UTM_MEDIA_PRESETS=[
   {cat:"네이버",name:"브랜드검색 PC",source:"naver",medium:"CPT",campaign:"naver_br",content:"{keyword}",term:"{query}"},
@@ -6494,5 +6773,36 @@ function downloadUtmExcel(){
 
 
 </script>
+
+<!-- ── 공지사항 팝업 ─────────────────────────────────── -->
+<div id="noticeOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9900;display:none;align-items:center;justify-content:center">
+  <div id="noticeModal" style="background:var(--card);border:1px solid var(--border);border-radius:16px;width:min(520px,90vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden">
+    <!-- 헤더 -->
+    <div id="noticeModalHeader" style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border)">
+      <span style="font-size:16px;font-weight:800;color:var(--text)">📢 공지사항</span>
+      <div id="noticeNavArea" style="display:none;margin-left:auto;display:none;align-items:center;gap:6px">
+        <button id="noticePrev" onclick="noticeNav(-1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;cursor:pointer;color:var(--text);font-size:13px">◀</button>
+        <span id="noticeNavLabel" style="font-size:12px;color:var(--text2);min-width:36px;text-align:center"></span>
+        <button id="noticeNext" onclick="noticeNav(1)" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 9px;cursor:pointer;color:var(--text);font-size:13px">▶</button>
+      </div>
+      <button onclick="closeNoticePopup()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--text2);font-size:18px;line-height:1;padding:2px 6px">✕</button>
+    </div>
+    <!-- 본문 -->
+    <div style="padding:20px;overflow-y:auto;flex:1">
+      <div id="noticeBadgeWrap" style="margin-bottom:10px"></div>
+      <div id="noticeModalTitle" style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:12px"></div>
+      <div id="noticeModalBody" style="font-size:14px;color:var(--text2);line-height:1.7;white-space:pre-wrap"></div>
+      <div id="noticeModalDate" style="font-size:11px;color:var(--text3);margin-top:14px"></div>
+    </div>
+    <!-- 푸터 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-top:1px solid var(--border);background:var(--card2)">
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text2);cursor:pointer">
+        <input type="checkbox" id="noticeDontShow" style="width:15px;height:15px;accent-color:var(--primary)">
+        오늘 하루 보지 않기
+      </label>
+      <button onclick="confirmNotice()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:9px 24px;font-size:14px;font-weight:700;cursor:pointer">확인</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
