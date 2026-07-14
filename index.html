@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.28">
+<meta name="version" content="v4.19.31">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1113,7 +1113,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.28</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.31</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1754,6 +1754,56 @@ body.light .sms-tool{
 <div class="mo hide" id="settingsMo">
   <div class="mc">
     <h3>⚙ 설정 (관리자 전용)</h3>
+    <!-- ── 공지 관리 (접이식) ─────────────────────── -->
+    <div style="margin-top:20px;border-top:1px solid var(--bd2);padding-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:12px" onclick="toggleNoticeAdmin()">
+        <span class="fsec" style="margin:0;border:none;padding:0">📢 공지사항 관리</span>
+        <span id="noticeAdminToggleIcon" style="font-size:13px;color:var(--text2)">▼ 펼치기</span>
+      </div>
+      <div id="noticeAdminBody" style="display:none">
+        <div style="margin-bottom:10px;font-size:12px;color:var(--sms-text2)">
+          대상: <code style="font-size:11px">all</code> 또는 이메일 콤마 구분
+        </div>
+        <div id="noticeAdminList" style="margin-bottom:12px"></div>
+        <div id="noticeForm" style="background:var(--card2);border-radius:10px;padding:14px;display:none">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="noticeFormTitle">📝 공지 작성</div>
+          <input type="hidden" id="noticeEditId">
+          <div class="fg"><label class="fl">제목</label>
+            <input class="fi2" id="noticeInputTitle" placeholder="공지 제목"></div>
+          <div class="fg"><label class="fl">내용</label>
+            <textarea class="fi2" id="noticeInputBody" rows="4" style="resize:vertical;font-family:inherit;padding:8px"></textarea></div>
+          <div class="fg">
+            <label class="fl">대상</label>
+            <div id="noticeTargetBox" style="border:1px solid var(--bd2);border-radius:8px;background:var(--card);padding:10px 12px">
+              <!-- 전체 -->
+              <label class="nt-row" style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;border-bottom:1px solid var(--bd2);margin-bottom:6px;font-weight:800;font-size:13px;color:var(--text)">
+                <input type="checkbox" id="ntAll" style="width:15px;height:15px;accent-color:var(--primary)" onchange="onTargetAllChange(this)">
+                전체
+              </label>
+              <!-- 팀별 계층 (JS 렌더) -->
+              <div id="noticeTargetMembers"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div class="fg" style="flex:1"><label class="fl">시작일</label>
+              <input class="fi2" id="noticeInputStart" type="date"></div>
+            <div class="fg" style="flex:1"><label class="fl">종료일</label>
+              <input class="fi2" id="noticeInputEnd" type="date"></div>
+            <div class="fg" style="flex:1"><label class="fl">중요도</label>
+              <select class="fi2" id="noticeInputLevel" style="height:36px">
+                <option value="info">ℹ 일반</option>
+                <option value="warn">⚠ 주의</option>
+                <option value="urgent">🚨 긴급</option>
+              </select></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-g" style="flex:1" onclick="cancelNoticeForm()">취소</button>
+            <button class="btn btn-p" style="flex:2;padding:9px" onclick="saveNotice()">저장</button>
+          </div>
+        </div>
+        <button class="btn btn-g" id="noticeNewBtn" style="width:100%;margin-top:4px;padding:9px;font-size:13px" onclick="openNoticeForm()">+ 새 공지 작성</button>
+      </div>
+    </div>
     <p class="msub">Google Cloud Console에서 발급한 정보를 입력해주세요.</p>
     <div class="fsec">Google OAuth</div>
     <div class="fg"><label class="fl">Client ID</label><input class="fi2" id="cfgClientId"></div>
@@ -1790,46 +1840,6 @@ body.light .sms-tool{
     <div class="fsec">자동 새로고침</div>
     <div class="fg"><label class="fl">주기 (분)</label><input class="fi2" id="cfgPoll" type="number"></div>
 
-    <!-- ── 공지 관리 (접이식) ─────────────────────── -->
-    <div style="margin-top:20px;border-top:1px solid var(--bd2);padding-top:16px">
-      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:12px" onclick="toggleNoticeAdmin()">
-        <span class="fsec" style="margin:0;border:none;padding:0">📢 공지사항 관리</span>
-        <span id="noticeAdminToggleIcon" style="font-size:13px;color:var(--text2)">▼ 펼치기</span>
-      </div>
-      <div id="noticeAdminBody" style="display:none">
-        <div style="margin-bottom:10px;font-size:12px;color:var(--sms-text2)">
-          대상: <code style="font-size:11px">all</code> 또는 이메일 콤마 구분
-        </div>
-        <div id="noticeAdminList" style="margin-bottom:12px"></div>
-        <div id="noticeForm" style="background:var(--card2);border-radius:10px;padding:14px;display:none">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="noticeFormTitle">📝 공지 작성</div>
-          <input type="hidden" id="noticeEditId">
-          <div class="fg"><label class="fl">제목</label>
-            <input class="fi2" id="noticeInputTitle" placeholder="공지 제목"></div>
-          <div class="fg"><label class="fl">내용</label>
-            <textarea class="fi2" id="noticeInputBody" rows="4" style="resize:vertical;font-family:inherit;padding:8px"></textarea></div>
-          <div class="fg"><label class="fl">대상</label>
-            <input class="fi2" id="noticeInputTargets" placeholder="all 또는 a@b.com,c@d.com"></div>
-          <div style="display:flex;gap:8px">
-            <div class="fg" style="flex:1"><label class="fl">시작일</label>
-              <input class="fi2" id="noticeInputStart" type="date"></div>
-            <div class="fg" style="flex:1"><label class="fl">종료일</label>
-              <input class="fi2" id="noticeInputEnd" type="date"></div>
-            <div class="fg" style="flex:1"><label class="fl">중요도</label>
-              <select class="fi2" id="noticeInputLevel" style="height:36px">
-                <option value="info">ℹ 일반</option>
-                <option value="warn">⚠ 주의</option>
-                <option value="urgent">🚨 긴급</option>
-              </select></div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn btn-g" style="flex:1" onclick="cancelNoticeForm()">취소</button>
-            <button class="btn btn-p" style="flex:2;padding:9px" onclick="saveNotice()">저장</button>
-          </div>
-        </div>
-        <button class="btn btn-g" id="noticeNewBtn" style="width:100%;margin-top:4px;padding:9px;font-size:13px" onclick="openNoticeForm()">+ 새 공지 작성</button>
-      </div>
-    </div>
     <div class="mfoot">
       <button class="btn btn-g" onclick="closeSettings()">취소</button>
       <button class="btn btn-g" onclick="resetDefaults()">기본값 복원</button>
@@ -6210,6 +6220,147 @@ return {
 };
 })();
 
+
+/* ── 공지 대상 선택 (계층형 체크박스) ── */
+function initTargetDropdown() {
+  const container = document.getElementById('noticeTargetMembers');
+  if (!container || container.dataset.inited) return;
+  container.dataset.inited = '1';
+
+  Object.entries(TEAMS).forEach(([key, team]) => {
+    const teamId = 'ntTeam_' + key;
+
+    // 팀 행 (팀 체크박스 + 라벨)
+    const teamRow = document.createElement('div');
+    teamRow.style.cssText = 'margin-bottom:2px';
+    teamRow.innerHTML = `
+      <label class="nt-row" style="display:flex;align-items:center;gap:8px;padding:5px 0;cursor:pointer;font-size:13px;font-weight:700;color:var(--text)">
+        <input type="checkbox" id="${teamId}" data-team="${key}"
+          style="width:15px;height:15px;accent-color:var(--primary)"
+          onchange="onTargetTeamChange(this)">
+        ${team.label}
+      </label>`;
+
+    // 멤버 행들
+    const memberWrap = document.createElement('div');
+    memberWrap.style.cssText = 'padding-left:22px;margin-bottom:6px';
+    memberWrap.id = 'ntMembers_' + key;
+
+    team.members.forEach(email => {
+      const ml = document.createElement('label');
+      ml.className = 'nt-row';
+      ml.style.cssText = 'display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;font-size:12px;color:var(--text2)';
+      ml.innerHTML = `<input type="checkbox" class="nt-member" data-email="${email}" data-team="${key}"
+          style="width:14px;height:14px;accent-color:var(--primary)"
+          onchange="onTargetMemberChange(this)">
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${email}</span>`;
+      memberWrap.appendChild(ml);
+    });
+
+    container.appendChild(teamRow);
+    container.appendChild(memberWrap);
+  });
+}
+
+// 전체 선택/해제
+function onTargetAllChange(chk) {
+  const on = chk.checked;
+  // 모든 팀·멤버 체크박스 처리
+  document.querySelectorAll('[id^="ntTeam_"]').forEach(c => {
+    c.checked = false; c.indeterminate = false; c.disabled = on;
+  });
+  document.querySelectorAll('.nt-member').forEach(c => {
+    c.checked = false; c.disabled = on;
+  });
+  updateTargetLabel();
+}
+
+// 팀 체크박스 변경
+function onTargetTeamChange(chk) {
+  const key   = chk.dataset.team;
+  const on    = chk.checked;
+  const allCk = document.getElementById('ntAll');
+  if (allCk) { allCk.checked = false; allCk.disabled = false; }
+
+  // 해당 팀 멤버 전체 연동
+  document.querySelectorAll(`.nt-member[data-team="${key}"]`).forEach(c => {
+    c.checked = on; c.disabled = false;
+  });
+  chk.indeterminate = false;
+  updateTargetLabel();
+}
+
+// 개별 멤버 체크박스 변경
+function onTargetMemberChange(chk) {
+  const key   = chk.dataset.team;
+  const allCk = document.getElementById('ntAll');
+  if (allCk) { allCk.checked = false; allCk.disabled = false; }
+
+  // 해당 팀의 체크 상태 계산
+  const teamMembers = [...document.querySelectorAll(`.nt-member[data-team="${key}"]`)];
+  const checkedCnt  = teamMembers.filter(c => c.checked).length;
+  const teamChk     = document.getElementById('ntTeam_' + key);
+  if (teamChk) {
+    teamChk.checked       = checkedCnt === teamMembers.length;
+    teamChk.indeterminate = checkedCnt > 0 && checkedCnt < teamMembers.length;
+    teamChk.disabled      = false;
+  }
+
+  // 아무도 선택 안 하면 전체로 복귀
+  const anyChecked = [...document.querySelectorAll('.nt-member:checked')].length > 0;
+  if (!anyChecked) {
+    if (allCk) { allCk.checked = true; }
+    document.querySelectorAll('[id^="ntTeam_"]').forEach(c => { c.checked=false; c.indeterminate=false; c.disabled=true; });
+    document.querySelectorAll('.nt-member').forEach(c => { c.disabled = true; });
+  }
+  updateTargetLabel();
+}
+
+function updateTargetLabel() { /* 인라인 방식에선 미사용 */ }
+
+// 현재 선택값 → 저장용 문자열 반환
+function getTargetValue() {
+  const allCk = document.getElementById('ntAll');
+  if (allCk && allCk.checked) return 'all';
+  const checked = [...document.querySelectorAll('.nt-member:checked')];
+  return checked.length ? checked.map(c => c.dataset.email).join(',') : 'all';
+}
+
+// 저장된 값 → UI에 반영
+function setTargetValue(val) {
+  initTargetDropdown();
+  const allCk = document.getElementById('ntAll');
+
+  // 초기화
+  document.querySelectorAll('[id^="ntTeam_"]').forEach(c => { c.checked=false; c.indeterminate=false; c.disabled=false; });
+  document.querySelectorAll('.nt-member').forEach(c => { c.checked=false; c.disabled=false; });
+
+  if (!val || val === 'all') {
+    if (allCk) allCk.checked = true;
+    document.querySelectorAll('[id^="ntTeam_"]').forEach(c => { c.disabled=true; });
+    document.querySelectorAll('.nt-member').forEach(c => { c.disabled=true; });
+    return;
+  }
+
+  if (allCk) allCk.checked = false;
+  const emails = val.split(',').map(e => e.trim());
+  document.querySelectorAll('.nt-member').forEach(c => { c.checked = emails.includes(c.dataset.email); });
+
+  // 팀 체크박스 상태 동기화
+  Object.keys(TEAMS).forEach(key => {
+    const members = [...document.querySelectorAll(`.nt-member[data-team="${key}"]`)];
+    const cnt = members.filter(c => c.checked).length;
+    const tc = document.getElementById('ntTeam_' + key);
+    if (tc) {
+      tc.checked = cnt === members.length && cnt > 0;
+      tc.indeterminate = cnt > 0 && cnt < members.length;
+    }
+  });
+}
+
+// (드롭다운 토글 - 인라인이라 미사용, 하위호환용)
+function toggleTargetDropdown() {}
+
 /* ══════════════════════════════════════════════════════
    📢 공지사항 시스템
 ══════════════════════════════════════════════════════ */
@@ -6380,7 +6531,7 @@ function openNoticeForm(notice = null) {
   document.getElementById('noticeEditId').value = notice ? notice.id : '';
   document.getElementById('noticeInputTitle').value = notice ? notice.title : '';
   document.getElementById('noticeInputBody').value = notice ? notice.body : '';
-  document.getElementById('noticeInputTargets').value = notice ? notice.targets : 'all';
+  setTimeout(() => setTargetValue(notice ? notice.targets : 'all'), 50);
   document.getElementById('noticeInputStart').value = notice ? notice.startDate : new Date().toISOString().slice(0, 10);
   document.getElementById('noticeInputEnd').value = notice ? (notice.endDate || '') : '';
   document.getElementById('noticeInputLevel').value = notice ? notice.level : 'info';
@@ -6405,7 +6556,7 @@ async function saveNotice() {
     id: id || `n_${Date.now()}`,
     title,
     body,
-    targets: document.getElementById('noticeInputTargets').value.trim() || 'all',
+    targets: getTargetValue(),
     startDate: document.getElementById('noticeInputStart').value,
     endDate: document.getElementById('noticeInputEnd').value,
     level: document.getElementById('noticeInputLevel').value,
