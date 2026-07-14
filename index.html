@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.27">
+<meta name="version" content="v4.19.28">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1113,7 +1113,7 @@ body.light .sms-tool{
 <body>
 
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.27</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.28</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1745,40 +1745,6 @@ body.light .sms-tool{
     <p class="msub" id="lpSub"></p>
     <div id="lpBody"></div>
 
-    <!-- ── 공지 관리 ──────────────────────────────── -->
-    <div class="fsec" style="margin-top:20px">📢 공지사항 관리</div>
-    <div style="margin-bottom:10px;font-size:12px;color:var(--sms-text2)">
-      대상: <code style="font-size:11px">all</code> 또는 이메일 콤마 구분 입력
-    </div>
-    <div id="noticeAdminList" style="margin-bottom:12px"></div>
-    <div id="noticeForm" style="background:var(--card2);border-radius:10px;padding:14px;display:none">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="noticeFormTitle">📝 공지 작성</div>
-      <input type="hidden" id="noticeEditId">
-      <div class="fg"><label class="fl">제목</label>
-        <input class="fi2" id="noticeInputTitle" placeholder="공지 제목"></div>
-      <div class="fg"><label class="fl">내용</label>
-        <textarea class="fi2" id="noticeInputBody" rows="4" style="resize:vertical;font-family:inherit;padding:8px"></textarea></div>
-      <div class="fg"><label class="fl">대상</label>
-        <input class="fi2" id="noticeInputTargets" placeholder="all 또는 a@b.com,c@d.com"></div>
-      <div style="display:flex;gap:8px">
-        <div class="fg" style="flex:1"><label class="fl">시작일</label>
-          <input class="fi2" id="noticeInputStart" type="date"></div>
-        <div class="fg" style="flex:1"><label class="fl">종료일</label>
-          <input class="fi2" id="noticeInputEnd" type="date"></div>
-        <div class="fg" style="flex:1"><label class="fl">중요도</label>
-          <select class="fi2" id="noticeInputLevel" style="height:36px">
-            <option value="info">ℹ 일반</option>
-            <option value="warn">⚠ 주의</option>
-            <option value="urgent">🚨 긴급</option>
-          </select></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="btn btn-g" style="flex:1" onclick="cancelNoticeForm()">취소</button>
-        <button class="btn btn-p" style="flex:2;padding:9px" onclick="saveNotice()">저장</button>
-      </div>
-    </div>
-    <button class="btn btn-g" id="noticeNewBtn" style="width:100%;margin-top:4px;padding:9px;font-size:13px" onclick="openNoticeForm()">+ 새 공지 작성</button>
-
     <div class="mfoot">
       <button class="btn btn-p" onclick="closeLeavePersonMo()">닫기</button>
     </div>
@@ -1823,6 +1789,47 @@ body.light .sms-tool{
     <p class="msub" style="font-size:10px;margin-top:-4px;color:var(--tx3)">키는 본인 브라우저(localStorage)에만 저장됩니다. console.groq.com에서 무료 발급 가능.</p>
     <div class="fsec">자동 새로고침</div>
     <div class="fg"><label class="fl">주기 (분)</label><input class="fi2" id="cfgPoll" type="number"></div>
+
+    <!-- ── 공지 관리 (접이식) ─────────────────────── -->
+    <div style="margin-top:20px;border-top:1px solid var(--bd2);padding-top:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:12px" onclick="toggleNoticeAdmin()">
+        <span class="fsec" style="margin:0;border:none;padding:0">📢 공지사항 관리</span>
+        <span id="noticeAdminToggleIcon" style="font-size:13px;color:var(--text2)">▼ 펼치기</span>
+      </div>
+      <div id="noticeAdminBody" style="display:none">
+        <div style="margin-bottom:10px;font-size:12px;color:var(--sms-text2)">
+          대상: <code style="font-size:11px">all</code> 또는 이메일 콤마 구분
+        </div>
+        <div id="noticeAdminList" style="margin-bottom:12px"></div>
+        <div id="noticeForm" style="background:var(--card2);border-radius:10px;padding:14px;display:none">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px" id="noticeFormTitle">📝 공지 작성</div>
+          <input type="hidden" id="noticeEditId">
+          <div class="fg"><label class="fl">제목</label>
+            <input class="fi2" id="noticeInputTitle" placeholder="공지 제목"></div>
+          <div class="fg"><label class="fl">내용</label>
+            <textarea class="fi2" id="noticeInputBody" rows="4" style="resize:vertical;font-family:inherit;padding:8px"></textarea></div>
+          <div class="fg"><label class="fl">대상</label>
+            <input class="fi2" id="noticeInputTargets" placeholder="all 또는 a@b.com,c@d.com"></div>
+          <div style="display:flex;gap:8px">
+            <div class="fg" style="flex:1"><label class="fl">시작일</label>
+              <input class="fi2" id="noticeInputStart" type="date"></div>
+            <div class="fg" style="flex:1"><label class="fl">종료일</label>
+              <input class="fi2" id="noticeInputEnd" type="date"></div>
+            <div class="fg" style="flex:1"><label class="fl">중요도</label>
+              <select class="fi2" id="noticeInputLevel" style="height:36px">
+                <option value="info">ℹ 일반</option>
+                <option value="warn">⚠ 주의</option>
+                <option value="urgent">🚨 긴급</option>
+              </select></div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-g" style="flex:1" onclick="cancelNoticeForm()">취소</button>
+            <button class="btn btn-p" style="flex:2;padding:9px" onclick="saveNotice()">저장</button>
+          </div>
+        </div>
+        <button class="btn btn-g" id="noticeNewBtn" style="width:100%;margin-top:4px;padding:9px;font-size:13px" onclick="openNoticeForm()">+ 새 공지 작성</button>
+      </div>
+    </div>
     <div class="mfoot">
       <button class="btn btn-g" onclick="closeSettings()">취소</button>
       <button class="btn btn-g" onclick="resetDefaults()">기본값 복원</button>
@@ -4733,8 +4740,16 @@ function fillSettingsForm(){
   document.getElementById('cfgGroqKey').value=safeStorage.get('brin_groq_key')||'';
   document.getElementById('cfgGroqModel').value=safeStorage.get('brin_groq_model')||'llama-3.3-70b-versatile';
 }
+
+function toggleNoticeAdmin(){
+  const body = document.getElementById('noticeAdminBody');
+  const icon = document.getElementById('noticeAdminToggleIcon');
+  const open = body.style.display === 'none';
+  body.style.display = open ? '' : 'none';
+  icon.textContent = open ? '▲ 접기' : '▼ 펼치기';
+  if(open) loadNoticeAdmin();
+}
 function openSettings(){
-  if(userEmail===ADMIN_EMAIL) loadNoticeAdmin();
   if(userEmail&&userEmail!==ADMIN_EMAIL){showToast('관리자만 설정에 접근할 수 있습니다.','warn');return;}
   fillSettingsForm();
   document.getElementById('settingsMo').classList.remove('hide');
