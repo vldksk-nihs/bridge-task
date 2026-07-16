@@ -10,10 +10,11 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.19.31">
+<meta name="version" content="v4.20.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
 :root{
   --bg:#0b0d15;--sur:#12151f;--sur2:#181c28;--sur3:#1e2333;
   --bd:#232738;--bd2:#2c3149;
@@ -1107,13 +1108,521 @@ body.light .sms-tool{
 #noticeAdminList .notice-item-btns button{background:none;border:1px solid var(--border);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:11px;color:var(--text2);}
 #noticeAdminList .notice-item-btns button:hover{border-color:var(--primary);color:var(--primary);}
 
+
+/* ══ 사이드바 (원본 레이아웃 유지 + 좌측 fixed) ══════════ */
+#sidebar{
+  position:fixed;top:0;left:0;bottom:0;
+  width:220px;height:100vh;
+  background:var(--sur);border-right:1px solid var(--bd2);
+  display:flex;flex-direction:column;overflow-y:auto;
+  z-index:150;transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+body.has-sidebar{padding-left:220px;}
+body.has-sidebar .hdr{left:220px;} /* sticky 헤더도 밀림 */
+
+.sb-logo{
+  padding:16px 16px 14px;font-family:"IBM Plex Mono",monospace;
+  font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--tx2);
+  border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px;
+}
+.sb-logo em{color:var(--pri);font-style:normal;}
+.sb-ver{font-size:9px;color:var(--tx3);border:1px solid var(--bd);
+  border-radius:2px;padding:1px 5px;font-family:"IBM Plex Mono",monospace;margin-left:auto;}
+
+.sb-nav{flex:1;padding:6px 0;overflow-y:auto;}
+.sb-section{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--tx3);padding:12px 16px 4px;}
+
+.sb-item{display:flex;align-items:center;gap:9px;padding:9px 16px;width:100%;
+  border:none;background:transparent;color:var(--tx2);font-size:13px;font-weight:500;
+  cursor:pointer;text-align:left;border-left:3px solid transparent;
+  transition:background .12s,color .12s,border-color .12s;font-family:inherit;}
+.sb-item:hover{background:var(--sur2);color:var(--tx);}
+.sb-item.active{color:var(--pri);background:rgba(79,110,247,.08);
+  border-left-color:var(--pri);font-weight:700;}
+.sb-item .sb-ic{font-size:15px;width:20px;text-align:center;flex:none;}
+.sb-item .sb-arrow{margin-left:auto;font-size:10px;color:var(--tx3);
+  transition:transform .2s;flex:none;}
+.sb-item.open .sb-arrow{transform:rotate(180deg);}
+
+.sb-sub{overflow:hidden;max-height:0;transition:max-height .25s ease;}
+.sb-sub.open{max-height:400px;}
+.sb-sub-item{display:flex;align-items:center;gap:8px;padding:7px 16px 7px 42px;
+  width:100%;border:none;background:transparent;color:var(--tx3);font-size:12px;
+  cursor:pointer;text-align:left;border-left:3px solid transparent;
+  transition:background .12s,color .12s;font-family:inherit;}
+.sb-sub-item:hover{background:var(--sur2);color:var(--tx2);}
+.sb-sub-item.active{color:var(--pri);border-left-color:var(--pri);
+  background:rgba(79,110,247,.05);font-weight:600;}
+
+.sb-bottom{border-top:1px solid var(--bd);padding:6px 0;}
+
+#sbOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:149;}
+#sbHamburger{display:none;background:none;border:none;color:var(--tx);
+  font-size:20px;cursor:pointer;padding:4px 8px;}
+.hdr .logo{display:none;} /* 로고는 사이드바로 이동 */
+.tabs{display:none !important;} /* 상단 탭 숨김 */
+
+@media(max-width:768px){
+  body.has-sidebar{padding-left:0;}
+  body.has-sidebar .hdr{left:0;}
+  #sidebar{transform:translateX(-100%);}
+  #sidebar.open{transform:translateX(0);}
+  #sbOverlay.open{display:block;}
+  #sbHamburger{display:block;}
+}
+
+
+.logo{font-family:"IBM Plex Mono",monospace;font-weight:600;letter-spacing:.05em;}
+.ver{font-family:"IBM Plex Mono",monospace;}
+
+/* ── 사이드바 3단계 (손자) ── */
+.sb-sub-item .sb-arrow2{margin-left:auto;font-size:9px;color:var(--tx3);transition:transform .2s;}
+.sb-sub-item.open .sb-arrow2{transform:rotate(180deg);}
+.sb-sub2{overflow:hidden;max-height:0;transition:max-height .25s ease;background:rgba(0,0,0,.15);}
+.sb-sub2.open{max-height:300px;}
+.sb-sub2-item{display:flex;align-items:center;padding:6px 16px 6px 58px;width:100%;
+  border:none;background:transparent;color:var(--tx3);font-size:11.5px;cursor:pointer;
+  text-align:left;border-left:3px solid transparent;font-family:inherit;
+  transition:background .12s,color .12s;}
+.sb-sub2-item:hover{background:var(--sur2);color:var(--tx2);}
+.sb-sub2-item.active{color:var(--pri);border-left-color:var(--pri);
+  background:rgba(79,110,247,.08);font-weight:600;}
+
+/* ── Segmented Control (탭 그룹 상단) ── */
+.seg-wrap{display:flex;align-items:center;gap:12px;padding:12px 18px 4px;flex-wrap:wrap;}
+.seg-label{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--tx3);flex:none;}
+.seg-group{display:inline-flex;background:var(--sur2);border:1px solid var(--bd2);
+  border-radius:6px;padding:3px;gap:2px;}
+.seg-btn{padding:6px 14px;border:none;background:transparent;color:var(--tx2);
+  font-size:12.5px;font-weight:600;cursor:pointer;border-radius:4px;
+  font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.seg-btn:hover{color:var(--tx);}
+.seg-btn.active{background:var(--pri);color:#fff;box-shadow:0 1px 4px rgba(79,110,247,.3);}
+
+/* 기존 .sub-tabs / .kw-subtabs 를 Segmented 스타일로 오버라이드 */
+.sub-tabs{padding:10px 18px 4px;gap:12px;align-items:center;background:transparent;border:none;}
+.kw-subtabs{padding:6px 18px 12px;gap:0;background:transparent;border:none;
+  display:flex;align-items:center;}
+.sub-tab, .kw-subtab{
+  border:1px solid var(--bd2);background:var(--sur2);color:var(--tx2);
+  padding:7px 14px;border-radius:6px;font-size:12.5px;font-weight:600;
+  margin-right:6px;transition:all .15s;
+}
+.sub-tab.on, .kw-subtab.on{
+  background:var(--pri);color:#fff;border-color:var(--pri);
+  box-shadow:0 1px 6px rgba(79,110,247,.35);
+}
+.sub-tab:hover:not(.on), .kw-subtab:hover:not(.on){
+  border-color:var(--pri);color:var(--tx);
+}
+/* 그룹 라벨 (Segmented 왼쪽) */
+.sub-tabs::before{content:"매체 그룹";font-size:10px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--tx3);margin-right:4px;}
+.kw-subtabs::before{content:"페이지";font-size:10px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--tx3);margin-right:12px;}
+
+
+/* ══ 사이드바 폰트 가독성 (다크/라이트 자동 대응) ══ */
+:root{
+  --sb-tx1:#c8d0e0;   /* 1단계 텍스트 (다크) */
+  --sb-tx2:#a8b2c8;   /* 2단계 */
+  --sb-tx3:#8f98ad;   /* 3단계 */
+  --sb-hover:#ffffff;
+  --sb-active:#8b9dfd;
+  --sb-active-bg:rgba(79,110,247,.15);
+  --sb-hover-bg:rgba(255,255,255,.04);
+}
+body.light{
+  --sb-tx1:#2a3040;   /* 라이트: 진한 회색 */
+  --sb-tx2:#4a5068;
+  --sb-tx3:#6c7690;
+  --sb-hover:#000000;
+  --sb-active:#3a58e0;
+  --sb-active-bg:rgba(79,110,247,.1);
+  --sb-hover-bg:rgba(0,0,0,.04);
+}
+
+.sb-item{color:var(--sb-tx1);font-weight:600;}
+.sb-item:hover{color:var(--sb-hover);background:var(--sb-hover-bg);}
+.sb-item.active{color:var(--sb-active);background:var(--sb-active-bg);}
+
+.sb-sub-item{color:var(--sb-tx2);font-weight:500;}
+.sb-sub-item:hover{color:var(--sb-hover);background:var(--sb-hover-bg);}
+.sb-sub-item.active{color:var(--sb-active);background:var(--sb-active-bg);font-weight:700;}
+
+.sb-sub2-item{color:var(--sb-tx3);font-weight:500;}
+.sb-sub2-item:hover{color:var(--sb-hover);background:var(--sb-hover-bg);}
+.sb-sub2-item.active{color:var(--sb-active);background:var(--sb-active-bg);font-weight:700;}
+
+.sb-item .sb-ic{color:var(--sb-tx1);opacity:.9;}
+.sb-item.active .sb-ic{opacity:1;color:var(--sb-active);}
+
+.sb-section{color:var(--sb-tx3);font-weight:800;}
+.sb-logo{color:var(--sb-tx1);}
+.sb-logo em{color:var(--sb-active);}
+
+.sb-arrow, .sb-arrow2{color:var(--sb-tx3);}
+.sb-item.active .sb-arrow{color:var(--sb-active);}
+
+
+/* ══ 사이드바 간소화 (옵션 D) ══ */
+#sidebar{width:210px;}
+body.has-sidebar{padding-left:210px;}
+body.has-sidebar .hdr{left:210px;}
+
+.sb-logo{padding:12px 14px 10px;font-size:11px;}
+.sb-section{padding:10px 14px 3px;font-size:9px;}
+
+/* 1단계 여백/폰트 축소 */
+.sb-item{padding:7px 14px;font-size:12.5px;}
+.sb-item .sb-ic{font-size:13px;width:18px;}
+
+/* 2단계 여백 축소 */
+.sb-sub-item{padding:6px 14px 6px 38px;font-size:11.5px;}
+
+/* 3단계 여백 축소 */
+.sb-sub2-item{padding:5px 14px 5px 52px;font-size:11px;}
+.sb-sub2{background:rgba(0,0,0,.12);}
+
+/* 하단 (설정/테마/로그아웃) 여백 */
+.sb-bottom .sb-item{padding:6px 14px;font-size:11.5px;}
+
+/* 화살표 크기 축소 */
+.sb-arrow{font-size:9px;}
+.sb-arrow2{font-size:8px;}
+
+/* 모바일 사이드바 폭 */
+@media(max-width:768px){#sidebar{width:230px;}}
+
+
+/* ══ 사이드바 접기 (미니 모드) ══ */
+/* 로그인 전에는 사이드바 자체 숨김 */
+#sidebar{display:none;}
+body.has-sidebar #sidebar{display:flex;}
+
+/* 접기 버튼 */
+.sb-collapse-btn{
+  margin-left:auto;background:none;border:none;color:var(--sb-tx3);
+  cursor:pointer;padding:2px 6px;border-radius:4px;font-size:11px;
+  transition:color .15s,background .15s;
+}
+.sb-collapse-btn:hover{color:var(--sb-active);background:var(--sb-hover-bg);}
+.sb-collapse-icon{display:inline-block;transition:transform .25s;}
+
+/* ── 미니 모드 (48px 아이콘) ── */
+body.sb-collapsed #sidebar{width:52px;}
+body.sb-collapsed.has-sidebar{padding-left:52px;}
+body.sb-collapsed.has-sidebar .hdr{left:52px;}
+body.sb-collapsed .sb-collapse-icon{transform:rotate(180deg);}
+
+/* 미니 모드에서 텍스트 감추기 */
+body.sb-collapsed .sb-logo-text,
+body.sb-collapsed .sb-ver,
+body.sb-collapsed .sb-section,
+body.sb-collapsed .sb-item > *:not(.sb-ic),
+body.sb-collapsed .sb-arrow,
+body.sb-collapsed .sb-sub,
+body.sb-collapsed .sb-sub2{
+  display:none !important;
+}
+
+/* 미니 모드 아이템 정렬 */
+body.sb-collapsed .sb-item{
+  padding:11px 0;justify-content:center;
+  border-left-width:0;border-left-color:transparent;
+  position:relative;
+}
+body.sb-collapsed .sb-item.active{
+  background:var(--sb-active-bg);
+  border-left:3px solid var(--sb-active);
+}
+body.sb-collapsed .sb-item .sb-ic{
+  font-size:16px;width:auto;opacity:1;
+}
+
+/* 미니 모드 툴팁 (hover 시 이름 표시) */
+body.sb-collapsed .sb-item::after{
+  content:attr(data-label);
+  position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);
+  background:var(--sur2);color:var(--tx);border:1px solid var(--bd2);
+  padding:5px 10px;border-radius:4px;font-size:12px;font-weight:600;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s;z-index:1000;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+body.sb-collapsed .sb-item:hover::after{opacity:1;}
+
+/* 미니 모드 로고 영역 */
+body.sb-collapsed .sb-logo{
+  padding:12px 0;justify-content:center;
+}
+body.sb-collapsed .sb-collapse-btn{
+  margin:0;
+}
+
+/* 미니 모드 하단 버튼도 아이콘만 */
+body.sb-collapsed .sb-bottom .sb-item{
+  padding:9px 0;
+}
+
+
+/* ══ 미니 모드 텍스트 완전 숨김 + hover 툴팁 ══ */
+/* 미니 모드에서 sb-item 내부 텍스트 노드까지 숨김 */
+body.sb-collapsed .sb-item{
+  font-size:0 !important;  /* 텍스트 노드 완전 숨김 */
+  padding:11px 0;
+  justify-content:center;
+  overflow:hidden;
+  white-space:nowrap;
+}
+/* 아이콘만 크기 복원 */
+body.sb-collapsed .sb-item .sb-ic{
+  font-size:18px !important;
+  line-height:1;
+}
+/* 툴팁 텍스트만 폰트 복원 */
+body.sb-collapsed .sb-item::after{
+  font-size:12px !important;
+}
+
+/* ══ 이모지 아이콘 hover 애니메이션 ══ */
+.sb-ic{
+  display:inline-block;
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  transform-origin:center;
+}
+
+/* 📅 타임라인 → 살짝 회전 */
+.sb-item:hover .sb-ic-anim-gantt{
+  animation:sbTilt .5s ease;
+}
+@keyframes sbTilt{
+  0%,100%{transform:rotate(0);}
+  25%{transform:rotate(-8deg);}
+  75%{transform:rotate(8deg);}
+}
+
+/* 💵 예산 → 좌우 흔들림 (돈 흔들기) */
+.sb-item:hover .sb-ic-anim-budget{
+  animation:sbShake .5s ease;
+}
+@keyframes sbShake{
+  0%,100%{transform:translateX(0);}
+  20%{transform:translateX(-3px);}
+  40%{transform:translateX(3px);}
+  60%{transform:translateX(-2px);}
+  80%{transform:translateX(2px);}
+}
+
+/* 🌴 연차현황 → 바람에 흔들리는 야자수 (기울기) */
+.sb-item:hover .sb-ic-anim-leave{
+  animation:sbSway .8s ease;
+}
+@keyframes sbSway{
+  0%,100%{transform:rotate(0);}
+  25%{transform:rotate(-12deg) translateY(-1px);}
+  50%{transform:rotate(0) translateY(0);}
+  75%{transform:rotate(12deg) translateY(-1px);}
+}
+
+/* 📈 광고현황 → 위로 튀어오르기 + 확대 */
+.sb-item:hover .sb-ic-anim-keyword{
+  animation:sbGrow .4s ease;
+}
+@keyframes sbGrow{
+  0%{transform:scale(1) translateY(0);}
+  50%{transform:scale(1.25) translateY(-3px);}
+  100%{transform:scale(1) translateY(0);}
+}
+
+/* 📢 매체안내 → 확성기 진동 (제자리 진동) */
+.sb-item:hover .sb-ic-anim-media{
+  animation:sbBlast .5s ease;
+}
+@keyframes sbBlast{
+  0%,100%{transform:rotate(-15deg) scale(1);}
+  20%{transform:rotate(-8deg) scale(1.15);}
+  40%{transform:rotate(-20deg) scale(1);}
+  60%{transform:rotate(-10deg) scale(1.1);}
+  80%{transform:rotate(-18deg) scale(1);}
+}
+
+/* ⚙ 설정 → 톱니바퀴 회전 */
+.sb-bottom .sb-item:hover .sb-ic{
+  animation:sbSpin .6s ease;
+}
+@keyframes sbSpin{
+  from{transform:rotate(0);}
+  to{transform:rotate(180deg);}
+}
+
+/* 🌙 테마 → 반짝임 (사이즈 펄스) */
+#sbThemeBtn:hover .sb-ic{
+  animation:sbGlow .8s ease infinite;
+}
+@keyframes sbGlow{
+  0%,100%{transform:scale(1);filter:brightness(1);}
+  50%{transform:scale(1.2);filter:brightness(1.3);}
+}
+
+/* ↩ 로그아웃 → 왼쪽으로 슬라이드 */
+#sbLogoutBtn:hover .sb-ic{
+  animation:sbSlideOut .5s ease;
+}
+@keyframes sbSlideOut{
+  0%{transform:translateX(0);}
+  50%{transform:translateX(-4px);}
+  100%{transform:translateX(0);}
+}
+
+/* 활성 메뉴는 아이콘 항상 살짝 강조 */
+.sb-item.active .sb-ic{
+  filter:drop-shadow(0 0 6px rgba(139,157,253,.5));
+}
+
+
+/* ══ 최상단 메뉴 강조 (요청 반영) ══ */
+.sb-item{
+  font-size:14px !important;
+  font-weight:700 !important;
+  padding:10px 14px !important;
+  letter-spacing:-.01em;
+}
+.sb-item .sb-ic{
+  font-size:16px !important;
+  width:22px !important;
+}
+/* 미니 모드에선 원래대로 */
+body.sb-collapsed .sb-item{
+  font-size:0 !important;
+  padding:11px 0 !important;
+}
+body.sb-collapsed .sb-item .sb-ic{
+  font-size:18px !important;
+}
+/* 하단(설정/테마/로그아웃)은 조금 작게 유지 */
+.sb-bottom .sb-item{
+  font-size:12.5px !important;
+  font-weight:600 !important;
+  padding:7px 14px !important;
+}
+.sb-bottom .sb-item .sb-ic{
+  font-size:14px !important;
+  width:20px !important;
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
+<!-- ══ 사이드바 (베타) ══════════════════════════════════ -->
+<div id="sbOverlay" onclick="closeSidebar()"></div>
+<aside id="sidebar">
+  <div class="sb-logo">
+    <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
+    <span class="sb-ver">v4.20β</span>
+    <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
+      <span class="sb-collapse-icon">◀</span>
+    </button>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">메인</div>
+    <button class="sb-item active" id="sbn-gantt" data-label="타임라인" onclick="sbGo('gantt')">
+      <span class="sb-ic sb-ic-anim-gantt">📅</span> 타임라인
+    </button>
+    <button class="sb-item open" id="sbn-budget" data-label="예산 요약" onclick="sbToggleBudget()">
+      <span class="sb-ic sb-ic-anim-budget">💵</span> 예산 요약
+      <span class="sb-arrow">▾</span>
+    </button>
+    <div class="sb-sub open" id="sbBudgetSub">
+      <button class="sb-sub-item" id="sbn-budget-budget" onclick="sbGoBudget('budget')">
+        💰 예산 요약
+      </button>
+      <button class="sb-sub-item hide" id="sbn-budget-invoice" onclick="sbGoBudget('invoice')">
+        📄 거래명세서
+      </button>
+    </div>
+    <button class="sb-item open" id="sbn-leave" data-label="연차현황" onclick="sbToggleLeave()">
+      <span class="sb-ic sb-ic-anim-leave">🌴</span> 연차현황
+      <span class="sb-arrow">▾</span>
+    </button>
+    <div class="sb-sub open" id="sbLeaveSub">
+      <button class="sb-sub-item" id="sbn-leave-calendar" onclick="sbGoLeave('calendar')">
+        📅 달력
+      </button>
+      <button class="sb-sub-item hide" id="sbn-leave-summary" onclick="sbGoLeave('summary')">
+        📊 연차소진현황
+      </button>
+    </div>
+    <button class="sb-item open" id="sbn-keyword" data-label="광고현황" onclick="sbToggleKeyword()">
+      <span class="sb-ic sb-ic-anim-keyword">📈</span> 광고현황
+      <span class="sb-arrow">▾</span>
+    </button>
+    <div class="sb-sub open" id="sbKeywordSub">
+      <button class="sb-sub-item open" id="sbn-kw-naver" onclick="sbToggleKwNaver()">
+        🔵 네이버 키워드 <span class="sb-arrow2">▾</span>
+      </button>
+      <div class="sb-sub2 open" id="sbKwNaverSub">
+        <button class="sb-sub2-item" id="sbn-kw-naver-balance" onclick="sbGoKwNaver('balance')">
+          · 잔액 현황
+        </button>
+        <button class="sb-sub2-item" id="sbn-kw-naver-campaign" onclick="sbGoKwNaver('campaign')">
+          · 캠페인별 월비용
+        </button>
+        <button class="sb-sub2-item" id="sbn-kw-naver-charge" onclick="sbGoKwNaver('charge')">
+          · 충전 내역
+        </button>
+      </div>
+      <button class="sb-sub-item" id="sbn-kw-zigbang" onclick="sbGoKeyword('zigbang')">
+        🏠 직방/호갱노노
+      </button>
+    </div>
+
+    <div class="sb-section">매체</div>
+    <button class="sb-item open" id="sbn-media" data-label="매체안내" onclick="sbToggleMedia()">
+      <span class="sb-ic sb-ic-anim-media">📢</span> 매체안내
+      <span class="sb-arrow">▾</span>
+    </button>
+    <div class="sb-sub open" id="sbMediaSub">
+      <button class="sb-sub-item open" id="sbn-media-sms" onclick="sbToggleMediaSms()">
+        💬 문자광고 <span class="sb-arrow2">▾</span>
+      </button>
+      <div class="sb-sub2 open" id="sbMediaSmsSub">
+        <button class="sb-sub2-item" id="sbn-media-sms-check" onclick="sbGoMediaSms('check')">
+          · 집행 가능여부
+        </button>
+        <button class="sb-sub2-item hide" id="sbn-media-sms-edit" onclick="sbGoMediaSms('edit')">
+          · 가이드 문구 수정
+        </button>
+        <button class="sb-sub2-item" id="sbn-media-sms-guide" onclick="sbGoMediaSms('guide')">
+          · 분양 상세 가이드
+        </button>
+      </div>
+      <button class="sb-sub-item" id="sbn-media-utm" onclick="sbGoMedia('utm')">
+        🔗 UTM 생성
+      </button>
+    </div>
+  </nav>
+  <div class="sb-bottom">
+    <button class="sb-item hide" id="sbSettingsBtn" data-label="설정" onclick="openSettings()">
+      <span class="sb-ic">⚙</span> 설정
+    </button>
+    <button class="sb-item hide" id="sbThemeBtn" data-label="테마 전환" onclick="toggleTheme()">
+      <span class="sb-ic">🌙</span> 테마 전환
+    </button>
+    <button class="sb-item hide" id="sbLogoutBtn" data-label="로그아웃" onclick="handleLogout()">
+      <span class="sb-ic">↩</span> 로그아웃
+    </button>
+  </div>
+</aside>
+
+
 <header class="hdr">
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.19.31</span></div>
+  <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.20.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1187,20 +1696,54 @@ body.light .sms-tool{
 
 <div id="main">
   <div class="lscreen" id="lscreen">
-    <div class="lcard">
-      <h2>BRIN Task Manager</h2>
-      <p>구글 계정으로 로그인하면<br>연결된 구글시트 데이터를 실시간으로 불러옵니다.</p>
-      <button class="gbtn" onclick="handleLogin()">
-        <svg width="18" height="18" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-        </svg>
-        Google 계정으로 로그인
-      </button>
+    <div class="lcard" id="lcard">
+      <!-- ① 패스프레이즈 화면 -->
+      <div id="passView">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--tx3);margin-bottom:16px">BRIN TASK MANAGER</div>
+        <h2 style="margin:0 0 6px;font-size:20px">팀 비밀번호</h2>
+        <p style="margin:0 0 20px;font-size:13px;color:var(--tx2)">브릿지인사이트 팀원 전용 액세스</p>
+        <div style="position:relative;margin-bottom:10px">
+          <input id="passInput" type="password" placeholder="비밀번호 입력"
+            style="width:100%;box-sizing:border-box;padding:11px 44px 11px 14px;border-radius:8px;border:1px solid var(--bd2);background:var(--sur3);color:var(--tx);font-size:14px;font-family:inherit;outline:none"
+            onkeydown="if(event.key==='Enter')checkPassphrase()"
+            oninput="document.getElementById('passErr').style.display='none'">
+          <button onclick="togglePassView(this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--tx3);font-size:14px">👁</button>
+        </div>
+        <div id="passErr" style="display:none;font-size:12px;color:#ff6b6b;margin-bottom:10px;padding:8px 12px;background:rgba(255,107,107,.1);border-radius:6px">
+          비밀번호가 올바르지 않습니다.
+        </div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--tx2);margin-bottom:16px;cursor:pointer">
+          <input type="checkbox" id="passRemember" checked style="accent-color:var(--pri)"> 이 기기에서 기억하기 (30일)
+        </label>
+        <button onclick="checkPassphrase()" class="btn btn-p" style="width:100%;padding:11px;font-size:14px;border-radius:8px">
+          입장
+        </button>
+        <div id="passSetupHint" style="display:none;margin-top:12px;font-size:11px;color:var(--orange);text-align:center;padding:8px;background:rgba(245,160,51,.08);border-radius:6px">
+          ⚙ 패스프레이즈 미설정 — 아래 버튼으로 입장 후 설정하세요
+        </div>
+        <button id="passSkipBtn" style="display:none;margin-top:8px;background:none;border:1px solid var(--bd2);color:var(--tx2);border-radius:8px;padding:9px;font-size:12px;width:100%;cursor:pointer" onclick="bypassToGoogle()">
+          설정 없이 계속하기 (관리자)
+        </button>
+      </div>
+      <!-- ② Google 연동 화면 -->
+      <div id="googleView" style="display:none">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.15em;color:var(--tx3);margin-bottom:16px">BRIN TASK MANAGER</div>
+        <h2 style="margin:0 0 6px;font-size:20px">Google 연동</h2>
+        <p style="margin:0 0 20px;font-size:13px;color:var(--tx2)">구글 시트 데이터 접근을 위해<br>1회 계정 연결이 필요합니다.</p>
+        <button class="gbtn" onclick="handleLogin()">
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Google 계정으로 연결
+        </button>
+        <button onclick="showPassView()" style="background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;margin-top:12px;width:100%">← 뒤로</button>
+      </div>
     </div>
   </div>
+
 
   <!-- gantt 전체 컨테이너: flex-col (모바일 PJT 바 + gantt-wrap 수직 배치) -->
   <div class="gantt-outer hide" id="ganttView">
@@ -1805,6 +2348,22 @@ body.light .sms-tool{
       </div>
     </div>
     <p class="msub">Google Cloud Console에서 발급한 정보를 입력해주세요.</p>
+    <div class="fsec">🔐 팀 비밀번호 설정</div>
+    <div class="fg">
+      <label class="fl">비밀번호 → 해시 생성</label>
+      <div style="display:flex;gap:6px">
+        <input class="fi2" id="cfgPassGen" type="password" placeholder="새 비밀번호 입력" style="flex:1">
+        <button class="btn btn-g" onclick="generatePassHash()" style="flex:none;padding:8px 12px;font-size:12px">생성</button>
+      </div>
+    </div>
+    <div class="fg" id="cfgPassHashWrap" style="display:none">
+      <label class="fl">생성된 해시 (PASSPHRASE_HASH에 입력)</label>
+      <div style="display:flex;gap:6px">
+        <input class="fi2" id="cfgPassHash" readonly style="flex:1;font-family:monospace;font-size:11px;color:var(--pri)">
+        <button class="btn btn-g" onclick="copyPassHash()" style="flex:none;padding:8px 12px;font-size:12px">복사</button>
+      </div>
+      <p class="msub" style="margin-top:6px">HTML 파일 상단 <code style="font-size:10px">PASSPHRASE_HASH=''</code> 에 붙여넣기 후 재배포</p>
+    </div>
     <div class="fsec">Google OAuth</div>
     <div class="fg"><label class="fl">Client ID</label><input class="fi2" id="cfgClientId"></div>
     <div class="fsec">구글 시트 연결</div>
@@ -1849,6 +2408,217 @@ body.light .sms-tool{
 </div>
 
 <script>
+
+/* ══════════════════════════════════════════════════════
+   🔐 인증 시스템 v2 — 패스프레이즈 + Google OAuth + IndexedDB
+══════════════════════════════════════════════════════ */
+
+// ── IndexedDB 헬퍼 ────────────────────────────────────
+const BrinDB = {
+  _db: null,
+  async init() {
+    if (this._db) return this._db;
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('brin_auth', 2);
+      req.onupgradeneeded = e => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
+      };
+      req.onsuccess = e => { this._db = e.target.result; resolve(this._db); };
+      req.onerror = () => reject(req.error);
+    });
+  },
+  async get(key) {
+    const db = await this.init();
+    return new Promise(resolve => {
+      const tx = db.transaction('kv', 'readonly');
+      const req = tx.objectStore('kv').get(key);
+      req.onsuccess = () => resolve(req.result ?? null);
+      req.onerror = () => resolve(null);
+    });
+  },
+  async set(key, value) {
+    const db = await this.init();
+    return new Promise(resolve => {
+      const tx = db.transaction('kv', 'readwrite');
+      tx.objectStore('kv').put(value, key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  },
+  async del(key) {
+    const db = await this.init();
+    return new Promise(resolve => {
+      const tx = db.transaction('kv', 'readwrite');
+      tx.objectStore('kv').delete(key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    });
+  }
+};
+
+// ── SHA-256 해시 ─────────────────────────────────────
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ── 패스프레이즈 UI ──────────────────────────────────
+function togglePassView(btn) {
+  const inp = document.getElementById('passInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  if (btn) btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+function showPassView() {
+  document.getElementById('passView').style.display = '';
+  document.getElementById('googleView').style.display = 'none';
+  document.getElementById('passInput').focus();
+}
+
+function showGoogleView() {
+  document.getElementById('passView').style.display = 'none';
+  document.getElementById('googleView').style.display = '';
+}
+
+async function checkPassphrase() {
+  // 패스프레이즈 미설정 시 관리자 우회 허용
+  if (!PASSPHRASE_HASH) {
+    document.getElementById('passSetupHint').style.display = '';
+    document.getElementById('passSkipBtn').style.display = '';
+    return;
+  }
+  const input = (document.getElementById('passInput').value || '').trim();
+  if (!input) {
+    document.getElementById('passInput').focus();
+    return;
+  }
+  const hash = await sha256(input);
+  if (hash !== PASSPHRASE_HASH) {
+    document.getElementById('passErr').style.display = '';
+    document.getElementById('passInput').value = '';
+    document.getElementById('passInput').focus();
+    return;
+  }
+  await onPassVerified();
+}
+
+async function bypassToGoogle() {
+  // 미설정 상태에서 관리자가 바로 진행
+  await onPassVerified();
+}
+
+async function onPassVerified() {
+  // 기억하기 체크 시 IndexedDB에 만료일 저장
+  if (document.getElementById('passRemember').checked) {
+    const exp = Date.now() + PASS_REMEMBER_DAYS * 86400 * 1000;
+    await BrinDB.set('brin_pass_exp', exp);
+  }
+  // Google 토큰 유효하면 바로 진입
+  const tk = await loadTokenDB();
+  if (tk && CFG.clientId && CFG.sheetId) {
+    token = tk.t;
+    userEmail = tk.email || '';
+    hideLscreen();
+    onLoggedIn();
+    return;
+  }
+  // 없으면 Google 연동 화면
+  showGoogleView();
+}
+
+// ── IndexedDB 토큰 저장/로드 ─────────────────────────
+async function saveTokenDB(t, expSec, email) {
+  const data = { t, exp: Date.now() + (expSec - 120) * 1000, email };
+  await BrinDB.set('brin_tk', data);
+  // 하위호환: localStorage도 병행 유지
+  safeStorage.set('brin_tk', JSON.stringify(data));
+  safeSession.set('brin_tk', JSON.stringify(data));
+}
+
+async function loadTokenDB() {
+  try {
+    // IndexedDB 우선
+    let d = await BrinDB.get('brin_tk');
+    if (!d) {
+      // 구 localStorage 마이그레이션
+      const s = safeStorage.get('brin_tk') || safeSession.get('brin_tk');
+      if (s) d = JSON.parse(s);
+    }
+    if (!d) return null;
+    if (Date.now() > d.exp) { await BrinDB.del('brin_tk'); return null; }
+    return d;
+  } catch { return null; }
+}
+
+async function clearTokenDB() {
+  await BrinDB.del('brin_tk');
+  safeSession.remove('brin_tk');
+  safeStorage.remove('brin_tk');
+}
+
+// ── 화면 제어 ────────────────────────────────────────
+function hideLscreen() {
+  const el = document.getElementById('lscreen');
+  if (el) el.style.display = 'none';
+}
+
+function showLscreen() {
+  const el = document.getElementById('lscreen');
+  if (el) { el.style.display = ''; showPassView(); }
+}
+
+// ── Google OAuth (개선) ──────────────────────────────
+let _silentRefreshTimer = null;
+
+function startSilentRefreshTimer(expMs) {
+  if (_silentRefreshTimer) clearTimeout(_silentRefreshTimer);
+  const msLeft = expMs - Date.now() - 5 * 60 * 1000; // 만료 5분 전
+  if (msLeft <= 0) { silentRefresh(); return; }
+  _silentRefreshTimer = setTimeout(silentRefresh, msLeft);
+}
+
+function silentRefresh() {
+  if (!tokenClient) return;
+  try {
+    tokenClient.requestAccessToken({ prompt: '' });
+  } catch(e) {
+    // silent 실패 시 토스트만 표시 (로그아웃 X)
+    showToast('세션 갱신 필요 — 잠시 후 자동 시도합니다.', 'warn');
+    setTimeout(silentRefresh, 30000);
+  }
+}
+
+// Page Visibility: 탭 복귀 시 토큰 확인
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible' || !token) return;
+  const d = await loadTokenDB();
+  if (!d) {
+    silentRefresh();
+  } else if (Date.now() > d.exp - 5 * 60 * 1000) {
+    silentRefresh();
+  }
+});
+
+// ── 설정 패널: 해시 생성기 ───────────────────────────
+async function generatePassHash() {
+  const pw = document.getElementById('cfgPassGen')?.value?.trim();
+  if (!pw) { showToast('비밀번호를 입력하세요', 'warn'); return; }
+  const hash = await sha256(pw);
+  const out = document.getElementById('cfgPassHash');
+  if (out) {
+    out.value = hash;
+    const wrap = document.getElementById('cfgPassHashWrap');
+    if (wrap) wrap.style.display = '';
+  }
+  showToast('해시 생성 완료 — 복사해서 PASSPHRASE_HASH에 붙여넣으세요', 'ok');
+}
+
+function copyPassHash() {
+  const v = document.getElementById('cfgPassHash')?.value;
+  if (v) navigator.clipboard.writeText(v).then(() => showToast('복사됨', 'ok'));
+}
+
 // ── safeStorage / safeSession: localStorage/sessionStorage 안전 래퍼 ──
 // 시크릿 모드, iOS 권한 차단 등에서 throw 방지
 const safeStorage={
@@ -1888,7 +2658,9 @@ function setupErrorTracking(){
 
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
-const NOTICE_WEBAPP_URL='https://script.google.com/macros/s/AKfycbxC7w0fF5U2syR_nUTVc7D3Qje9DSj5SE_kqCfj-XFMyMkZ7t5QeXhh2t7S6Erd3D2F/exec'; // Apps Script 배포 URL 입력
+const NOTICE_WEBAPP_URL='https://script.google.com/macros/s/AKfycbxyWnlXLQFKGO8xFhER6HKVWyYqoTHF-Dr6x7dur8g2bFEbs9kzaVVwDPgQpD7szeZm/exec';
+const PASSPHRASE_HASH='eb38eb38b938d0e78f20d1c0df17f13b44a5359451c37e284c52b08efc1afc43'; // 설정 > 해시 생성기에서 발급 후 입력
+const PASS_REMEMBER_DAYS=30; // 패스프레이즈 기억 기간(일) // Apps Script 배포 URL 입력
 
 
 // ── 팀 구성 ──────────────────────────────────────────────
@@ -1993,9 +2765,13 @@ function resetDefaults(){
 // ── TOKEN ──────────────────────────────────────
 // 토큰 - sessionStorage(탭) + localStorage(브라우저) 병행 저장
 function saveToken(t,exp,email){
+  // 기존 동기 방식 유지 (하위호환) + 비동기 IndexedDB 병행
   const data=JSON.stringify({t,exp:Date.now()+(exp-120)*1000,email});
   safeSession.set('brin_tk',data);
-  safeStorage.set('brin_tk',data);  // 브라우저 닫아도 유지
+  safeStorage.set('brin_tk',data);
+  saveTokenDB(t,exp,email).catch(()=>{}); // 비동기, 실패 무시
+  // 자동갱신 타이머 설정
+  startSilentRefreshTimer(Date.now()+(exp-120)*1000);
 }
 function loadTokenData(){
   try{
@@ -2114,8 +2890,9 @@ function handleLogin(){
   if(tokenClient)tokenClient.requestAccessToken();
 }
 function handleLogout(){
+  deactivateSidebar();
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
-  token=null;userEmail='';rows=[];groups=[];clearToken();
+  token=null;userEmail='';rows=[];groups=[];clearToken();clearTokenDB().catch(()=>{});if(_silentRefreshTimer)clearTimeout(_silentRefreshTimer);
   ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
@@ -2130,6 +2907,7 @@ function handleLogout(){
   if(view==='media')view='gantt';
 }
 function onLoggedIn(){
+  activateSidebar();
   document.getElementById('loginBtn').classList.add('hide');
   ['logoutBtn','refBtn','syncWrap','fbar','userInfo','themeBtn','mediaInfoTab'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hide');});
   // 공지 팝업 체크 (로그인 후 500ms 지연)
@@ -2315,7 +3093,7 @@ function parseSheet(values){
       _rowIdx:i,
     });
   }
-  console.log(`[BRIN] 시트 행: ${values.length-CFG.headerRow}, 데이터 행: ${totalRows}, 날짜 파싱 실패: ${skippedNoDate}, 최종 파싱: ${rows.length}`);
+
   // 마지막 파싱 통계 저장 (화면 표시용)
   window._brinStats={total:values.length-CFG.headerRow,parsed:rows.length,skippedDate:skippedNoDate,skippedData:skippedNoData,
     sampleRow:values[CFG.headerRow+1]||null,
@@ -2323,8 +3101,8 @@ function parseSheet(values){
     sampleEdate:values[CFG.headerRow+1]?values[CFG.headerRow+1][C.edate]:null};
   if(values.length>CFG.headerRow+1&&rows.length===0){
     const sample=values[CFG.headerRow+1];
-    console.warn('[BRIN] 첫 데이터 샘플:',sample);
-    console.warn('[BRIN] 시작일 셀:',sample?sample[C.sdate]:'(없음)','| 종료일 셀:',sample?sample[C.edate]:'(없음)');
+
+
   }
   // 타임라인 시작: 오늘 기준 2개월 전의 1일 (오늘이 좌측 3번째 월에 위치)
   tlStart=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
@@ -2581,6 +3359,14 @@ function switchSubTab(tab){
     showToast('거래명세서는 권한이 부여된 사용자만 접근 가능합니다.','warn');return;
   }
   currentSubTab=tab;
+  // 사이드바 동기화 + 자동 오픈
+  ['budget','invoice'].forEach(t=>{
+    const el=document.getElementById('sbn-budget-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  const s2=document.getElementById('sbBudgetSub');
+  const b2=document.getElementById('sbn-budget');
+  if(s2 && !s2.classList.contains('open')){s2.classList.add('open');if(b2)b2.classList.add('open');}
   document.getElementById('subTabBudget').classList.toggle('on',tab==='budget');
   document.getElementById('subTabInvoice').classList.toggle('on',tab==='invoice');
   document.getElementById('subBudget').classList.toggle('hide',tab!=='budget');
@@ -2988,6 +3774,11 @@ function switchView(v){
     else if(i===4&&v==='media')on=true;
     t.classList.toggle('on',on);
   });
+  // 사이드바 active 동기화
+  ['gantt','budget','leave','keyword','media'].forEach(id=>{
+    const el=document.getElementById('sbn-'+id);
+    if(el)el.classList.toggle('active',id===v);
+  });
   document.getElementById('ganttView').classList.toggle('hide',v!=='gantt');
   document.getElementById('budgetView').classList.toggle('hide',v!=='budget');
   document.getElementById('leaveView').classList.toggle('hide',v!=='leave');
@@ -3007,6 +3798,19 @@ function switchView(v){
 
 // ── 매체안내 서브탭 전환 ─────────────────────
 function switchMediaTab(tab){
+  // 사이드바 서브 active + 3단계 오픈
+  ['sms','utm'].forEach(t=>{
+    const el=document.getElementById('sbn-media-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(tab==='sms'){
+    const s2=document.getElementById('sbMediaSmsSub');
+    const b2=document.getElementById('sbn-media-sms');
+    if(s2 && !s2.classList.contains('open')){
+      s2.classList.add('open');
+      if(b2)b2.classList.add('open');
+    }
+  }
   ['sms','utm'].forEach(t=>{
     const btn=document.getElementById('miSubTab'+t.charAt(0).toUpperCase()+t.slice(1));
     if(btn)btn.classList.toggle('on',t===tab);
@@ -3061,6 +3865,19 @@ let leaveCalDate=new Date(TODAY.getFullYear(),TODAY.getMonth(),1);
 let currentAdTab='naver';
 function switchAdTab(tab){
   currentAdTab=tab;
+  // 사이드바 동기화 + 3단계 오픈
+  ['naver','zigbang'].forEach(t=>{
+    const el=document.getElementById('sbn-kw-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(tab==='naver'){
+    const s2=document.getElementById('sbKwNaverSub');
+    const b2=document.getElementById('sbn-kw-naver');
+    if(s2 && !s2.classList.contains('open')){
+      s2.classList.add('open');
+      if(b2)b2.classList.add('open');
+    }
+  }
   document.getElementById('adSubTabNaver').classList.toggle('on',tab==='naver');
   document.getElementById('adSubTabZigbang').classList.toggle('on',tab==='zigbang');
   document.getElementById('adNaverView').classList.toggle('hide',tab!=='naver');
@@ -3098,7 +3915,7 @@ async function fetchZigbangData(){
     zbLoaded=true;
     renderZigbang();
   }catch(e){
-    console.warn('[BRIN-zb]',e);
+
     el.innerHTML=`<div style="padding:40px;text-align:center;color:var(--red)">데이터 로드 실패: ${e.message}</div>`;
   }
 }
@@ -3359,7 +4176,7 @@ async function fetchSheetNotes(){
     rows.forEach(r=>{const n=_sheetNotes[r._rowIdx];if(n)r.sheetNote=n;});
     // 간트가 열려있으면 리렌더
     if(view==='gantt'&&groups.length){if(isMobile())applyMobilePjtMode();else renderGantt();}
-    console.log(`[BRIN-notes] 메모 ${Object.keys(_sheetNotes).length}개 로드`);
+
   }catch(e){console.warn('[BRIN-notes]',e);}
 }
 
@@ -3786,6 +4603,10 @@ function daysSince(dateStr){
 let naverSubTab='balance'; // 'balance' | 'campaign'
 function switchNaverSubTab(tab){
   naverSubTab=tab;
+  ['balance','campaign','charge'].forEach(t=>{
+    const el=document.getElementById('sbn-kw-naver-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
   document.getElementById('kwSubTabBalance').classList.toggle('on',tab==='balance');
   document.getElementById('kwSubTabCampaign').classList.toggle('on',tab==='campaign');
   document.getElementById('kwSubTabCharge').classList.toggle('on',tab==='charge');
@@ -3815,7 +4636,7 @@ async function fetchChargeSheetSafe(){
     parseKeywordCharge(data.values||[]);
     if(view==='keyword'&&currentAdTab==='naver'&&naverSubTab==='charge')renderKeywordCharge();
   }catch(e){
-    console.warn('[BRIN-kwch]',e);
+
     parseKeywordCharge([]);
   }
 }
@@ -4433,6 +5254,14 @@ function goToLeaveCalendarFor(month, year){
 
 function switchLeaveTab(tab){
   currentLeaveTab=tab;
+  // 사이드바 동기화 + 자동 오픈
+  ['calendar','summary'].forEach(t=>{
+    const el=document.getElementById('sbn-leave-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  const s2=document.getElementById('sbLeaveSub');
+  const b2=document.getElementById('sbn-leave');
+  if(s2 && !s2.classList.contains('open')){s2.classList.add('open');if(b2)b2.classList.add('open');}
   document.getElementById('subTabCalendar').classList.toggle('on',tab==='calendar');
   document.getElementById('subTabLeaveSummary').classList.toggle('on',tab==='summary');
   document.getElementById('subLeaveCalendar').classList.toggle('hide',tab!=='calendar');
@@ -5122,23 +5951,35 @@ window.addEventListener('load',()=>{
   setupLeaveSwipe();
   setupOffline();
 
-  const saved=loadTokenData();
-  const doInit=()=>{
-    if(typeof google==='undefined'){setTimeout(doInit,200);return;}
-    if(CFG.clientId)initGIS();
-    if(saved&&CFG.clientId&&CFG.sheetId){
-      token=saved.t;userEmail=saved.email||'';
+  // ── 초기화: 패스프레이즈 → Google 토큰 순서 확인 ──
+  const doInit = async () => {
+    if (typeof google === 'undefined') { setTimeout(doInit, 200); return; }
+    if (CFG.clientId) initGIS();
+
+    // 1. 패스프레이즈 세션 확인
+    const passExp = await BrinDB.get('brin_pass_exp');
+    const passOk  = !PASSPHRASE_HASH || (passExp && Date.now() < passExp);
+
+    // 2. Google 토큰 확인
+    const tkData = await loadTokenDB() || loadTokenData(); // IndexedDB 우선, 구버전 폴백
+    const tkOk   = tkData && CFG.clientId && CFG.sheetId;
+
+    if (passOk && tkOk) {
+      // 둘 다 유효 → 바로 진입
+      token = tkData.t; userEmail = tkData.email || '';
+      hideLscreen();
       onLoggedIn();
-    }
-    // 토큰 만료 5분 전 자동 갱신 (5분마다 체크)
-    setInterval(()=>{
-      if(!token)return;
-      const d=loadTokenData();
-      if(!d||Date.now()>d.exp-5*60*1000){
-        try{tokenClient.requestAccessToken({prompt:''});}
-        catch(e){console.warn('[BRIN-token] 자동갱신 실패',e);}
+      startSilentRefreshTimer(tkData.exp);
+    } else if (passOk && !tkOk) {
+      // 패스프레이즈 OK, 토큰 없음 → Google 연동 화면
+      showGoogleView();
+    } else {
+      // 패스프레이즈 만료 or 미설정 → 패스프레이즈 화면
+      if (!PASSPHRASE_HASH) {
+        document.getElementById('passSetupHint').style.display = '';
+        document.getElementById('passSkipBtn').style.display   = '';
       }
-    },5*60*1000);
+    }
   };
   doInit();
 });
@@ -6378,7 +7219,7 @@ async function fetchNoticesFromSheet() {
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (e) {
-    console.warn('공지 로드 실패:', e);
+
     return [];
   }
 }
@@ -6388,7 +7229,8 @@ async function pushNoticeToSheet(notice) {
   try {
     const res = await fetch(NOTICE_WEBAPP_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'saveNotice', notice }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ action: 'saveNotice', data: JSON.stringify(notice) }),
     });
     const data = await res.json();
     return data.ok === true;
@@ -6403,7 +7245,8 @@ async function deleteNoticeFromSheet(id) {
   try {
     const res = await fetch(NOTICE_WEBAPP_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'deleteNotice', id }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ action: 'deleteNotice', id: String(id) }),
     });
     const data = await res.json();
     return data.ok === true;
@@ -6935,6 +7778,239 @@ function downloadUtmExcel(){
   XLSX.utils.book_append_sheet(wb,ws,'UTM');
   XLSX.writeFile(wb,`BRIN_UTM_${project}_${new Date().toISOString().slice(0,10)}.xlsx`);
   showToast('📥 엑셀 다운로드 완료','ok');
+}
+
+
+
+/* ══ 사이드바 제어 (베타) ══════════════════════════════════ */
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sbOverlay');
+  const open=sb.classList.toggle('open');
+  ov.classList.toggle('open',open);
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('open');
+}
+
+// 메인 메뉴 이동
+function sbGo(v){
+  switchView(v);
+  // 1단계 active 동기화
+  ['gantt','budget','leave','keyword','media'].forEach(id=>{
+    const el=document.getElementById('sbn-'+id);
+    if(el)el.classList.toggle('active',id===v);
+  });
+  // ✅ 다른 그룹의 서브/손자 active 전부 제거
+  document.querySelectorAll('.sb-sub-item.active, .sb-sub2-item.active').forEach(el=>{
+    // 현재 활성 그룹 내부는 유지, 나머지는 제거
+    const parent=el.closest('.sb-sub, .sb-sub2');
+    // 어느 그룹 소속인지 확인
+    let inActiveGroup=false;
+    if(v==='keyword' && (el.id.includes('kw-') || el.id.includes('naver-'))) inActiveGroup=true;
+    else if(v==='media' && el.id.includes('media-')) inActiveGroup=true;
+    else if(v==='budget' && el.id.includes('budget-')) inActiveGroup=true;
+    else if(v==='leave' && el.id.includes('leave-')) inActiveGroup=true;
+    if(!inActiveGroup) el.classList.remove('active');
+  });
+  // 서브 패널은 자동 접지 않음 - 사용자가 토글 버튼으로만 열고 닫음
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+// 광고현황 서브메뉴 토글
+function sbToggleKeyword(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbKeywordSub');
+  const btn=document.getElementById('sbn-keyword');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGo('keyword');
+}
+function sbGoKeyword(tab){
+  sbGo('keyword');
+  setTimeout(()=>{
+    if(typeof switchAdTab==='function')switchAdTab(tab);
+  },50);
+  ['naver','zigbang'].forEach(t=>{
+    const el=document.getElementById('sbn-kw-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+// 매체안내 서브메뉴 토글
+function sbToggleMedia(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbMediaSub');
+  const btn=document.getElementById('sbn-media');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGo('media');
+}
+function sbGoMedia(tab){
+  sbGo('media');
+  setTimeout(()=>{
+    if(typeof switchMediaTab==='function')switchMediaTab(tab);
+  },50);
+  ['sms','utm'].forEach(t=>{
+    const el=document.getElementById('sbn-media-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+// 로그인 후 사이드바 활성화
+
+/* ══ 사이드바 접기/펼치기 (미니 모드) ══ */
+
+// 미니 모드에서 서브 있는 메뉴 클릭 시 자동으로 사이드바 펼치기
+function expandSbIfCollapsed(){
+  if(document.body.classList.contains('sb-collapsed')){
+    document.body.classList.remove('sb-collapsed');
+    try{localStorage.setItem('brin_sb_collapsed','0');}catch(e){}
+  }
+}
+
+function toggleSbCollapse(){
+  const collapsed=document.body.classList.toggle('sb-collapsed');
+  try{localStorage.setItem('brin_sb_collapsed', collapsed?'1':'0');}catch(e){}
+  // 접힐 때 모든 서브 패널 닫기
+  if(collapsed){
+    document.querySelectorAll('.sb-sub.open, .sb-sub2.open').forEach(el=>{
+      el.classList.remove('open');
+    });
+    document.querySelectorAll('.sb-item.open, .sb-sub-item.open').forEach(el=>{
+      el.classList.remove('open');
+    });
+  }
+}
+
+// 초기 상태 복원
+(function restoreSbCollapse(){
+  try{
+    if(localStorage.getItem('brin_sb_collapsed')==='1'){
+      document.body.classList.add('sb-collapsed');
+    }
+  }catch(e){}
+})();
+
+function activateSidebar(){
+  document.body.classList.add('has-sidebar');
+  ['sbSettingsBtn','sbThemeBtn','sbLogoutBtn'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.remove('hide');
+  });
+  // 권한별 하위 메뉴 표시
+  refreshSidebarPermissions();
+}
+
+// 로그인 사용자 권한에 따라 사이드바 하위 메뉴 표시/숨김
+function refreshSidebarPermissions(){
+  // 거래명세서 (예산요약 하위)
+  const canInv=(typeof canAccessInvoice==='function')?canAccessInvoice():false;
+  const invEl=document.getElementById('sbn-budget-invoice');
+  if(invEl)invEl.classList.toggle('hide',!canInv);
+
+  // 연차 소진현황 (관리자 전용)
+  const isAdmin=(typeof userEmail!=='undefined')&&(userEmail===ADMIN_EMAIL);
+  const summaryEl=document.getElementById('sbn-leave-summary');
+  if(summaryEl)summaryEl.classList.toggle('hide',!isAdmin);
+
+  // 문자광고 하위 - 가이드 문구 수정 (관리자 전용)
+  const editEl=document.getElementById('sbn-media-sms-edit');
+  if(editEl)editEl.classList.toggle('hide',!isAdmin);
+}
+function deactivateSidebar(){
+  document.body.classList.remove('has-sidebar');
+  ['sbSettingsBtn','sbThemeBtn','sbLogoutBtn'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.add('hide');
+  });
+}
+
+
+/* ══ 예산 서브메뉴 ══ */
+function sbToggleBudget(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbBudgetSub');
+  const btn=document.getElementById('sbn-budget');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGo('budget');
+}
+function sbGoBudget(tab){
+  sbGo('budget');
+  setTimeout(()=>{
+    if(typeof switchSubTab==='function')switchSubTab(tab);
+  },80);
+  ['budget','invoice'].forEach(t=>{
+    const el=document.getElementById('sbn-budget-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+/* ══ 연차 서브메뉴 ══ */
+function sbToggleLeave(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbLeaveSub');
+  const btn=document.getElementById('sbn-leave');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGo('leave');
+}
+function sbGoLeave(tab){
+  sbGo('leave');
+  setTimeout(()=>{
+    if(typeof switchLeaveTab==='function')switchLeaveTab(tab);
+  },80);
+  ['calendar','summary'].forEach(t=>{
+    const el=document.getElementById('sbn-leave-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+/* ══ 사이드바 3단계 (손자 서브메뉴) ══ */
+function sbToggleKwNaver(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbKwNaverSub');
+  const btn=document.getElementById('sbn-kw-naver');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGoKeyword('naver');
+}
+function sbGoKwNaver(tab){
+  sbGoKeyword('naver');
+  setTimeout(()=>{
+    if(typeof switchNaverSubTab==='function')switchNaverSubTab(tab);
+  },80);
+  ['balance','campaign','charge'].forEach(t=>{
+    const el=document.getElementById('sbn-kw-naver-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
+}
+
+function sbToggleMediaSms(){
+  expandSbIfCollapsed();
+  const sub=document.getElementById('sbMediaSmsSub');
+  const btn=document.getElementById('sbn-media-sms');
+  const isOpen=sub.classList.toggle('open');
+  btn.classList.toggle('open',isOpen);
+  if(isOpen)sbGoMedia('sms');
+}
+function sbGoMediaSms(tab){
+  sbGoMedia('sms');
+  setTimeout(()=>{
+    if(window.SmsTool && SmsTool.switchTab)SmsTool.switchTab(tab);
+  },80);
+  ['check','edit','guide'].forEach(t=>{
+    const el=document.getElementById('sbn-media-sms-'+t);
+    if(el)el.classList.toggle('active',t===tab);
+  });
+  if(window.innerWidth<=768)closeSidebar();
 }
 
 
