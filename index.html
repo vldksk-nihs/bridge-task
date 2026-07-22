@@ -3051,6 +3051,47 @@ function renderProjectAnswer(matches){
   return html;
 }
 
+
+// ── 특정 매체 + 회차 조회: 기간(sdate~edate) 중심 응답 ──
+function renderMediaPeriodAnswer(matches, intent){
+  // 프로젝트+매체 조합으로 그룹화 (같은 매체가 여러 달 반복 집행되는 경우 대비)
+  const byKey = {};
+  matches.forEach(r => {
+    const key = r.pjt + '|' + r.media;
+    if(!byKey[key]) byKey[key] = [];
+    byKey[key].push(r);
+  });
+
+  let html = '';
+  Object.entries(byKey).forEach(([key, arr]) => {
+    const [pjt, media] = key.split('|');
+    arr.sort((a,b) => a.sdate - b.sdate); // 회차 순서: 시작일 빠른 순
+
+    html += `<div class="ai-group-block"><div class="ai-group-title">📌 ${escHtml(pjt)} · ${escHtml(media)}</div>`;
+
+    if(intent.ordinal && intent.ordinal > 0){
+      const r = arr[intent.ordinal - 1];
+      if(r){
+        html += `<div class="ai-group-line">${intent.ordinal}개월차 기간: `
+              + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span></div>`;
+        html += `<div class="ai-group-line">예산 ${fmtWon(r.budget)} · 집행 ${fmtWon(r.spent)} · ${escHtml(r.status||'')}</div>`;
+      } else {
+        html += `<div class="ai-group-line">⚠ ${intent.ordinal}개월차 데이터가 없습니다 (전체 ${arr.length}건 진행)</div>`;
+      }
+    } else {
+      // 회차 지정 없으면 전체 회차 나열
+      arr.forEach((r, i) => {
+        html += `<div class="ai-group-line">${i+1}개월차: `
+              + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span> `
+              + `<span class="ai-line-money">예산 ${fmtWon(r.budget)}</span> `
+              + `<span class="ai-line-money">집행 ${fmtWon(r.spent)}</span></div>`;
+      });
+    }
+    html += `</div>`;
+  });
+  return html;
+}
+
 // ── 진행중 전체 조회: 프로젝트별 요약 (담당/매체건수/예산) ──
 function renderActiveAnswer(matches){
   const byPjt = {};
@@ -8744,6 +8785,7 @@ function analyzeQuery(query){
     unsupportedReason: '',
     specificMedia: [],       // 특정 매체명 매칭
     specificAssignee: '',    // 특정 담당자 매칭
+    ordinal: 0,               // N개월차/N차 회차 지정
   };
 
   // 1) 종료 예정 관련 키워드
@@ -8810,13 +8852,25 @@ function analyzeQuery(query){
     intent.scope = 'unsupported';
   }
 
-  // 9) 매체명 감지 (rows의 media 필드에서)
+  // 9) 매체명 감지 (rows의 media 필드에서) - 부분 매칭 지원
   if(typeof rows !== 'undefined' && rows.length){
     const allMedia = [...new Set(rows.map(r => r.media).filter(Boolean))];
     intent.specificMedia = allMedia.filter(m => {
       if(m.length < 2) return false;
-      return q.includes(m.toLowerCase());
+      const ml = m.toLowerCase();
+      // 완전 일치(질문에 매체명 전체가 포함)
+      if(q.includes(ml)) return true;
+      // 부분 일치: "브랜드검색_네이버" → "브랜드검색", "호갱노노 단지마커" → "호갱노노"
+      const mainPart = m.split(/[_\s]/)[0];
+      if(mainPart.length >= 2 && q.includes(mainPart.toLowerCase())) return true;
+      return false;
     });
+  }
+
+  // 9-1) 회차(N개월차/N차/N번째) 감지
+  const ordinalMatch = q.match(/(\d+)\s*(개월차|차|번째)/);
+  if(ordinalMatch){
+    intent.ordinal = parseInt(ordinalMatch[1], 10);
   }
 
   // 10) 담당자 감지
@@ -9097,10 +9151,14 @@ async function sendAiChat(){
     let htmlOut, sourceLabel;
     if(intent.scope === 'ending'){
       htmlOut = renderEndingAnswer(matches);
-      sourceLabel = intent.scope === 'ending' ? '타임라인 · 종료 예정 필터' : '타임라인';
+      sourceLabel = '타임라인 · 종료 예정 필터';
     } else if(intent.scope === 'active'){
       htmlOut = renderActiveAnswer(matches);
       sourceLabel = '타임라인 · 진행중 필터';
+    } else if(intent.specificMedia && intent.specificMedia.length > 0){
+      // 특정 매체(+회차) 질문 → 기간 중심 응답
+      htmlOut = renderMediaPeriodAnswer(matches, intent);
+      sourceLabel = '타임라인 · 매체 기간 조회';
     } else {
       // 'project' | 'all' → 프로젝트별 매체/예산/집행 그룹핑
       htmlOut = renderProjectAnswer(matches);
@@ -9351,7 +9409,9 @@ function downloadAiExcel(name, matchedRows){
         · <span class="ai-example" onclick="fillAiExample(this)">현재 진행중인 프로젝트 전체</span><br>
         · <span class="ai-example" onclick="fillAiExample(this)">1팀 담당 진행중 프로젝트</span><br><br>
         <strong>💬 문자광고 비고</strong><br>
-        · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 MMS 어느 카드사?</span>
+        · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 MMS 어느 카드사?</span><br><br>
+        <strong>📆 매체 회차/기간</strong><br>
+        · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 브랜드검색 2개월차 기간</span>
       </div>
     </div>
   </div>
