@@ -1619,6 +1619,11 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 .ai-line-money{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--tx2);margin-left:6px;}
 .ai-line-memo{color:var(--pri);font-size:11px;font-weight:600;}
 .ai-active-summary{font-weight:800;font-size:13.5px;color:var(--tx);margin-bottom:10px;}
+.ai-duration{
+  font-size:10.5px;color:var(--tx3);font-family:"IBM Plex Mono",monospace;
+  padding-left:14px;margin-top:1px;margin-bottom:3px;
+}
+
 
 
 .ai-msg-feedback{display:inline-flex;gap:4px;}
@@ -2835,6 +2840,9 @@ function setupErrorTracking(){
 
 // ── 관리자 이메일 ───────────────────────────────
 const ADMIN_EMAIL='vldksk@gmail.com';
+// Brin AI / 공지팝업 / 종료알림 팝업 - 테스트 허용자 목록 (관리자 포함)
+const AI_BETA_USERS=[ADMIN_EMAIL,'haesuinthesea@gmail.com'];
+function isAiBetaUser(){ return typeof userEmail!=='undefined' && AI_BETA_USERS.includes(userEmail); }
 const NOTICE_WEBAPP_URL='https://script.google.com/macros/s/AKfycbxyWnlXLQFKGO8xFhER6HKVWyYqoTHF-Dr6x7dur8g2bFEbs9kzaVVwDPgQpD7szeZm/exec';
 const PASSPHRASE_HASH='eb38eb38b938d0e78f20d1c0df17f13b44a5359451c37e284c52b08efc1afc43'; // 설정 > 해시 생성기에서 발급 후 입력
 const PASS_REMEMBER_DAYS=30; // 패스프레이즈 기억 기간(일) // Apps Script 배포 URL 입력
@@ -3052,6 +3060,25 @@ function renderProjectAnswer(matches){
 }
 
 
+
+// ── 집행기간(일수) → 개월(30일)/주(7일)/년(365일) 환산 ──
+function fmtDurationBreakdown(totalDays){
+  const days = Math.max(0, totalDays);
+  const months = Math.floor(days / 30);
+  const monthsRem = days % 30;
+  const weeks = Math.floor(days / 7);
+  const weeksRem = days % 7;
+  const years = Math.floor(days / 365);
+  const yearsRem = days % 365;
+  return `${days}일 · ${months}개월 ${monthsRem}일(30일 기준) · ${weeks}주 ${weeksRem}일(7일 기준) · ${years}년 ${yearsRem}일(365일 기준)`;
+}
+
+// 두 날짜 사이 일수 (양쪽 포함, 집행일수 기준)
+function _mediaDurationDays(sdate, edate){
+  if(!sdate || !edate) return 0;
+  return Math.round((edate - sdate) / 86400000) + 1;
+}
+
 // ── 특정 매체 + 회차 조회: 기간(sdate~edate) 중심 응답 ──
 function renderMediaPeriodAnswer(matches, intent){
   // 프로젝트+매체 조합으로 그룹화 (같은 매체가 여러 달 반복 집행되는 경우 대비)
@@ -3072,20 +3099,29 @@ function renderMediaPeriodAnswer(matches, intent){
     if(intent.ordinal && intent.ordinal > 0){
       const r = arr[intent.ordinal - 1];
       if(r){
+        const days = _mediaDurationDays(r.sdate, r.edate);
         html += `<div class="ai-group-line">${intent.ordinal}개월차 기간: `
               + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span></div>`;
+        html += `<div class="ai-group-line ai-duration">${fmtDurationBreakdown(days)}</div>`;
         html += `<div class="ai-group-line">예산 ${fmtWon(r.budget)} · 집행 ${fmtWon(r.spent)} · ${escHtml(r.status||'')}</div>`;
       } else {
         html += `<div class="ai-group-line">⚠ ${intent.ordinal}개월차 데이터가 없습니다 (전체 ${arr.length}건 진행)</div>`;
       }
     } else {
-      // 회차 지정 없으면 전체 회차 나열
+      // 회차 지정 없으면 전체 회차 나열 (각 회차별 기간 환산 포함)
+      let totalDays = 0;
       arr.forEach((r, i) => {
+        const days = _mediaDurationDays(r.sdate, r.edate);
+        totalDays += days;
         html += `<div class="ai-group-line">${i+1}개월차: `
               + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span> `
               + `<span class="ai-line-money">예산 ${fmtWon(r.budget)}</span> `
               + `<span class="ai-line-money">집행 ${fmtWon(r.spent)}</span></div>`;
+        html += `<div class="ai-group-line ai-duration">　${fmtDurationBreakdown(days)}</div>`;
       });
+      if(arr.length > 1){
+        html += `<div class="ai-group-total">전체 집행기간 합계: ${fmtDurationBreakdown(totalDays)}</div>`;
+      }
     }
     html += `</div>`;
   });
@@ -3236,7 +3272,7 @@ function onLoggedIn(){
   document.getElementById('loginBtn').classList.add('hide');
   ['logoutBtn','refBtn','syncWrap','fbar','userInfo','themeBtn','mediaInfoTab'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('hide');});
   // 공지사항/종료알림 팝업 - 관리자 전용 (테스트 중)
-  if(typeof userEmail !== 'undefined' && userEmail === ADMIN_EMAIL){
+  if(isAiBetaUser()){
     // 공지 팝업 체크 (로그인 후 500ms 지연)
     setTimeout(checkAndShowNotices, 500);
     // 데이터 로드 후 종료 알림 (2초 지연 - rows 파싱 대기)
@@ -7654,8 +7690,8 @@ function _isUserInTeam(){
 
 // 로그인 후 종료 알림 팝업 표시
 async function showEndAlertPopup(){
-  // 관리자 전용 (테스트 중) - 우회 접근 방지
-  if(typeof userEmail === 'undefined' || userEmail !== ADMIN_EMAIL) return;
+  // 베타 테스트 허용자 전용 - 우회 접근 방지
+  if(!isAiBetaUser()) return;
   if(!_isUserInTeam()) return;
   const items = findExpiringMedia();
   if(!items.length) return;
@@ -7771,8 +7807,8 @@ async function showEndAlertPopup(){
 
 // ── 팝업 표시 로직 ──
 async function checkAndShowNotices() {
-  // 관리자 전용 (테스트 중) - 우회 접근 방지
-  if(typeof userEmail === 'undefined' || userEmail !== ADMIN_EMAIL) return;
+  // 베타 테스트 허용자 전용 - 우회 접근 방지
+  if(!isAiBetaUser()) return;
   const all = await fetchNoticesFromSheet();
   if (!all.length) return;
 
@@ -8423,8 +8459,7 @@ function activateSidebar(){
 // 로그인 사용자 권한에 따라 사이드바 하위 메뉴 표시/숨김
 function refreshSidebarPermissions(){
   // Brin AI (Groq 기반) - 관리자 전용 (테스트 중)
-  const isAiAdmin=(typeof userEmail!=='undefined')&&(userEmail===ADMIN_EMAIL);
-  document.body.classList.toggle('has-ai', isAiAdmin);
+  document.body.classList.toggle('has-ai', isAiBetaUser());
 
   // 거래명세서 (예산요약 하위)
   const canInv=(typeof canAccessInvoice==='function')?canAccessInvoice():false;
@@ -8541,8 +8576,8 @@ function sbGoMediaSms(tab){
 let _aiHistory = []; // 대화 이력
 
 function toggleAiChat(){
-  if(typeof userEmail === 'undefined' || userEmail !== ADMIN_EMAIL){
-    return; // 관리자 전용 (테스트 중)
+  if(!isAiBetaUser()){
+    return; // 베타 테스트 허용자 전용
   }
   const panel = document.getElementById('aiChatPanel');
   panel.classList.toggle('open');
@@ -9011,8 +9046,8 @@ function summarizeRows(matchedRows, intent){
 }
 
 async function sendAiChat(){
-  // 관리자 전용 (테스트 중) - 우회 접근 방지
-  if(typeof userEmail === 'undefined' || userEmail !== ADMIN_EMAIL){
+  // 베타 테스트 허용자 전용 - 우회 접근 방지
+  if(!isAiBetaUser()){
     return;
   }
 
