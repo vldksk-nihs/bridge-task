@@ -1603,6 +1603,23 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 .ai-msg-source{font-size:10.5px;color:var(--tx3);}
 .ai-verified{color:#00d68f;font-weight:700;}
 .ai-unverified{color:var(--orange);font-weight:600;}
+/* ══ Brin AI - 로컬 렌더링 그룹 스타일 ══════════════════ */
+.ai-group-block{margin-bottom:14px;padding:10px 12px;background:var(--sur3);border-radius:8px;border-left:3px solid var(--pri);}
+.ai-group-block:last-child{margin-bottom:0;}
+.ai-group-title{font-weight:800;font-size:13px;color:var(--tx);margin-bottom:6px;line-height:1.4;}
+.ai-group-line{font-size:12px;color:var(--tx2);line-height:1.7;padding-left:4px;}
+.ai-group-total{
+  margin-top:6px;padding-top:6px;border-top:1px dashed var(--bd2);
+  font-size:12.5px;font-weight:700;color:var(--tx);
+}
+.ai-line-date{color:var(--tx3);font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-left:4px;}
+.ai-line-dday{font-weight:700;font-family:"IBM Plex Mono",monospace;font-size:11.5px;margin-left:4px;color:var(--orange);}
+.ai-ext-ok{color:var(--green);font-weight:700;font-size:11.5px;margin-left:4px;}
+.ai-ext-warn{color:var(--red);font-weight:700;font-size:11.5px;margin-left:4px;}
+.ai-line-money{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--tx2);margin-left:6px;}
+.ai-line-memo{color:var(--pri);font-size:11px;font-weight:600;}
+.ai-active-summary{font-weight:800;font-size:13.5px;color:var(--tx);margin-bottom:10px;}
+
 
 .ai-msg-feedback{display:inline-flex;gap:4px;}
 .ai-msg-feedback button{
@@ -2961,6 +2978,98 @@ function escHtml(str){
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
 }
+
+/* ══════════════════════════════════════════════════════
+   📐 Brin AI - 로컬 렌더링 (옵션 B: AI 호출 없이 고정 포맷)
+══════════════════════════════════════════════════════ */
+
+function fmtWon(n){ return '₩' + Math.round(n||0).toLocaleString(); }
+
+function fmtDateYmd(d){
+  if(!d) return '';
+  return d.toISOString ? d.toISOString().slice(0,10) : String(d).slice(0,10);
+}
+
+// ── 종료예정 조회: 프로젝트 묶음 + 매체별 날짜/D-day/연장여부 ──
+function renderEndingAnswer(matches){
+  const today = _endAlertToday();
+  const byPjt = {};
+  matches.forEach(r => {
+    if(!byPjt[r.pjt]) byPjt[r.pjt] = [];
+    byPjt[r.pjt].push(r);
+  });
+  // 그룹 내부: 종료일 빠른 순
+  Object.values(byPjt).forEach(arr => arr.sort((a,b) => a.edate - b.edate));
+  // 프로젝트 순서: 가장 빠른 종료일 기준
+  const order = Object.keys(byPjt).sort((a,b) => byPjt[a][0].edate - byPjt[b][0].edate);
+
+  let html = '';
+  order.forEach(pjt => {
+    html += `<div class="ai-group-block"><div class="ai-group-title">📅 ${escHtml(pjt)}</div>`;
+    byPjt[pjt].forEach(r => {
+      const dday = _dayDiff(r.edate, today);
+      const ddayLabel = dday >= 0 ? `D-${dday}` : `${-dday}일 경과`;
+      const extended = _isMediaExtended(r, rows);
+      const extLabel = extended ? '연장됨' : '미연장';
+      const extClass = extended ? 'ai-ext-ok' : 'ai-ext-warn';
+      html += `<div class="ai-group-line">· ${escHtml(r.media)} `
+            + `<span class="ai-line-date">${fmtDateYmd(r.edate)}</span> `
+            + `<span class="ai-line-dday">${ddayLabel}</span> `
+            + `<span class="${extClass}">${extLabel}</span></div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+// ── 프로젝트별 매체/예산/집행 조회 (합계 포함, MMS/LMS 비고 표시) ──
+function renderProjectAnswer(matches){
+  const byPjt = {};
+  matches.forEach(r => {
+    if(!byPjt[r.pjt]) byPjt[r.pjt] = [];
+    byPjt[r.pjt].push(r);
+  });
+
+  let html = '';
+  Object.entries(byPjt).forEach(([pjt, arr]) => {
+    html += `<div class="ai-group-block"><div class="ai-group-title">📋 ${escHtml(pjt)}</div>`;
+    let sumBudget = 0, sumSpent = 0;
+    arr.forEach(r => {
+      sumBudget += (r.budget || 0);
+      sumSpent  += (r.spent || 0);
+      const isSms = /MMS|LMS|SMS/i.test(r.media || '');
+      const memoTag = (isSms && r.memo) ? ` <span class="ai-line-memo">[${escHtml(r.memo)}]</span>` : '';
+      html += `<div class="ai-group-line">· ${escHtml(r.media)}${memoTag} `
+            + `<span class="ai-line-money">예산 ${fmtWon(r.budget)}</span> `
+            + `<span class="ai-line-money">집행 ${fmtWon(r.spent)}</span></div>`;
+    });
+    html += `<div class="ai-group-total">합계 `
+          + `<span class="ai-line-money">예산 ${fmtWon(sumBudget)}</span> `
+          + `<span class="ai-line-money">집행 ${fmtWon(sumSpent)}</span></div>`;
+    html += `</div>`;
+  });
+  return html;
+}
+
+// ── 진행중 전체 조회: 프로젝트별 요약 (담당/매체건수/예산) ──
+function renderActiveAnswer(matches){
+  const byPjt = {};
+  matches.forEach(r => {
+    if(!byPjt[r.pjt]) byPjt[r.pjt] = [];
+    byPjt[r.pjt].push(r);
+  });
+
+  let html = `<div class="ai-active-summary">🚀 진행중인 프로젝트 (${Object.keys(byPjt).length}건)</div>`;
+  Object.entries(byPjt).forEach(([pjt, arr]) => {
+    const assignees = [...new Set(arr.map(r => r.assignee).filter(Boolean))];
+    const totalBudget = arr.reduce((s,r) => s + (r.budget||0), 0);
+    html += `<div class="ai-group-block"><div class="ai-group-title">${escHtml(pjt)}</div>`
+          + `<div class="ai-group-line">· 담당: ${escHtml(assignees.join(', ')||'-')} `
+          + `· 매체 ${arr.length}건 · 예산 ${fmtWon(totalBudget)}</div></div>`;
+  });
+  return html;
+}
+
 
 // ══ KST 날짜 계산 공통 유틸 (단일 진실 소스) ══
 const KST_OFFSET_MS=9*60*60*1000;
@@ -8981,129 +9090,29 @@ async function sendAiChat(){
       return;
     }
 
-    // 로딩 문구 갱신
-    loadingMsg.querySelector('.ai-msg-bubble').textContent = '📊 데이터 집계 중...';
+    // ── 로컬 렌더링 (옵션 B) ──
+    // 정형 조회(종료예정/프로젝트별/진행중)는 AI 호출 없이 고정 포맷으로 즉시 응답
+    loadingMsg.querySelector('.ai-msg-bubble').textContent = '📊 데이터 정리 중...';
 
-    // 총합 계산 (3번 항목)
-    const totals = matches.reduce((acc, r) => {
-      acc.budget += (r.budget || 0);
-      acc.spent  += (r.spent || 0);
-      return acc;
-    }, {budget:0, spent:0});
-
-    // 요약
-    const summary = summarizeRows(matches, intent);
-    const summaryStr = JSON.stringify(summary, null, 2);
-
-    // 문자광고 비고 정보 (6번 항목)
-    const smsMediaMemos = matches
-      .filter(r => /MMS|LMS|SMS/i.test(r.media || ''))
-      .filter(r => r.memo)
-      .map(r => `- ${r.pjt} / ${r.media} / 대상: ${r.memo}`);
-    const smsMemoBlock = smsMediaMemos.length
-      ? `\n\n[문자광고 비고 정보 - 카드사/통신사 등]\n${smsMediaMemos.join('\n')}`
-      : '';
-
-    // 의도별 지시
-    let scopeDesc, taskDesc;
+    let htmlOut, sourceLabel;
     if(intent.scope === 'ending'){
-      const days = intent.periodDays || 14;
-      scopeDesc = `향후 ${days}일 이내 종료 예정 매체` + (intent.teamKey ? ` (${intent.teamKey}팀)` : '');
-      taskDesc = '프로젝트 / 매체 / 종료일 / D-day / 연장여부 컬럼의 마크다운 표. "종료 예정"과 "연장됨" 명확히 구분.';
+      htmlOut = renderEndingAnswer(matches);
+      sourceLabel = intent.scope === 'ending' ? '타임라인 · 종료 예정 필터' : '타임라인';
     } else if(intent.scope === 'active'){
-      scopeDesc = '진행중인 프로젝트/매체';
-      taskDesc = '프로젝트별로 그룹화한 마크다운 표.';
-    } else if(intent.projectNames.length > 0){
-      scopeDesc = `프로젝트: ${intent.projectNames.join(', ')}`;
-      taskDesc = '요청에 맞는 마크다운 표. 매체별 예산/집행 표시 시 마지막 행에 **합계**를 추가하세요. 숫자는 천단위 콤마 + ₩.';
+      htmlOut = renderActiveAnswer(matches);
+      sourceLabel = '타임라인 · 진행중 필터';
     } else {
-      scopeDesc = '전체 데이터';
-      taskDesc = '마크다운 표로 정리.';
+      // 'project' | 'all' → 프로젝트별 매체/예산/집행 그룹핑
+      htmlOut = renderProjectAnswer(matches);
+      sourceLabel = '타임라인';
     }
-
-    // 문자광고 매체 포함 시 특별 지시
-    const hasSmsMedia = matches.some(r => /MMS|LMS|SMS/i.test(r.media || ''));
-    const smsInstruction = hasSmsMedia
-      ? '\nMMS/LMS/SMS 매체는 "비고(대상)" 컬럼을 별도로 추가해서 어느 카드사/통신사에 집행됐는지 표시.'
-      : '';
-
-    const systemPrompt = `당신은 광고 캠페인 데이터 분석 전문가(Brin AI)입니다.
-
-[매우 중요한 규칙]
-1. 아래 JSON 데이터에 있는 내용만 사용. 없는 내용은 절대 만들지 마세요.
-2. 요청 정보가 데이터에 없으면 "제공된 데이터에는 해당 정보가 없습니다"라고 답하세요.
-3. 답변은 마크다운 표 형식으로 정리.
-4. 숫자는 천단위 콤마와 ₩ 표시.
-5. 데이터 비어있으면 "해당 조건의 데이터가 없습니다"만 답하고 표는 만들지 마세요.
-6. 표 헤더는 첫 행에만. "-"로 채워진 빈 행 절대 금지.
-7. 예산/집행 표시 시 표 마지막에 **합계** 행 필수.${smsInstruction}`;
-
-    const userPrompt = `범위: ${scopeDesc}
-매칭된 프로젝트: ${Object.keys(summary).join(', ') || '(없음)'}
-데이터 건수: ${matches.length}건
-총 예산: ₩${totals.budget.toLocaleString()}
-총 집행: ₩${totals.spent.toLocaleString()}
-
-[JSON 데이터]
-${summaryStr}${smsMemoBlock}
-
-[사용자 질문]
-${query}
-
-[작업]
-${taskDesc}`;
-
-    loadingMsg.querySelector('.ai-msg-bubble').textContent = '✍ 결과 정리 중...';
-
-    // 대화 이력 (컨텍스트 유지)
-    const historySlice = _aiHistory.slice(-6);
-
-    _aiApiCount++;
-
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method:'POST',
-      headers:{'Authorization':'Bearer '+groqKey, 'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:groqModel, max_tokens:2000, temperature:0.2,
-        messages:[
-          {role:'system', content:systemPrompt},
-          ...historySlice,
-          {role:'user', content:userPrompt}
-        ]
-      })
-    });
-
-    let data;
-    try{ data = await res.json(); }catch(_){ data = {}; }
-
-    if(!res.ok || data.error){
-      loadingMsg.remove();
-      const msg = (data.error && (data.error.message || data.error)) || `API 호출 실패 (${res.status})`;
-      appendAiMsg('bot', '❌ ' + msg);
-      btn.disabled = false; inp.disabled = false;
-      return;
-    }
-
-    const answer = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(빈 응답)';
-
-    _aiHistory.push({role:'user', content:userPrompt});
-    _aiHistory.push({role:'assistant', content:answer});
 
     loadingMsg.remove();
-    const html = md2html(answer.replace(/</g,'&lt;'));
-
-    // 응답 표시
-    const bubble = appendAiMsg('bot', html);
+    const bubble = appendAiMsg('bot', htmlOut);
     const bubbleBody = bubble.querySelector('.ai-msg-bubble');
 
-    // 숫자 검증 (12번 항목: 신뢰도)
-    const verified = verifyResponseNumbers(answer, matches);
-
-    // 출처 + 피드백 (12, 13번 항목)
-    const sourceLabel = intent.scope === 'ending' ? '타임라인 · 종료 예정 필터'
-                     : intent.scope === 'active' ? '타임라인 · 진행중 필터'
-                     : '타임라인';
-    appendResponseMeta(bubbleBody, {source:sourceLabel, matchCount:matches.length, verified, canFeedback:true});
+    // 로컬 렌더링이므로 항상 검증됨(원본 데이터 그대로)
+    appendResponseMeta(bubbleBody, {source:sourceLabel, matchCount:matches.length, verified:true, canFeedback:true});
 
     // 엑셀 다운로드
     if(typeof XLSX !== 'undefined' && matches.length > 0){
@@ -9120,6 +9129,9 @@ ${taskDesc}`;
 
     // 후속 액션 제안
     renderFollowupSuggestions(bubbleBody, intent);
+
+    btn.disabled = false; inp.disabled = false;
+    return;
 
   } catch(e){
     loadingMsg.remove();
