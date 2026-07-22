@@ -2992,6 +2992,32 @@ function escHtml(str){
    📐 Brin AI - 로컬 렌더링 (옵션 B: AI 호출 없이 고정 포맷)
 ══════════════════════════════════════════════════════ */
 
+
+// ── 디버그: 현재 로드된 전체 매체명 목록 (유니크 + 건수 + 단위설정 여부) ──
+function renderMediaListAnswer(){
+  if(typeof rows === 'undefined' || !rows.length) return '<div class="ai-group-line">데이터가 없습니다.</div>';
+
+  const countMap = {};
+  rows.forEach(r => {
+    if(!r.media) return;
+    countMap[r.media] = (countMap[r.media] || 0) + 1;
+  });
+
+  const sorted = Object.entries(countMap).sort((a,b) => b[1] - a[1]); // 건수 많은 순
+
+  let html = `<div class="ai-group-block"><div class="ai-group-title">📋 전체 매체 목록 (${sorted.length}종)</div>`;
+  sorted.forEach(([media, count]) => {
+    const unit = _unitForMedia(media, '');
+    const hasOverride = Object.keys(MEDIA_UNIT_OVERRIDES).some(key => media.includes(key));
+    const unitTag = hasOverride
+      ? `<span class="ai-ext-ok">[${unit.label.replace('차','')} 단위 설정됨]</span>`
+      : `<span class="ai-ext-warn">[미설정]</span>`;
+    html += `<div class="ai-group-line">· ${escHtml(media)} <span class="ai-line-money">${count}건</span> ${unitTag}</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
 function fmtWon(n){ return '₩' + Math.round(n||0).toLocaleString(); }
 
 function fmtDateYmd(d){
@@ -3081,13 +3107,67 @@ function _mediaDurationDays(sdate, edate){
 }
 
 
-// ── 기간을 30일 단위로 분할 (마지막 조각은 남은 일수만큼) ──
-function _splitInto30DayChunks(sdate, edate){
+// ── 매체별 갱신 주기 오버라이드 (실제 운영 관례상 알려진 매체) ──
+// period 텍스트보다 우선 적용됨. 필요시 항목 추가.
+const MEDIA_UNIT_OVERRIDES = {
+  '롤링보드': '주',
+  '브랜딩DA': '주',
+  'MMS': '일',
+  'LMS': '일',
+  '카페배너_실전분양권': '월',
+  '카페배너_기타': '월',
+  '카페배너_부동산스터디': '월',
+  '카페배너_아름다운내집갖기': '월',
+  'GDN': '월',
+  '디멘드젠': '월',
+  '퍼포먼스맥스': '월',
+  'GFA': '월',
+  '블라인드': '월',
+  '호갱노노 DA': '월',
+  '카카오비즈보드': '월',
+  '인피드': '월',
+  '도메인': '년',
+  '호스팅 연장': '년',
+  '홈페이지': '년',
+  '예약시스템': '회', // 회 단위 - 분할하지 않고 단일 건으로 표시
+  // 나머지(거래명세서/호갱노노 앱푸시/당근마켓/직방 채널톡 메시지/메타/
+  //        브랜드검색_네이버/키워드광고_네이버/호갱노노 단지마커)는 차후 확인 후 추가
+};
+
+// ── 시트의 '기간'(period) 텍스트로 단위(월/주/일) 판별 ──
+function _unitFromPeriod(periodStr){
+  const p = (periodStr || '').trim();
+  if(/주/.test(p))        return { label: '주차', days: 7 };
+  if(/개월|월/.test(p))    return { label: '개월차', days: 30 };
+  if(/일/.test(p))        return { label: '일차', days: 1 };
+  return { label: '개월차', days: 30 }; // 표기 없으면 기본값(월 단위)
+}
+
+// ── 매체명 기준 오버라이드 우선 → 없으면 period 텍스트로 판별 ──
+function _unitForMedia(media, periodStr){
+  const mediaName = media || '';
+  for(const [key, unit] of Object.entries(MEDIA_UNIT_OVERRIDES)){
+    if(mediaName.includes(key)){
+      if(unit === '주')          return { label: '주차', days: 7 };
+      if(unit === '개월' || unit === '월') return { label: '개월차', days: 30 };
+      if(unit === '일')          return { label: '일차', days: 1 };
+      if(unit === '회')          return { label: '회차', days: Infinity }; // 분할 없이 단일 건
+    }
+  }
+  return _unitFromPeriod(periodStr);
+}
+
+// ── 기간을 지정 단위(일수)로 분할 (마지막 조각은 남은 일수만큼) ──
+function _splitIntoUnitChunks(sdate, edate, unitDays){
+  // '회' 단위(Infinity) → 분할하지 않고 전체를 단일 구간으로 반환
+  if(!isFinite(unitDays)){
+    return [{ start: new Date(sdate), end: new Date(edate) }];
+  }
   const chunks = [];
   let cursor = new Date(sdate);
   while(cursor <= edate){
     const chunkEnd = new Date(cursor);
-    chunkEnd.setDate(chunkEnd.getDate() + 29); // 시작일 포함 30일째
+    chunkEnd.setDate(chunkEnd.getDate() + (unitDays - 1)); // 시작일 포함 unitDays째
     const actualEnd = chunkEnd > edate ? new Date(edate) : chunkEnd;
     chunks.push({ start: new Date(cursor), end: new Date(actualEnd) });
     cursor = new Date(actualEnd);
@@ -3111,16 +3191,17 @@ function renderMediaPeriodAnswer(matches, intent){
     const [pjt, media] = key.split('|');
     arr.sort((a,b) => a.sdate - b.sdate); // 집행 순서: 시작일 빠른 순
 
-    // ── 30일 단위로 분할 + 전체(모든 row)에 걸쳐 연속 번호 부여 ──
+    // ── 시트 기간(period) 표기 기준 단위(월/주/일)로 분할 + 전체(모든 row)에 걸쳐 연속 번호 부여 ──
     let seq = 0;
     const globalChunks = [];
     arr.forEach(r => {
-      const pieces = _splitInto30DayChunks(r.sdate, r.edate);
+      const unit = _unitForMedia(r.media, r.period);
+      const pieces = _splitIntoUnitChunks(r.sdate, r.edate, unit.days);
       pieces.forEach((p, idx) => {
         seq++;
         globalChunks.push({
           seq, start: p.start, end: p.end,
-          row: r, isFirstOfRow: idx === 0,
+          row: r, unitLabel: unit.label, isFirstOfRow: idx === 0,
           totalPiecesInRow: pieces.length
         });
       });
@@ -3129,32 +3210,29 @@ function renderMediaPeriodAnswer(matches, intent){
     html += `<div class="ai-group-block"><div class="ai-group-title">📌 ${escHtml(pjt)} · ${escHtml(media)}</div>`;
 
     if(intent.ordinal && intent.ordinal > 0){
-      // 특정 회차만 - 30일 단위 분할된 전체 목록 중 해당 순번
-      const c = globalChunks[intent.ordinal - 1];
-      if(c){
-        const days = Math.round((c.end - c.start) / 86400000) + 1;
-        html += `<div class="ai-group-line">${intent.ordinal}개월차 기간: `
-              + `<span class="ai-line-date">${fmtDateYmd(c.start)} ~ ${fmtDateYmd(c.end)}</span> (${days}일)</div>`;
-        html += `<div class="ai-group-line">소속 구간 예산 ${fmtWon(c.row.budget)} · 집행 ${fmtWon(c.row.spent)} · ${escHtml(c.row.status||'')}</div>`;
+      // 특정 회차만 - 단위별 분할된 전체 목록 중 해당 순번
+      const chunk = globalChunks[intent.ordinal - 1];
+      if(chunk){
+        const days = Math.round((chunk.end - chunk.start) / 86400000) + 1;
+        html += `<div class="ai-group-line">${intent.ordinal}${chunk.unitLabel} 기간: `
+              + `<span class="ai-line-date">${fmtDateYmd(chunk.start)} ~ ${fmtDateYmd(chunk.end)}</span> (${days}일)</div>`;
+        html += `<div class="ai-group-line">소속 구간 예산 ${fmtWon(chunk.row.budget)} · 집행 ${fmtWon(chunk.row.spent)} · ${escHtml(chunk.row.status||'')}</div>`;
       } else {
-        html += `<div class="ai-group-line">⚠ ${intent.ordinal}개월차 데이터가 없습니다 (전체 ${globalChunks.length}건)</div>`;
+        html += `<div class="ai-group-line">⚠ ${intent.ordinal}회차 데이터가 없습니다 (전체 ${globalChunks.length}건)</div>`;
       }
     } else {
       // 회차 지정 없으면 30일 단위로 쪼갠 전체 목록 나열 (구간별 예산/집행은 구간 헤더에 1회만 표시)
-      let lastRow = null;
       arr.forEach(r => {
-        const days = _mediaDurationDays(r.sdate, r.edate);
         html += `<div class="ai-group-line" style="margin-top:6px">`
               + `<strong>${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</strong> `
               + `<span class="ai-line-money">예산 ${fmtWon(r.budget)}</span> `
               + `<span class="ai-line-money">집행 ${fmtWon(r.spent)}</span></div>`;
-        html += `<div class="ai-group-line ai-duration">　${fmtDurationBreakdown(days)}</div>`;
       });
-      html += `<div class="ai-group-total" style="margin-top:8px">30일 단위 분할 (연속 순번)</div>`;
-      globalChunks.forEach(c => {
-        const days = Math.round((c.end - c.start) / 86400000) + 1;
-        html += `<div class="ai-group-line">${c.seq}개월차: `
-              + `<span class="ai-line-date">${fmtDateYmd(c.start)} ~ ${fmtDateYmd(c.end)}</span> (${days}일)</div>`;
+      html += `<div class="ai-group-total" style="margin-top:8px">기간 단위 분할 (연속 순번)</div>`;
+      globalChunks.forEach(chunk => {
+        const days = Math.round((chunk.end - chunk.start) / 86400000) + 1;
+        html += `<div class="ai-group-line">${chunk.seq}${chunk.unitLabel}: `
+              + `<span class="ai-line-date">${fmtDateYmd(chunk.start)} ~ ${fmtDateYmd(chunk.end)}</span> (${days}일)</div>`;
       });
     }
     html += `</div>`;
@@ -8972,7 +9050,7 @@ function analyzeQuery(query){
   }
 
   // 9-1) 회차(N개월차/N차/N번째) 감지
-  const ordinalMatch = q.match(/(\d+)\s*(개월차|차|번째)/);
+  const ordinalMatch = q.match(/(\d+)\s*(개월차|주차|일차|번째|차)/);
   if(ordinalMatch){
     intent.ordinal = parseInt(ordinalMatch[1], 10);
   }
@@ -9151,6 +9229,17 @@ async function sendAiChat(){
   const loadingMsg = appendAiMsg('bot', '🔍 프로젝트 매칭 중...', {loading:true});
 
   try {
+    // ── 디버그: 전체 매체 목록 요청 감지 (최우선 처리) ──
+    if(/전체\s*매체(\s*목록|\s*리스트)?|매체\s*(목록|리스트)/.test(query)){
+      loadingMsg.remove();
+      const bubble = appendAiMsg('bot', renderMediaListAnswer());
+      appendResponseMeta(bubble.querySelector('.ai-msg-bubble'), {
+        source: '타임라인 · 전체 매체 스캔', matchCount: rows.length, verified: true, canFeedback: true
+      });
+      btn.disabled = false; inp.disabled = false;
+      return;
+    }
+
     // 리포트 요청 감지 (단, 연차 등 미지원 키워드는 리포트로 오인 방지)
     const isReportKeyword = _isReportRequest(query);
     const isLeaveMention = /연차|휴가|vacation/i.test(query);
@@ -9536,7 +9625,9 @@ function downloadAiExcel(name, matchedRows){
         <strong>💬 문자광고 비고</strong><br>
         · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 MMS 어느 카드사?</span><br><br>
         <strong>📆 매체 회차/기간</strong><br>
-        · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 브랜드검색 2개월차 기간</span>
+        · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 브랜드검색 2개월차 기간</span><br><br>
+        <strong>🔧 디버그</strong><br>
+        · <span class="ai-example" onclick="fillAiExample(this)">전체 매체 목록 알려줘</span>
       </div>
     </div>
   </div>
