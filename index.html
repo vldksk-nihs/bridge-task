@@ -1818,6 +1818,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
     <button class="btn-ic hide" id="refBtn" onclick="manualRefresh()" title="전체 데이터 새로고침 (Ctrl+R)">↻</button>
     <button class="theme-toggle hide" id="themeBtn" onclick="toggleTheme()" title="테마 변경">🌙</button>
     <button class="btn btn-g hide" id="settingsBtn" style="font-size:11px;padding:5px 11px" onclick="openSettings()">⚙ 설정</button>
+    <button class="btn btn-g hide" id="groqKeyBtn" style="font-size:11px;padding:5px 11px" onclick="openGroqKeyModal()" title="Brin AI용 Groq API 키 설정">🔑 API 키</button>
     <button class="btn btn-p" style="font-size:11px;padding:5px 11px" id="loginBtn" onclick="handleLogin()">Google 로그인</button>
     <button class="btn btn-g hide" style="font-size:11px;padding:5px 11px" id="logoutBtn" onclick="handleLogout()">로그아웃</button>
   </div>
@@ -3079,6 +3080,22 @@ function _mediaDurationDays(sdate, edate){
   return Math.round((edate - sdate) / 86400000) + 1;
 }
 
+
+// ── 기간을 30일 단위로 분할 (마지막 조각은 남은 일수만큼) ──
+function _splitInto30DayChunks(sdate, edate){
+  const chunks = [];
+  let cursor = new Date(sdate);
+  while(cursor <= edate){
+    const chunkEnd = new Date(cursor);
+    chunkEnd.setDate(chunkEnd.getDate() + 29); // 시작일 포함 30일째
+    const actualEnd = chunkEnd > edate ? new Date(edate) : chunkEnd;
+    chunks.push({ start: new Date(cursor), end: new Date(actualEnd) });
+    cursor = new Date(actualEnd);
+    cursor.setDate(cursor.getDate() + 1);
+  }
+  return chunks;
+}
+
 // ── 특정 매체 + 회차 조회: 기간(sdate~edate) 중심 응답 ──
 function renderMediaPeriodAnswer(matches, intent){
   // 프로젝트+매체 조합으로 그룹화 (같은 매체가 여러 달 반복 집행되는 경우 대비)
@@ -3092,36 +3109,53 @@ function renderMediaPeriodAnswer(matches, intent){
   let html = '';
   Object.entries(byKey).forEach(([key, arr]) => {
     const [pjt, media] = key.split('|');
-    arr.sort((a,b) => a.sdate - b.sdate); // 회차 순서: 시작일 빠른 순
+    arr.sort((a,b) => a.sdate - b.sdate); // 집행 순서: 시작일 빠른 순
+
+    // ── 30일 단위로 분할 + 전체(모든 row)에 걸쳐 연속 번호 부여 ──
+    let seq = 0;
+    const globalChunks = [];
+    arr.forEach(r => {
+      const pieces = _splitInto30DayChunks(r.sdate, r.edate);
+      pieces.forEach((p, idx) => {
+        seq++;
+        globalChunks.push({
+          seq, start: p.start, end: p.end,
+          row: r, isFirstOfRow: idx === 0,
+          totalPiecesInRow: pieces.length
+        });
+      });
+    });
 
     html += `<div class="ai-group-block"><div class="ai-group-title">📌 ${escHtml(pjt)} · ${escHtml(media)}</div>`;
 
     if(intent.ordinal && intent.ordinal > 0){
-      const r = arr[intent.ordinal - 1];
-      if(r){
-        const days = _mediaDurationDays(r.sdate, r.edate);
+      // 특정 회차만 - 30일 단위 분할된 전체 목록 중 해당 순번
+      const c = globalChunks[intent.ordinal - 1];
+      if(c){
+        const days = Math.round((c.end - c.start) / 86400000) + 1;
         html += `<div class="ai-group-line">${intent.ordinal}개월차 기간: `
-              + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span></div>`;
-        html += `<div class="ai-group-line ai-duration">${fmtDurationBreakdown(days)}</div>`;
-        html += `<div class="ai-group-line">예산 ${fmtWon(r.budget)} · 집행 ${fmtWon(r.spent)} · ${escHtml(r.status||'')}</div>`;
+              + `<span class="ai-line-date">${fmtDateYmd(c.start)} ~ ${fmtDateYmd(c.end)}</span> (${days}일)</div>`;
+        html += `<div class="ai-group-line">소속 구간 예산 ${fmtWon(c.row.budget)} · 집행 ${fmtWon(c.row.spent)} · ${escHtml(c.row.status||'')}</div>`;
       } else {
-        html += `<div class="ai-group-line">⚠ ${intent.ordinal}개월차 데이터가 없습니다 (전체 ${arr.length}건 진행)</div>`;
+        html += `<div class="ai-group-line">⚠ ${intent.ordinal}개월차 데이터가 없습니다 (전체 ${globalChunks.length}건)</div>`;
       }
     } else {
-      // 회차 지정 없으면 전체 회차 나열 (각 회차별 기간 환산 포함)
-      let totalDays = 0;
-      arr.forEach((r, i) => {
+      // 회차 지정 없으면 30일 단위로 쪼갠 전체 목록 나열 (구간별 예산/집행은 구간 헤더에 1회만 표시)
+      let lastRow = null;
+      arr.forEach(r => {
         const days = _mediaDurationDays(r.sdate, r.edate);
-        totalDays += days;
-        html += `<div class="ai-group-line">${i+1}개월차: `
-              + `<span class="ai-line-date">${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</span> `
+        html += `<div class="ai-group-line" style="margin-top:6px">`
+              + `<strong>${fmtDateYmd(r.sdate)} ~ ${fmtDateYmd(r.edate)}</strong> `
               + `<span class="ai-line-money">예산 ${fmtWon(r.budget)}</span> `
               + `<span class="ai-line-money">집행 ${fmtWon(r.spent)}</span></div>`;
         html += `<div class="ai-group-line ai-duration">　${fmtDurationBreakdown(days)}</div>`;
       });
-      if(arr.length > 1){
-        html += `<div class="ai-group-total">전체 집행기간 합계: ${fmtDurationBreakdown(totalDays)}</div>`;
-      }
+      html += `<div class="ai-group-total" style="margin-top:8px">30일 단위 분할 (연속 순번)</div>`;
+      globalChunks.forEach(c => {
+        const days = Math.round((c.end - c.start) / 86400000) + 1;
+        html += `<div class="ai-group-line">${c.seq}개월차: `
+              + `<span class="ai-line-date">${fmtDateYmd(c.start)} ~ ${fmtDateYmd(c.end)}</span> (${days}일)</div>`;
+      });
     }
     html += `</div>`;
   });
@@ -8460,6 +8494,8 @@ function activateSidebar(){
 function refreshSidebarPermissions(){
   // Brin AI (Groq 기반) - 관리자 전용 (테스트 중)
   document.body.classList.toggle('has-ai', isAiBetaUser());
+  const groqBtnEl=document.getElementById('groqKeyBtn');
+  if(groqBtnEl)groqBtnEl.classList.toggle('hide', !isAiBetaUser());
 
   // 거래명세서 (예산요약 하위)
   const canInv=(typeof canAccessInvoice==='function')?canAccessInvoice():false;
@@ -8574,6 +8610,39 @@ function sbGoMediaSms(tab){
 ══════════════════════════════════════════════════════ */
 
 let _aiHistory = []; // 대화 이력
+
+
+/* ══ Groq API 키 모달 (베타테스터용, 설정창 접근 불필요) ══ */
+function openGroqKeyModal(){
+  const overlay = document.getElementById('groqKeyOverlay');
+  const existingKey = safeStorage.get('brin_groq_key') || '';
+  const existingModel = safeStorage.get('brin_groq_model') || '';
+  document.getElementById('groqKeyInput').value = existingKey;
+  document.getElementById('groqModelInput').value = existingModel;
+  document.getElementById('groqKeyStatus').textContent = existingKey ? '✓ 현재 키가 설정되어 있습니다.' : '';
+  overlay.style.display = 'flex';
+}
+
+function closeGroqKeyModal(){
+  document.getElementById('groqKeyOverlay').style.display = 'none';
+}
+
+function saveGroqKey(){
+  const key = document.getElementById('groqKeyInput').value.trim();
+  const model = document.getElementById('groqModelInput').value.trim();
+  if(!key){
+    document.getElementById('groqKeyStatus').textContent = '⚠ API 키를 입력해주세요.';
+    document.getElementById('groqKeyStatus').style.color = 'var(--red)';
+    return;
+  }
+  safeStorage.set('brin_groq_key', key);
+  if(model) safeStorage.set('brin_groq_model', model);
+  else safeStorage.remove('brin_groq_model');
+  document.getElementById('groqKeyStatus').textContent = '✅ 저장되었습니다.';
+  document.getElementById('groqKeyStatus').style.color = 'var(--green)';
+  showToast('Brin AI API 키가 저장되었습니다', 'ok');
+  setTimeout(closeGroqKeyModal, 900);
+}
 
 function toggleAiChat(){
   if(!isAiBetaUser()){
@@ -9411,6 +9480,27 @@ function downloadAiExcel(name, matchedRows){
       </label>
       <button onclick="confirmNotice()" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:9px 24px;font-size:14px;font-weight:700;cursor:pointer">확인</button>
     </div>
+  </div>
+</div>
+
+
+<!-- ══ Groq API 키 입력 모달 (관리자 아닌 베타테스터용) ══ -->
+<div id="groqKeyOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9600;align-items:center;justify-content:center;">
+  <div style="background:var(--sur2);border:1px solid var(--bd2);border-radius:10px;padding:22px;width:360px;max-width:90vw;">
+    <div style="font-weight:800;font-size:15px;color:var(--tx);margin-bottom:6px;">🔑 Brin AI API 키 설정</div>
+    <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;line-height:1.5;">
+      본인의 Groq API 키를 입력하면 Brin AI를 사용할 수 있습니다.<br>
+      키는 이 브라우저에만 저장되며 서버로 전송되지 않습니다.
+    </div>
+    <label style="font-size:11px;color:var(--tx2);display:block;margin-bottom:4px;">Groq API 키</label>
+    <input id="groqKeyInput" type="password" placeholder="gsk_..." style="width:100%;box-sizing:border-box;padding:9px 10px;border-radius:6px;border:1px solid var(--bd2);background:var(--sur3);color:var(--tx);font-size:13px;font-family:monospace;margin-bottom:12px;">
+    <label style="font-size:11px;color:var(--tx2);display:block;margin-bottom:4px;">모델 (선택, 비워두면 기본값)</label>
+    <input id="groqModelInput" type="text" placeholder="llama-3.3-70b-versatile" style="width:100%;box-sizing:border-box;padding:9px 10px;border-radius:6px;border:1px solid var(--bd2);background:var(--sur3);color:var(--tx);font-size:13px;font-family:monospace;margin-bottom:16px;">
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-g" style="flex:1;justify-content:center;" onclick="closeGroqKeyModal()">취소</button>
+      <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="saveGroqKey()">저장</button>
+    </div>
+    <div id="groqKeyStatus" style="font-size:11px;color:var(--tx3);margin-top:10px;"></div>
   </div>
 </div>
 
