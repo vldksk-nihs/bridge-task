@@ -7942,7 +7942,8 @@ async function showEndAlertPopup(){
         const local = email.toLowerCase().split('@')[0];
         return a.includes(local) || a === email.toLowerCase();
       });
-      if(match) return team.label || key;
+      // ✅ "2팀/3팀" 대신 팀 대표 이메일로 표기: 팀(sj@brin.co.kr)
+      if(match) return `팀(${team.members[0]})`;
     }
     return '기타';
   }
@@ -7957,8 +7958,11 @@ async function showEndAlertPopup(){
     byTeam[teamLabel][it.dday][it.row.pjt].push(it.row);
   });
 
-  // 팀 순서: 1팀, 2팀, 3팀, 기타
-  const teamOrder = ['1팀','2팀','3팀','기타'];
+  // 팀 순서: TEAMS 객체 등록 순서 그대로 (팀(이메일) 형식), 마지막에 기타
+  const teamOrder = (typeof TEAMS !== 'undefined'
+    ? Object.values(TEAMS).filter(t => t.members && t.members[0]).map(t => `팀(${t.members[0]})`)
+    : []
+  ).concat(['기타']);
   const sortedTeams = teamOrder.filter(t => byTeam[t]).concat(
     Object.keys(byTeam).filter(t => !teamOrder.includes(t))
   );
