@@ -9089,6 +9089,7 @@ function analyzeQuery(query){
     specificMedia: [],       // 특정 매체명 매칭
     specificAssignee: '',    // 특정 담당자 매칭
     ordinal: 0,               // N개월차/N차 회차 지정
+    invoiceOnly: false,       // "거래명세서"만 명시적으로 요청한 경우
   };
 
   // 1) 종료 예정 관련 키워드
@@ -9174,6 +9175,11 @@ function analyzeQuery(query){
   const ordinalMatch = q.match(/(\d+)\s*(개월차|주차|일차|년차|번째|차)/);
   if(ordinalMatch){
     intent.ordinal = parseInt(ordinalMatch[1], 10);
+  }
+
+  // 9-2) 거래명세서 명시적 요청 감지 (기본 조회에선 제외, 이때만 포함)
+  if(/거래명세서/.test(q)){
+    intent.invoiceOnly = true;
   }
 
   // 10) 담당자 감지
@@ -9267,6 +9273,14 @@ function filterRowsByIntent(intent){
     });
   }
 
+  // 거래명세서 처리: 명시적으로 요청한 경우만 포함, 그 외엔 기본 제외
+  // (실제 매체 집행 항목이 아니라 청구 데이터라 합계에 섞이면 혼란을 줌)
+  if(intent.invoiceOnly){
+    result = result.filter(r => (r.media || '').includes('거래명세서'));
+  } else {
+    result = result.filter(r => !(r.media || '').includes('거래명세서'));
+  }
+
   return result;
 }
 
@@ -9330,7 +9344,23 @@ async function sendAiChat(){
   const groqKey = safeStorage.get('brin_groq_key');
   const groqModel = safeStorage.get('brin_groq_model') || 'llama-3.3-70b-versatile';
   if(!groqKey){
-    appendAiMsg('bot', 'Groq API 키가 설정되지 않았습니다.<br>⚙ 설정 → Groq API 섹션에서 키를 입력해주세요.');
+    appendAiMsg('user', query.replace(/</g,'&lt;').replace(/\n/g,'<br>'));
+    inp.value = '';
+    const noKeyBubble = appendAiMsg('bot',
+      `🔑 <strong>API 키 설정이 필요합니다</strong><br><br>` +
+      `Brin AI를 사용하려면 본인의 Groq API 키가 필요해요.<br><br>` +
+      `<strong>① 키 발급 (무료)</strong><br>` +
+      `<a href="https://console.groq.com/keys" target="_blank" rel="noopener" style="color:var(--pri)">console.groq.com/keys</a> 접속 → 로그인 → API 키 생성<br><br>` +
+      `<strong>② 키 등록</strong><br>` +
+      `우측 상단 <strong>🔑 API 키</strong> 버튼을 눌러 발급받은 키를 붙여넣고 저장하시면 바로 사용할 수 있어요.`
+    );
+    // 채팅창 안에서 바로 열 수 있는 버튼도 추가
+    const openBtn = document.createElement('button');
+    openBtn.className = 'ai-msg-excel-btn';
+    openBtn.textContent = '🔑 지금 API 키 입력하기';
+    openBtn.onclick = () => openGroqKeyModal();
+    noKeyBubble.querySelector('.ai-msg-bubble').appendChild(document.createElement('br'));
+    noKeyBubble.querySelector('.ai-msg-bubble').appendChild(openBtn);
     return;
   }
 
@@ -9748,7 +9778,9 @@ function downloadAiExcel(name, matchedRows){
         <strong>📆 매체 회차/기간</strong><br>
         · <span class="ai-example" onclick="fillAiExample(this)">거제 푸르지오 브랜드검색 2개월차 기간</span><br><br>
         <strong>🔧 디버그</strong><br>
-        · <span class="ai-example" onclick="fillAiExample(this)">전체 매체 목록 알려줘</span>
+        · <span class="ai-example" onclick="fillAiExample(this)">전체 매체 목록 알려줘</span><br><br>
+        <strong>📄 거래명세서</strong><br>
+        · <span class="ai-example" onclick="fillAiExample(this)">장위 푸르지오 거래명세서만 알려줘</span>
       </div>
     </div>
   </div>
