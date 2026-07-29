@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.21.0-beta">
+<meta name="version" content="v4.21.2-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1729,16 +1729,13 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.21β</span>
+    <span class="sb-ver">v4.21.2β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
   </div>
   <nav class="sb-nav">
     <div class="sb-section">메인</div>
-    <button class="sb-item hide" id="sbn-schedule-add" data-label="일정 등록" onclick="openScheduleAddModal()">
-      <span class="sb-ic">📝</span> 일정 등록
-    </button>
     <button class="sb-item active" id="sbn-gantt" data-label="타임라인" onclick="sbGo('gantt')">
       <span class="sb-ic sb-ic-anim-gantt">📅</span> 타임라인
     </button>
@@ -1831,7 +1828,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.21.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.21.2-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1869,6 +1866,8 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   </select>
   <select class="fi" id="pjtFi" onchange="applyFilter()"><option value="">PJT 전체</option></select>
   <select class="fi" id="assigneeFi" onchange="applyFilter()"><option value="">담당자 전체</option></select>
+  <button class="btn btn-p hide" id="scheduleAddBtn" onclick="openScheduleAddModal()"
+    style="font-size:11px;padding:6px 12px;white-space:nowrap;margin-left:2px" title="신규 일정 등록">📝 일정 등록</button>
   <div class="sep"></div>
   <div class="nav-g" id="navG">
     <button class="btn-ic" onclick="shiftTL(-30)">&#8249;</button>
@@ -3466,6 +3465,26 @@ function mcls(m){if(!m)return'm-default';const l=m.toLowerCase();if(l.includes('
 
 // ── OAUTH ──────────────────────────────────────
 let tokenClient;
+
+/* ── 부여된 권한(scope) 추적 ──────────────────────────────
+   구글은 예전에 읽기전용(spreadsheets.readonly)만 승인해 둔 계정에
+   캐시 토큰을 그대로 재사용시킨다. 이 경우 시트 쓰기(append) 시
+   403 "insufficient authentication scopes" 가 발생한다.        */
+const SHEETS_WRITE_SCOPE='https://www.googleapis.com/auth/spreadsheets';
+let _grantedScope=safeStorage.get('brin_scope')||'';
+function hasSheetsWriteScope(){
+  return String(_grantedScope||'').split(/\s+/).includes(SHEETS_WRITE_SCOPE);
+}
+function rememberScope(sc){
+  _grantedScope=sc||'';
+  safeStorage.set('brin_scope',_grantedScope);
+}
+// 쓰기 권한 재동의 요청 (반드시 사용자 클릭으로 호출 - 팝업 차단 방지)
+function reauthForWrite(){
+  if(!tokenClient){ handleLogin(); return; }
+  showToast('시트 쓰기 권한을 다시 요청합니다. 팝업에서 "허용"을 눌러주세요.','info');
+  tokenClient.requestAccessToken({prompt:'consent'});
+}
 function initGIS(){
   if(!CFG.clientId)return;
   tokenClient=google.accounts.oauth2.initTokenClient({
@@ -3480,7 +3499,11 @@ function initGIS(){
         const p=await r.json();
         userEmail=p.email||'';
       }catch(e){userEmail='';}
+      rememberScope(resp.scope||'');
       saveToken(token,resp.expires_in||3600,userEmail);
+      if(!hasSheetsWriteScope()){
+        showToast('시트 읽기 권한만 부여되어 일정 등록이 불가합니다. 다시 로그인해 "허용"을 눌러주세요.','warn');
+      }
       onLoggedIn();
     }
   });
@@ -3494,7 +3517,8 @@ function handleLogout(){
   deactivateSidebar();
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();clearTokenDB().catch(()=>{});if(_silentRefreshTimer)clearTimeout(_silentRefreshTimer);
-  ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
+  _grantedScope='';safeStorage.remove('brin_scope');
+  ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
@@ -8714,9 +8738,9 @@ function refreshSidebarPermissions(){
   const groqBtnEl=document.getElementById('groqKeyBtn');
   if(groqBtnEl)groqBtnEl.classList.toggle('hide', !isAiBetaUser());
 
-  // 일정 등록 - 관리자 전용
+  // 일정 등록 - 관리자 전용 (상단 필터바 버튼)
   const isAdminForSchedule=(typeof userEmail!=='undefined')&&(userEmail===ADMIN_EMAIL);
-  const scheduleBtnEl=document.getElementById('sbn-schedule-add');
+  const scheduleBtnEl=document.getElementById('scheduleAddBtn');
   if(scheduleBtnEl)scheduleBtnEl.classList.toggle('hide', !isAdminForSchedule);
 
   // 거래명세서 (예산요약 하위)
@@ -8854,6 +8878,24 @@ function openScheduleAddModal(){
     showToast('데이터 로딩 중입니다. 잠시 후 다시 시도해주세요.', 'warn');
     return;
   }
+  if(_grantedScope && !hasSheetsWriteScope()){
+    showToast('시트 쓰기 권한이 없습니다. 로그아웃 후 다시 로그인해 "허용"을 눌러주세요.','warn');
+  }
+
+  // 공통: 시트 기존 값으로 select 채우기
+  const fillSel = (el, values, customLabel) => {
+    el.innerHTML = '<option value="">선택...</option>' +
+      values.map(v => `<option value="${escHtml(v)}">${escHtml(v)}</option>`).join('') +
+      `<option value="__custom__">${customLabel}</option>`;
+  };
+  const uniq = key => [...new Set(rows.map(r => (r[key]||'').trim()).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b,'ko'));
+
+  // 광고주(A열 = type) / 랩사(B열 = bsa) — 시트 값 그대로
+  const advSelect = document.getElementById('saAdvSelect');
+  fillSel(advSelect, uniq('type'), '+ 직접 입력');
+  const bsaSelect = document.getElementById('saBsaSelect');
+  fillSel(bsaSelect, uniq('bsa'), '+ 직접 입력');
 
   // 프로젝트 드롭다운 채우기 (구글시트에 이미 있는 PJT 그대로 재사용)
   const pjtSelect = document.getElementById('saPjtSelect');
@@ -8890,14 +8932,16 @@ function openScheduleAddModal(){
     '<option value="__custom__">+ 직접 입력</option>';
 
   // 입력값 초기화
-  ['saBsa','saPjtCustom','saMediaCustom','saAssigneeCustom','saBudget','saSpent','saSdate','saEdate','saMemo']
+  ['saAdvCustom','saBsaCustom','saPjtCustom','saMediaCustom','saAssigneeCustom',
+   'saBudget','saSpent','saSdate','saEdate','saPeriod','saMemo']
     .forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  advSelect.value = '';
+  bsaSelect.value = '';
   pjtSelect.value = '';
   mediaSelect.value = '';
   assigneeSelect.value = '';
-  document.getElementById('saPjtCustom').style.display = 'none';
-  document.getElementById('saMediaCustom').style.display = 'none';
-  document.getElementById('saAssigneeCustom').style.display = 'none';
+  ['saAdvCustom','saBsaCustom','saPjtCustom','saMediaCustom','saAssigneeCustom']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
   document.getElementById('saError').style.display = 'none';
 
   document.getElementById('scheduleAddOverlay').style.display = 'flex';
@@ -8907,15 +8951,24 @@ function closeScheduleAddModal(){
   document.getElementById('scheduleAddOverlay').style.display = 'none';
 }
 
-function _saTogglePjtCustom(){
-  const sel = document.getElementById('saPjtSelect');
-  const custom = document.getElementById('saPjtCustom');
+// select 값이 '__custom__' 이면 옆의 직접입력 칸을 연다
+function _saToggle(selId, customId){
+  const sel = document.getElementById(selId);
+  const custom = document.getElementById(customId);
   const isCustom = (sel.value === '__custom__');
   custom.style.display = isCustom ? '' : 'none';
-  if(isCustom){ custom.focus(); return; }
+  if(isCustom) custom.focus();
+  return isCustom;
+}
+function _saToggleAdvCustom(){ _saToggle('saAdvSelect','saAdvCustom'); }
+function _saToggleBsaCustom(){ _saToggle('saBsaSelect','saBsaCustom'); }
+
+function _saTogglePjtCustom(){
+  const sel = document.getElementById('saPjtSelect');
+  if(_saToggle('saPjtSelect','saPjtCustom')) return;
   if(!sel.value) return;
 
-  // 기존 프로젝트 선택 시 시트에 있는 광고주(BSA)/담당자를 자동으로 채워줌
+  // 기존 프로젝트 선택 시 시트의 광고주(A)/랩사(B)/담당자(J)를 자동으로 채워줌
   const sameP = rows.filter(r => r.pjt === sel.value);
   if(!sameP.length) return;
   const pick = key => {
@@ -8924,14 +8977,14 @@ function _saTogglePjtCustom(){
     const top = Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
     return top ? top[0] : '';
   };
-  const bsaEl = document.getElementById('saBsa');
-  if(bsaEl && !bsaEl.value.trim()) bsaEl.value = pick('bsa');
-  const asgSel = document.getElementById('saAssignee');
-  const asg = pick('assignee');
-  if(asgSel && !asgSel.value && asg && [...asgSel.options].some(o => o.value === asg)){
-    asgSel.value = asg;
-    _saToggleAssigneeCustom();
-  }
+  const setIfEmpty = (selId, val) => {
+    const el = document.getElementById(selId);
+    if(!el || el.value || !val) return;
+    if([...el.options].some(o => o.value === val)) el.value = val;
+  };
+  setIfEmpty('saAdvSelect',   pick('type'));
+  setIfEmpty('saBsaSelect',   pick('bsa'));
+  setIfEmpty('saAssignee',    pick('assignee'));
 }
 
 function _saToggleMediaCustom(){
@@ -8950,7 +9003,13 @@ async function saveScheduleAdd(){
   const errEl = document.getElementById('saError');
   errEl.style.display = 'none';
 
-  const bsa = document.getElementById('saBsa').value.trim();
+  // select 또는 '직접 입력' 칸에서 값 읽기
+  const readSel = (selId, customId) => {
+    const v = document.getElementById(selId).value;
+    return v === '__custom__' ? document.getElementById(customId).value.trim() : v;
+  };
+  const advertiser = readSel('saAdvSelect','saAdvCustom');   // A열 (type)
+  const bsa        = readSel('saBsaSelect','saBsaCustom');   // B열 (bsa)
   const pjtSelVal = document.getElementById('saPjtSelect').value;
   const pjt = pjtSelVal === '__custom__'
     ? document.getElementById('saPjtCustom').value.trim()
@@ -8968,6 +9027,7 @@ async function saveScheduleAdd(){
   const edateStr = document.getElementById('saEdate').value;
   const budget = document.getElementById('saBudget').value.trim();
   const spent = document.getElementById('saSpent').value.trim();
+  const period = document.getElementById('saPeriod').value.trim();
   const memo = document.getElementById('saMemo').value.trim();
 
   // 필수값 검증
@@ -8982,14 +9042,30 @@ async function saveScheduleAdd(){
   saveBtn.textContent = '등록 중...';
 
   try{
-    // 시트 컬럼 순서: type,bsa,pjt,media,status,sdate,edate,period,memo,assignee,budget,spent (A~L)
+    // ⚠ 하드코딩 배열 대신 CFG.cols(설정 > 컬럼 매핑) 기준으로 각 값을 배치한다.
+    //   설정에서 컬럼 순서를 바꿔도 등록 위치가 어긋나지 않음.
     // ISO(YYYY-MM-DD) 형식 그대로 전달 - USER_ENTERED 옵션이 Sheets 날짜로 안정적으로 인식/변환함
-    const rowValues = [
-      '', bsa, pjt, media, status, sdateStr, edateStr, '', memo, assignee,
-      budget ? Number(budget) : '', spent ? Number(spent) : ''
-    ];
+    const C = CFG.cols;
+    const maxIdx = Math.max(...Object.values(C).filter(v => typeof v === 'number' && v >= 0));
+    const rowValues = new Array(maxIdx + 1).fill('');
+    const put = (key, val) => {
+      const i = C[key];
+      if(typeof i === 'number' && i >= 0) rowValues[i] = val;
+    };
+    put('type',     advertiser);          // A 광고주
+    put('bsa',      bsa);                 // B 랩사
+    put('pjt',      pjt);                 // C 프로젝트
+    put('media',    media);               // D 운영매체
+    put('status',   status);              // E 상태
+    put('sdate',    sdateStr);            // F 시작일
+    put('edate',    edateStr);            // G 종료일
+    put('period',   period);              // H 기간
+    put('memo',     memo);                // I 비고
+    put('assignee', assignee);            // J 담당자
+    put('budget',   budget ? Number(budget) : '');  // K 견적
+    put('spent',    spent  ? Number(spent)  : '');  // L 집행
 
-    const range = `${CFG.sheetName}!A:L`;
+    const range = `${CFG.sheetName}!${CFG.range}`;
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
 
     const res = await fetch(url, {
@@ -9003,7 +9079,12 @@ async function saveScheduleAdd(){
 
     if(!res.ok){
       const errBody = await res.json().catch(()=>({}));
-      throw new Error((errBody.error && errBody.error.message) || `HTTP ${res.status}`);
+      const msg = (errBody.error && errBody.error.message) || `HTTP ${res.status}`;
+      // 403 + scope 부족 → 재동의 유도
+      if(res.status === 403 && /scope/i.test(msg)){
+        const e = new Error(msg); e._needScope = true; throw e;
+      }
+      throw new Error(msg);
     }
 
     closeScheduleAddModal();
@@ -9013,7 +9094,14 @@ async function saveScheduleAdd(){
     if(typeof manualRefresh === 'function') manualRefresh();
 
   } catch(e){
-    errEl.textContent = '등록 실패: ' + (e.message || e);
+    if(e && e._needScope){
+      errEl.innerHTML = '구글 시트 <b>쓰기 권한</b>이 없어 등록하지 못했습니다.<br>'
+        + '아래 버튼을 눌러 재동의하면 입력값 그대로 다시 등록할 수 있습니다.<br>'
+        + '<button class="btn btn-p" style="margin-top:8px;font-size:12px;padding:6px 14px" '
+        + 'onclick="reauthForWrite()">🔓 쓰기 권한 다시 허용</button>';
+    } else {
+      errEl.textContent = '등록 실패: ' + (e.message || e);
+    }
     errEl.style.display = '';
   } finally {
     saveBtn.disabled = false;
@@ -9942,17 +10030,30 @@ function downloadAiExcel(name, matchedRows){
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <div>
-        <label class="sa-label">광고주(BSA)</label>
-        <input id="saBsa" class="sa-input" placeholder="예: 라파크">
+        <label class="sa-label">광고주 <span style="color:var(--tx3);font-weight:400">(A열)</span></label>
+        <select id="saAdvSelect" class="sa-input" onchange="_saToggleAdvCustom()">
+          <option value="">선택...</option>
+          <option value="__custom__">+ 직접 입력</option>
+        </select>
+        <input id="saAdvCustom" class="sa-input" style="display:none;margin-top:6px" placeholder="새 광고주 입력">
       </div>
       <div>
-        <label class="sa-label">프로젝트명 *</label>
-        <select id="saPjtSelect" class="sa-input" onchange="_saTogglePjtCustom()">
+        <label class="sa-label">랩사 <span style="color:var(--tx3);font-weight:400">(B열)</span></label>
+        <select id="saBsaSelect" class="sa-input" onchange="_saToggleBsaCustom()">
           <option value="">선택...</option>
-          <option value="__custom__">+ 신규 프로젝트 입력</option>
+          <option value="__custom__">+ 직접 입력</option>
         </select>
-        <input id="saPjtCustom" class="sa-input" style="display:none;margin-top:6px" placeholder="신규 프로젝트명 입력">
+        <input id="saBsaCustom" class="sa-input" style="display:none;margin-top:6px" placeholder="새 랩사 입력">
       </div>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label class="sa-label">프로젝트명 * <span style="color:var(--tx3);font-weight:400">(C열)</span></label>
+      <select id="saPjtSelect" class="sa-input" onchange="_saTogglePjtCustom()">
+        <option value="">선택...</option>
+        <option value="__custom__">+ 신규 프로젝트 입력</option>
+      </select>
+      <input id="saPjtCustom" class="sa-input" style="display:none;margin-top:6px" placeholder="신규 프로젝트명 입력">
     </div>
 
     <div style="margin-bottom:10px;">
@@ -10001,9 +10102,15 @@ function downloadAiExcel(name, matchedRows){
       </div>
     </div>
 
-    <div style="margin-bottom:14px;">
-      <label class="sa-label">비고(메모)</label>
-      <input id="saMemo" class="sa-input" placeholder="예: 신한카드, 카페명 등">
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:14px;">
+      <div>
+        <label class="sa-label">기간 <span style="color:var(--tx3);font-weight:400">(H열)</span></label>
+        <input id="saPeriod" class="sa-input" placeholder="예: 1개월 / 2주">
+      </div>
+      <div>
+        <label class="sa-label">비고(메모) <span style="color:var(--tx3);font-weight:400">(I열)</span></label>
+        <input id="saMemo" class="sa-input" placeholder="예: 신한카드, 카페명 등">
+      </div>
     </div>
 
     <div id="saError" style="display:none;font-size:12px;color:var(--red);margin-bottom:10px;padding:8px 12px;background:rgba(232,85,85,.1);border-radius:6px;"></div>
