@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.22.1-beta">
+<meta name="version" content="v4.23.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -65,6 +65,17 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23606880'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 8px center;}
 .sep{width:1px;height:18px;background:var(--bd2);margin:0 3px;}
+/* 외부 리포트 링크 버튼 (필터바) */
+#reportLinkBtn{display:inline-flex;align-items:center;gap:5px;text-decoration:none;
+  font-size:11px;padding:6px 12px;white-space:nowrap;line-height:1;}
+#reportLinkBtn .rp-ic{font-size:12px;}
+#reportLinkBtn .rp-ext{font-size:9px;opacity:.55;}
+#reportLinkBtn:hover .rp-ext{opacity:1;}
+@media(max-width:768px){
+  #reportLinkBtn{padding:6px 9px;}
+  #reportLinkBtn .rp-tx,#reportLinkBtn .rp-ext{display:none;}
+  #reportLinkBtn .rp-ic{font-size:15px;}
+}
 .nav-g{margin-left:auto;display:flex;align-items:center;gap:6px;}
 .ml{font-size:12px;font-weight:600;min-width:84px;text-align:center;color:var(--tx);}
 
@@ -1729,7 +1740,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.22.1β</span>
+    <span class="sb-ver">v4.23β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1828,7 +1839,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.22.1-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.23.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1868,6 +1879,9 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   <select class="fi" id="assigneeFi" onchange="applyFilter()"><option value="">담당자 전체</option></select>
   <button class="btn btn-p hide" id="scheduleAddBtn" onclick="openScheduleAddModal()"
     style="font-size:11px;padding:6px 12px;white-space:nowrap;margin-left:2px" title="신규 일정 등록">📝 일정 등록</button>
+  <a class="btn btn-g" id="reportLinkBtn" href="https://brin-meta.vldksk.workers.dev/"
+    target="_blank" rel="noopener noreferrer" title="메타 · 키워드광고 리포트 (새 탭으로 열기)">
+    <span class="rp-ic">📊</span><span class="rp-tx">리포트</span><span class="rp-ext">↗</span></a>
   <div class="sep"></div>
   <div class="nav-g" id="navG">
     <button class="btn-ic" onclick="shiftTL(-30)">&#8249;</button>
