@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.22.0-beta">
+<meta name="version" content="v4.22.1-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1729,7 +1729,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.22β</span>
+    <span class="sb-ver">v4.22.1β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1828,7 +1828,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.22.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.22.1-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3088,10 +3088,24 @@ function renderMediaListAnswer(){
 
 function fmtWon(n){ return '₩' + Math.round(n||0).toLocaleString(); }
 
-function fmtDateYmd(d){
+/* ══ 날짜 → yyyy-mm-dd (로컬/KST 기준) ═════════════════════════
+   ⚠ toISOString() 은 UTC 로 변환하므로 KST 자정 Date 가 '전날'로 밀린다.
+      예) new Date(2026,7,6)  →  "2026-08-05T15:00:00Z"  →  2026-08-05 (X)
+      날짜 문자열이 필요한 곳은 반드시 ymdLocal() 을 사용할 것.        */
+function ymdLocal(d){
   if(!d) return '';
-  return d.toISOString ? d.toISOString().slice(0,10) : String(d).slice(0,10);
+  if(!(d instanceof Date)){
+    const p = (typeof parseDate === 'function') ? parseDate(d) : null;
+    if(!p) return String(d).slice(0,10);
+    d = p;
+  }
+  if(isNaN(d)) return '';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
+// 오늘(KST) yyyy-mm-dd — 브라우저 타임존과 무관하게 한국 날짜
+function todayYmd(){ return ymdLocal(getTodayKST()); }
+
+function fmtDateYmd(d){ return ymdLocal(d); }
 
 // ── 종료예정 조회: 프로젝트 묶음 + 매체별 날짜/D-day/연장여부 ──
 function renderEndingAnswer(matches){
@@ -7983,8 +7997,8 @@ async function showEndAlertPopup(){
   const items = findExpiringMedia();
   if(!items.length) return;
 
-  // 오늘 이미 확인한 경우 재표시 안 함
-  const today = new Date().toISOString().slice(0, 10);
+  // 오늘 이미 확인한 경우 재표시 안 함 (KST 기준)
+  const today = todayYmd();
   const seenKey = `brin_endalert_${today}`;
   if(safeStorage.get(seenKey)) return;
 
@@ -8103,7 +8117,7 @@ async function checkAndShowNotices() {
   const all = await fetchNoticesFromSheet();
   if (!all.length) return;
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayYmd();
   const seenKey = `brin_noticed_${today}`;
   const seenIds = JSON.parse(safeStorage.get(seenKey) || '[]');
 
@@ -8161,7 +8175,7 @@ function noticeNav(dir) {
 function confirmNotice() {
   const dontShow = document.getElementById('noticeDontShow').checked;
   if (dontShow) {
-    const today = new Date().toISOString().slice(0, 10);
+    const today = todayYmd();
     const key = `brin_noticed_${today}`;
     const seen = JSON.parse(safeStorage.get(key) || '[]');
     // 현재 공지 ID를 seen에 추가
@@ -8188,7 +8202,7 @@ async function loadNoticeAdmin() {
     return;
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayYmd();
   const BADGE = { info: ['ℹ 일반', 'nbadge-info'], warn: ['⚠ 주의', 'nbadge-warn'], urgent: ['🚨 긴급', 'nbadge-urgent'] };
 
   list.innerHTML = _notices.map((n, i) => {
@@ -8217,7 +8231,7 @@ function openNoticeForm(notice = null) {
   document.getElementById('noticeInputTitle').value = notice ? notice.title : '';
   document.getElementById('noticeInputBody').value = notice ? notice.body : '';
   setTimeout(() => setTargetValue(notice ? notice.targets : 'all'), 50);
-  document.getElementById('noticeInputStart').value = notice ? notice.startDate : new Date().toISOString().slice(0, 10);
+  document.getElementById('noticeInputStart').value = notice ? notice.startDate : todayYmd();
   document.getElementById('noticeInputEnd').value = notice ? (notice.endDate || '') : '';
   document.getElementById('noticeInputLevel').value = notice ? notice.level : 'info';
 }
@@ -8618,7 +8632,7 @@ function downloadUtmExcel(){
   const ws=XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=[{wch:16},{wch:14},{wch:18},{wch:14},{wch:40},{wch:4},{wch:14},{wch:10},{wch:24},{wch:12},{wch:10},{wch:80}];
   XLSX.utils.book_append_sheet(wb,ws,'UTM');
-  XLSX.writeFile(wb,`BRIN_UTM_${project}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  XLSX.writeFile(wb,`BRIN_UTM_${project}_${todayYmd()}.xlsx`);
   showToast('📥 엑셀 다운로드 완료','ok');
 }
 
@@ -8955,11 +8969,8 @@ function _saSetSel(selId, customId, val){
   }
 }
 
-// Date → yyyy-mm-dd (로컬 기준, toISOString 의 UTC 밀림 방지)
-function _saDateVal(d){
-  if(!d || !(d instanceof Date) || isNaN(d)) return '';
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
+// Date → yyyy-mm-dd (공통 ymdLocal 사용)
+function _saDateVal(d){ return ymdLocal(d); }
 
 function openScheduleAddModal(){
   if(!_saPrepareModal()) return;
@@ -9705,8 +9716,8 @@ function summarizeRows(matchedRows, intent){
     const item = {
       매체: r.media,
       상태: r.status || '',
-      시작: r.sdate ? (r.sdate.toISOString ? r.sdate.toISOString().slice(0,10) : String(r.sdate).slice(0,10)) : '',
-      종료: r.edate ? (r.edate.toISOString ? r.edate.toISOString().slice(0,10) : String(r.edate).slice(0,10)) : '',
+      시작: ymdLocal(r.sdate),
+      종료: ymdLocal(r.edate),
       예산: r.budget || 0,
       집행: r.spent || 0,
       담당: r.assignee || '',
@@ -10006,8 +10017,8 @@ function buildReportData(period, teamKey){
   return {
     periodLabel: period === 'week' ? '주간' : '월간',
     teamLabel,
-    periodStart: periodStart.toISOString().slice(0,10),
-    periodEnd: periodEnd.toISOString().slice(0,10),
+    periodStart: ymdLocal(periodStart),
+    periodEnd: ymdLocal(periodEnd),
     projectCount: pjts.length,
     newStartCount: newStart.length,
     willEndCount: willEnd.length,
@@ -10016,7 +10027,7 @@ function buildReportData(period, teamKey){
     notExtended: notExtended.map(r => ({
       pjt: r.pjt,
       media: r.media,
-      edate: r.edate.toISOString().slice(0,10)
+      edate: ymdLocal(r.edate)
     }))
   };
 }
@@ -10070,8 +10081,8 @@ function downloadAiExcel(name, matchedRows){
     프로젝트: r.pjt,
     매체: r.media,
     상태: r.status,
-    시작일: r.sdate ? (r.sdate.toISOString ? r.sdate.toISOString().slice(0,10) : String(r.sdate).slice(0,10)) : '',
-    종료일: r.edate ? (r.edate.toISOString ? r.edate.toISOString().slice(0,10) : String(r.edate).slice(0,10)) : '',
+    시작일: ymdLocal(r.sdate),
+    종료일: ymdLocal(r.edate),
     '예산(원)': r.budget || 0,
     '집행(원)': r.spent || 0,
     담당자: r.assignee || '',
@@ -10080,7 +10091,7 @@ function downloadAiExcel(name, matchedRows){
   const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '데이터정리');
-  const filename = `BRIN_${name.replace(/[\/\\?%*:|"<>]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  const filename = `BRIN_${name.replace(/[\/\\?%*:|"<>]/g,'_')}_${todayYmd()}.xlsx`;
   XLSX.writeFile(wb, filename);
   showToast('📥 엑셀 다운로드 완료', 'ok');
 }
