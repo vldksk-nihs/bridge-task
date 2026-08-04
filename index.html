@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.23.0-beta">
+<meta name="version" content="v4.23.1-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1621,6 +1621,12 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   font-size:13px;font-family:inherit;
 }
 .sa-input:focus{border-color:var(--pri);outline:none;}
+/* 일정 등록/수정 — 시작일 · 기간 · 종료일 한 줄 */
+.sa-daterow{display:grid;grid-template-columns:1.1fr .85fr 1.1fr;gap:8px;margin-bottom:4px;}
+@media(max-width:560px){
+  .sa-daterow{grid-template-columns:1fr 1fr;}
+  .sa-daterow>div:nth-child(2){grid-column:1/-1;}
+}
 
 /* ══ Brin AI - 로컬 렌더링 그룹 스타일 ══════════════════ */
 .ai-group-block{margin-bottom:14px;padding:10px 12px;background:var(--sur3);border-radius:8px;border-left:3px solid var(--pri);}
@@ -1740,7 +1746,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.23β</span>
+    <span class="sb-ver">v4.23.1β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1839,7 +1845,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.23.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.23.1-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -8964,6 +8970,8 @@ function _saPrepareModal(){
   ['saAdvCustom','saBsaCustom','saPjtCustom','saMediaCustom','saAssigneeCustom']
     .forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
   document.getElementById('saError').style.display = 'none';
+  const hintEl = document.getElementById('saDateHint');
+  if(hintEl) hintEl.textContent = '';
   return true;
 }
 
@@ -8985,6 +8993,61 @@ function _saSetSel(selId, customId, val){
 
 // Date → yyyy-mm-dd (공통 ymdLocal 사용)
 function _saDateVal(d){ return ymdLocal(d); }
+
+/* ══ 기간 텍스트 → 일수 ══════════════════════════════════
+   환산 기준은 시트/Brin AI 회차 계산(_unitForMedia)과 동일하게 맞춘다.
+     1일 = 1 / 1주 = 7 / 1개월 = 30 / 1년 = 365
+   "3개월 15일" 처럼 복합 표기도 합산. 괄호 안 보조설명은 무시.
+   숫자만 입력하면 일수로 본다.                                   */
+const SA_UNIT_DAYS = { '년':365, '개월':30, '달':30, '월':30, '주':7, '일':1 };
+function _saParsePeriodDays(txt){
+  let t = String(txt||'').replace(/\([^)]*\)/g,'').replace(/\s+/g,'');
+  if(!t) return 0;
+  let total = 0, found = false;
+  const re = /(\d+(?:\.\d+)?)(년|개월|달|월|주|일)/g;
+  let m;
+  while((m = re.exec(t))){
+    total += parseFloat(m[1]) * (SA_UNIT_DAYS[m[2]] || 1);
+    found = true;
+  }
+  if(!found && /^\d+(?:\.\d+)?$/.test(t)){ total = parseFloat(t); found = true; }
+  return found ? Math.round(total) : 0;
+}
+
+// 시작일 + 기간 → 종료일 자동 입력 (엑셀과 동일: 시작일을 1일차로 셈)
+function _saCalcEdate(){
+  const sd = document.getElementById('saSdate').value;
+  const days = _saParsePeriodDays(document.getElementById('saPeriod').value);
+  if(sd && days > 0){
+    const [y,mo,d] = sd.split('-').map(Number);
+    const end = new Date(y, mo-1, d);
+    end.setDate(end.getDate() + days - 1);
+    document.getElementById('saEdate').value = ymdLocal(end);
+  }
+  _saUpdateDateHint();
+}
+
+// 시작~종료 총 일수 안내 (종료일을 직접 고쳐도 즉시 갱신)
+function _saUpdateDateHint(){
+  const hint = document.getElementById('saDateHint');
+  if(!hint) return;
+  const sd = document.getElementById('saSdate').value;
+  const ed = document.getElementById('saEdate').value;
+  if(!sd || !ed){ hint.textContent = ''; return; }
+  const a = new Date(sd), b = new Date(ed);
+  const n = Math.round((b - a) / 86400000) + 1;
+  if(n <= 0){
+    hint.textContent = '⚠ 종료일이 시작일보다 빠릅니다';
+    hint.style.color = 'var(--red)';
+    return;
+  }
+  const pd = _saParsePeriodDays(document.getElementById('saPeriod').value);
+  const mismatch = pd > 0 && pd !== n;
+  hint.innerHTML = `총 <b>${n}일</b> (시작일 포함)`
+    + `<span style="opacity:.7"> · 1개월=30일 기준</span>`
+    + (mismatch ? ` <span style="color:var(--orange)">· 기간 표기(${pd}일)와 다름</span>` : '');
+  hint.style.color = 'var(--tx3)';
+}
 
 function openScheduleAddModal(){
   if(!_saPrepareModal()) return;
@@ -9018,6 +9081,7 @@ function openScheduleEditModal(r){
   document.getElementById('saBudget').value = r.budget || '';
   document.getElementById('saSpent').value  = r.spent  || '';
 
+  _saUpdateDateHint();   // 시트 종료일은 그대로 두고 안내만 갱신
   document.getElementById('saModalTitle').textContent =
     `✏ 일정 수정  (시트 ${_saSheetRowNo(r)}행)`;
   document.getElementById('saSaveBtn').textContent = '저장';
@@ -10147,7 +10211,7 @@ function downloadAiExcel(name, matchedRows){
 
 <!-- ══ 일정 등록 모달 (관리자 전용) ══════════════════════ -->
 <div id="scheduleAddOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9700;align-items:center;justify-content:center;">
-  <div style="background:var(--sur2);border:1px solid var(--bd2);border-radius:12px;padding:22px;width:420px;max-width:92vw;max-height:88vh;overflow-y:auto;">
+  <div style="background:var(--sur2);border:1px solid var(--bd2);border-radius:12px;padding:22px;width:470px;max-width:92vw;max-height:88vh;overflow-y:auto;">
     <div id="saModalTitle" style="font-weight:800;font-size:15px;color:var(--tx);margin-bottom:14px;">📝 신규 일정 등록</div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
@@ -10202,16 +10266,21 @@ function downloadAiExcel(name, matchedRows){
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div class="sa-daterow">
       <div>
-        <label class="sa-label">시작일 *</label>
-        <input id="saSdate" type="date" class="sa-input">
+        <label class="sa-label">시작일 * <span style="color:var(--tx3);font-weight:400">(F)</span></label>
+        <input id="saSdate" type="date" class="sa-input" onchange="_saCalcEdate()">
       </div>
       <div>
-        <label class="sa-label">종료일 *</label>
-        <input id="saEdate" type="date" class="sa-input">
+        <label class="sa-label">기간 <span style="color:var(--tx3);font-weight:400">(H)</span></label>
+        <input id="saPeriod" class="sa-input" placeholder="1개월" oninput="_saCalcEdate()" title="예: 1개월 / 2주 / 10일 / 1년">
+      </div>
+      <div>
+        <label class="sa-label">종료일 * <span style="color:var(--tx3);font-weight:400">(G)</span></label>
+        <input id="saEdate" type="date" class="sa-input" onchange="_saUpdateDateHint()">
       </div>
     </div>
+    <div id="saDateHint" style="font-size:11px;color:var(--tx3);margin-bottom:10px;min-height:15px;line-height:1.4"></div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
       <div>
@@ -10224,15 +10293,9 @@ function downloadAiExcel(name, matchedRows){
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:14px;">
-      <div>
-        <label class="sa-label">기간 <span style="color:var(--tx3);font-weight:400">(H열)</span></label>
-        <input id="saPeriod" class="sa-input" placeholder="예: 1개월 / 2주">
-      </div>
-      <div>
-        <label class="sa-label">비고(메모) <span style="color:var(--tx3);font-weight:400">(I열)</span></label>
-        <input id="saMemo" class="sa-input" placeholder="예: 신한카드, 카페명 등">
-      </div>
+    <div style="margin-bottom:14px;">
+      <label class="sa-label">비고(메모) <span style="color:var(--tx3);font-weight:400">(I열)</span></label>
+      <input id="saMemo" class="sa-input" placeholder="예: 신한카드, 카페명 등">
     </div>
 
     <div id="saError" style="display:none;font-size:12px;color:var(--red);margin-bottom:10px;padding:8px 12px;background:rgba(232,85,85,.1);border-radius:6px;"></div>
