@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.24.2-beta">
+<meta name="version" content="v4.25.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1756,6 +1756,16 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 .td-tab.on{background:var(--pri);color:#fff;border-color:var(--pri);}
 .td-tab .td-tab-cnt{font-size:10px;opacity:.8;margin-left:3px;}
 .td-body{flex:1;overflow-y:auto;padding:12px 16px 24px;}
+.td-teamname{font-size:12px;font-weight:700;color:var(--pri);padding:4px 2px;}
+.td-subtabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin:-2px 0 14px;}
+.td-subtab{flex:1;padding:8px 4px;border:none;background:none;color:var(--tx3);
+  font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;}
+.td-subtab:hover{color:var(--tx2);}
+.td-subtab.on{color:var(--pri);border-bottom-color:var(--pri);}
+.td-subtab-cnt{display:inline-block;margin-left:5px;background:var(--sur3);color:var(--tx2);
+  border-radius:9px;padding:1px 7px;font-size:10px;font-weight:800;}
+.td-subtab.on .td-subtab-cnt{background:var(--pri);color:#fff;}
 .td-addbox{display:flex;flex-direction:column;gap:6px;background:var(--sur2);border:1px solid var(--bd2);
   border-radius:8px;padding:10px;margin-bottom:14px;}
 .td-addbox input,.td-addbox select{width:100%;box-sizing:border-box;padding:7px 9px;border-radius:6px;
@@ -1814,7 +1824,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.24.2β</span>
+    <span class="sb-ver">v4.25β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1913,7 +1923,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.24.2-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.25.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3636,7 +3646,7 @@ function handleLogout(){
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();clearTokenDB().catch(()=>{});if(_silentRefreshTimer)clearTimeout(_silentRefreshTimer);
   _grantedScope='';safeStorage.remove('brin_scope');
-  todoData=[];todoTeamFilter='';todoEditingId=null;_todoSheetName=null;_todoSheetTitles=[];clearInterval(_todoPollTimer);
+  todoData=[];todoTeamFilter='';todoStatusTab='open';todoEditingId=null;_todoSheetName=null;_todoSheetTitles=[];clearInterval(_todoPollTimer);
   if(typeof closeTodoPanel==='function')closeTodoPanel();
   ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
@@ -10274,6 +10284,7 @@ let todoData = [];
 let _todoSheetName = null;    // 실제 탭 이름 (자동 탐지 결과)
 let _todoSheetTitles = [];    // 탐지 실패 시 안내용
 let todoTeamFilter = '';      // '' = 내 팀 기본값이 설정됨
+let todoStatusTab = 'open';   // 'open' 진행 중 | 'done' 완료
 let todoSync = '';
 let todoEditingId = null;
 let _todoPollTimer = null;
@@ -10310,6 +10321,12 @@ function todoMyTeamLabel(){
 // ── 팀 라벨 목록 ──
 function todoAllTeamLabels(){
   return (typeof TEAMS !== 'undefined') ? Object.values(TEAMS).map(t => t.label) : [];
+}
+/* 화면에 보여줄 팀 — 팀원은 자기 팀 보드만, 관리자는 전 팀 열람 */
+function todoVisibleTeams(){
+  if(typeof userEmail !== 'undefined' && userEmail === ADMIN_EMAIL) return todoAllTeamLabels();
+  const my = todoMyTeamLabel();
+  return my ? [my] : [];
 }
 // ── 해당 팀 항목을 수정할 수 있는가 ──
 function todoCanEdit(teamLabel){
@@ -10403,7 +10420,9 @@ function todoDdayHtml(dueStr){
 // ── 패널 열기/닫기 ──
 function openTodoPanel(){
   if(!token){ showToast('로그인 후 이용할 수 있습니다.','warn'); return; }
-  if(!todoTeamFilter) todoTeamFilter = todoMyTeamLabel() || (todoAllTeamLabels()[0] || '');
+  const vis = todoVisibleTeams();
+  if(!todoTeamFilter || !vis.includes(todoTeamFilter)) todoTeamFilter = vis[0] || '';
+  todoStatusTab = 'open';
   document.getElementById('todoPanel').classList.add('open');
   document.getElementById('todoOverlay').classList.add('open');
   renderTodo();
@@ -10418,7 +10437,7 @@ function closeTodoPanel(){
   clearInterval(_todoPollTimer);
   todoEditingId = null;
 }
-function todoSetTeam(label){ todoTeamFilter = label; todoEditingId = null; renderTodo(); haptic(6); }
+function todoSetTeam(label){ todoTeamFilter = label; todoStatusTab = 'open'; todoEditingId = null; renderTodo(); haptic(6); }
 
 // ── 렌더 ──
 function renderTodo(){
@@ -10429,13 +10448,24 @@ function renderTodo(){
   const syncEl = document.getElementById('todoSync');
   if(syncEl) syncEl.textContent = (todoSync && todoSync !== '__nosheet__') ? todoSync : '';
 
-  // 팀 탭
   const my = todoMyTeamLabel();
-  tabs.innerHTML = todoAllTeamLabels().map(label => {
-    const cnt = todoData.filter(t => t.team === label && t.status !== '완료').length;
-    return `<button class="td-tab${label === todoTeamFilter ? ' on' : ''}" onclick="todoSetTeam('${escHtml(label).replace(/'/g,"\\'")}')">`
-      + `${escHtml(label)}${label === my ? ' ·내' : ''}<span class="td-tab-cnt">${cnt}</span></button>`;
-  }).join('');
+  const visible = todoVisibleTeams();
+
+  // 볼 수 있는 팀으로 강제 보정
+  if(!visible.includes(todoTeamFilter)) todoTeamFilter = visible[0] || '';
+
+  // ── 1행: 팀 (관리자만 탭으로 전환 가능, 팀원은 자기 팀 고정) ──
+  if(visible.length > 1){
+    tabs.innerHTML = visible.map(label => {
+      const cnt = todoData.filter(t => t.team === label && t.status !== '완료').length;
+      return `<button class="td-tab${label === todoTeamFilter ? ' on' : ''}" onclick="todoSetTeam('${escHtml(label).replace(/'/g,"\\'")}')">`
+        + `${escHtml(label)}${label === my ? ' ·내' : ''}<span class="td-tab-cnt">${cnt}</span></button>`;
+    }).join('');
+  } else if(visible.length === 1){
+    tabs.innerHTML = `<span class="td-teamname">${escHtml(visible[0])} 보드</span>`;
+  } else {
+    tabs.innerHTML = '';
+  }
 
   if(todoSync === '__nosheet__'){
     body.innerHTML = `<div class="td-empty"><b>ToDo</b> 시트를 찾지 못했습니다.<br><br>
@@ -10445,58 +10475,66 @@ function renderTodo(){
       <br><br><button class="btn btn-g" style="font-size:11px" onclick="refreshTodo()">↻ 다시 확인</button></div>`;
     return;
   }
+  if(!todoTeamFilter){
+    body.innerHTML = `<div class="td-empty">소속 팀이 없어 표시할 보드가 없습니다.<br>
+      <span style="font-size:10.5px">관리자에게 팀 등록을 요청해주세요.</span></div>`;
+    return;
+  }
 
   const canEdit = todoCanEdit(todoTeamFilter);
   const list = todoData.filter(t => t.team === todoTeamFilter);
   const open = list.filter(t => t.status !== '완료')
     .sort((a,b) => todoDday(a.due) - todoDday(b.due));
   const done = list.filter(t => t.status === '완료')
-    .sort((a,b) => String(b.doneAt).localeCompare(String(a.doneAt)))
-    .slice(0, 30);
+    .sort((a,b) => String(b.doneAt).localeCompare(String(a.doneAt)));
 
   let html = '';
 
-  // 추가 폼
-  if(canEdit){
-    const members = todoTeamMembers(todoTeamFilter);
-    html += `<div class="td-addbox">
-      <input id="tdNewText" placeholder="할 일을 입력하고 Enter" onkeydown="if(event.key==='Enter')todoAdd()">
-      <div class="td-addrow">
-        <select id="tdNewAssignee">
-          <option value="">담당자 없음</option>
-          ${members.map(m => `<option value="${escHtml(m)}"${m===userEmail?' selected':''}>${escHtml(m)}</option>`).join('')}
-        </select>
-        <input id="tdNewDue" type="date" title="마감일 (선택)">
-      </div>
-      <button class="btn btn-p" style="font-size:12px;padding:7px" onclick="todoAdd()">+ 추가</button>
-    </div>`;
+  // ── 2행: 진행 중 / 완료 탭 ──
+  html += `<div class="td-subtabs">
+    <button class="td-subtab${todoStatusTab === 'open' ? ' on' : ''}" onclick="todoSetStatusTab('open')">
+      진행 중<span class="td-subtab-cnt">${open.length}</span></button>
+    <button class="td-subtab${todoStatusTab === 'done' ? ' on' : ''}" onclick="todoSetStatusTab('done')">
+      완료<span class="td-subtab-cnt">${done.length}</span></button>
+  </div>`;
+
+  if(todoStatusTab === 'open'){
+    if(canEdit){
+      const members = todoTeamMembers(todoTeamFilter);
+      html += `<div class="td-addbox">
+        <input id="tdNewText" placeholder="할 일을 입력하고 Enter" onkeydown="if(event.key==='Enter')todoAdd()">
+        <div class="td-addrow">
+          <select id="tdNewAssignee">
+            <option value="">담당자 없음</option>
+            ${members.map(m => `<option value="${escHtml(m)}"${m===userEmail?' selected':''}>${escHtml(m)}</option>`).join('')}
+          </select>
+          <input id="tdNewDue" type="date" title="마감일 (선택)">
+        </div>
+        <button class="btn btn-p" style="font-size:12px;padding:7px" onclick="todoAdd()">+ 추가</button>
+      </div>`;
+    } else {
+      html += `<div class="td-readonly">🔒 ${escHtml(todoTeamFilter)} 보드는 읽기 전용입니다 (내 팀: ${escHtml(my || '없음')})</div>`;
+    }
+    html += open.length
+      ? open.map(t => todoItemHtml(t, canEdit)).join('')
+      : `<div class="td-empty">진행 중인 할 일이 없습니다 👏</div>`;
   } else {
-    html += `<div class="td-readonly">🔒 ${escHtml(todoTeamFilter)} 보드는 읽기 전용입니다 (내 팀: ${escHtml(my || '없음')})</div>`;
-  }
-
-  // 진행 중
-  html += `<div class="td-sec">진행 중 <span style="color:var(--pri)">${open.length}</span></div>`;
-  html += open.length
-    ? open.map(t => todoItemHtml(t, canEdit)).join('')
-    : `<div class="td-empty">진행 중인 할 일이 없습니다 👏</div>`;
-
-  // 완료
-  if(done.length){
-    html += `<div class="td-sec clickable" onclick="todoToggleDoneSec()">
-      <span id="tdDoneArrow">${_todoDoneOpen ? '▾' : '▸'}</span> 완료 <span style="color:var(--green)">${done.length}</span></div>`;
-    html += `<div id="tdDoneList" style="${_todoDoneOpen ? '' : 'display:none'}">`
-      + done.map(t => todoItemHtml(t, canEdit)).join('') + `</div>`;
+    html += done.length
+      ? done.slice(0, 100).map(t => todoItemHtml(t, canEdit)).join('')
+        + (done.length > 100 ? `<div class="td-empty" style="padding:12px">최근 100건만 표시합니다</div>` : '')
+      : `<div class="td-empty">완료된 항목이 없습니다</div>`;
   }
 
   body.innerHTML = html;
   updateTodoBadge();
 }
-let _todoDoneOpen = false;
-function todoToggleDoneSec(){
-  _todoDoneOpen = !_todoDoneOpen;
-  const l = document.getElementById('tdDoneList'), a = document.getElementById('tdDoneArrow');
-  if(l) l.style.display = _todoDoneOpen ? '' : 'none';
-  if(a) a.textContent = _todoDoneOpen ? '▾' : '▸';
+function todoSetStatusTab(tab){
+  todoStatusTab = tab;
+  todoEditingId = null;
+  renderTodo();
+  const b = document.getElementById('todoBody');
+  if(b) b.scrollTop = 0;
+  haptic(6);
 }
 
 function todoItemHtml(t, canEdit){
@@ -10628,9 +10666,8 @@ async function todoToggle(id, checked){
   try{
     await _todoWrite(next);
     Object.assign(t, next);
-    if(checked) _todoDoneOpen = true;
     renderTodo();
-    showToast(checked ? '완료 처리했습니다' : '진행 중으로 되돌렸습니다', 'ok');
+    showToast(checked ? '완료 탭으로 이동했습니다' : '진행 중 탭으로 되돌렸습니다', 'ok');
     fetchTodoSafe(true);
   }catch(e){
     showToast('변경 실패: ' + (e.message || e), 'err');
