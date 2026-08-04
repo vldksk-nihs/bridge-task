@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.23.1-beta">
+<meta name="version" content="v4.24.1-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1736,6 +1736,74 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 }
 #reconnectBanner .rb-btn:hover{filter:brightness(1.1);}
 
+/* ══ 팀별 ToDo 게시판 (우측 슬라이드 패널) ══════════════ */
+#todoPanel{position:fixed;top:0;right:-420px;width:400px;max-width:100vw;height:100vh;
+  background:var(--sur);border-left:1px solid var(--bd2);z-index:320;
+  display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:-8px 0 32px rgba(0,0,0,.4);}
+#todoPanel.open{right:0;}
+#todoOverlay{position:fixed;inset:0;z-index:319;display:none;}
+#todoOverlay.open{display:block;}
+.td-head{display:flex;align-items:center;gap:8px;padding:16px 16px 12px;border-bottom:1px solid var(--bd);flex-shrink:0;}
+.td-title{font-size:14px;font-weight:800;color:var(--tx);}
+.td-close{width:26px;height:26px;border-radius:5px;background:var(--sur2);border:1px solid var(--bd2);
+  color:var(--tx2);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex:none;}
+.td-close:hover{background:var(--sur3);color:var(--tx);}
+.td-tabs{display:flex;gap:4px;padding:10px 16px;border-bottom:1px solid var(--bd);flex-wrap:wrap;flex-shrink:0;}
+.td-tab{padding:5px 12px;border-radius:14px;border:1px solid var(--bd2);background:var(--sur2);
+  color:var(--tx2);font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;}
+.td-tab:hover{background:var(--sur3);color:var(--tx);}
+.td-tab.on{background:var(--pri);color:#fff;border-color:var(--pri);}
+.td-tab .td-tab-cnt{font-size:10px;opacity:.8;margin-left:3px;}
+.td-body{flex:1;overflow-y:auto;padding:12px 16px 24px;}
+.td-addbox{display:flex;flex-direction:column;gap:6px;background:var(--sur2);border:1px solid var(--bd2);
+  border-radius:8px;padding:10px;margin-bottom:14px;}
+.td-addbox input,.td-addbox select{width:100%;box-sizing:border-box;padding:7px 9px;border-radius:6px;
+  border:1px solid var(--bd2);background:var(--sur3);color:var(--tx);font-size:12.5px;font-family:inherit;}
+.td-addbox input:focus,.td-addbox select:focus{border-color:var(--pri);outline:none;}
+.td-addrow{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.td-sec{font-size:11px;font-weight:700;color:var(--tx3);margin:4px 0 7px;display:flex;align-items:center;gap:6px;cursor:default;}
+.td-sec.clickable{cursor:pointer;}
+.td-sec.clickable:hover{color:var(--tx2);}
+.td-item{display:flex;align-items:flex-start;gap:9px;background:var(--sur2);border:1px solid var(--bd);
+  border-radius:8px;padding:9px 11px;margin-bottom:6px;transition:.12s;}
+.td-item:hover{border-color:var(--bd2);}
+.td-item.done{opacity:.55;}
+.td-chk{flex:none;width:17px;height:17px;margin-top:1px;cursor:pointer;accent-color:var(--green);}
+.td-main{flex:1;min-width:0;}
+.td-text{font-size:12.5px;color:var(--tx);line-height:1.45;word-break:break-word;}
+.td-item.done .td-text{text-decoration:line-through;color:var(--tx2);}
+.td-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:5px;font-size:10.5px;}
+.td-who{color:var(--tx3);}
+.td-dday{padding:1px 7px;border-radius:9px;font-weight:700;}
+.td-dday.over{background:rgba(240,101,101,.16);color:var(--red);}
+.td-dday.soon{background:rgba(245,160,51,.16);color:var(--orange);}
+.td-dday.ok{background:var(--sur3);color:var(--tx3);}
+.td-dday.pulse{animation:dpulse 2.2s ease-in-out infinite;}
+.td-done-at{color:var(--tx3);}
+.td-acts{display:flex;gap:3px;flex:none;}
+.td-acts button{background:none;border:1px solid transparent;border-radius:5px;color:var(--tx3);
+  cursor:pointer;font-size:11px;padding:2px 6px;line-height:1.3;}
+.td-acts button:hover{border-color:var(--bd2);color:var(--tx);}
+.td-acts button.td-del:hover{border-color:var(--red);color:var(--red);}
+.td-empty{padding:26px 10px;text-align:center;color:var(--tx3);font-size:12px;line-height:1.7;}
+.td-editrow{display:flex;flex-direction:column;gap:6px;width:100%;}
+.td-editrow input,.td-editrow select{width:100%;box-sizing:border-box;padding:6px 8px;border-radius:6px;
+  border:1px solid var(--pri);background:var(--sur3);color:var(--tx);font-size:12.5px;font-family:inherit;}
+.td-editbtns{display:flex;gap:6px;justify-content:flex-end;}
+.td-readonly{font-size:10.5px;color:var(--tx3);font-style:italic;padding:2px 0;}
+/* 필터바 ToDo 버튼 */
+#todoOpenBtn{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:6px 12px;
+  white-space:nowrap;line-height:1;position:relative;}
+#todoOpenBtn .td-badge{background:var(--red);color:#fff;border-radius:9px;padding:1px 6px;
+  font-size:9.5px;font-weight:800;display:none;}
+#todoOpenBtn.has-due .td-badge{display:inline-block;}
+@media(max-width:768px){
+  #todoPanel{width:100%;right:-100%;}
+  #todoOpenBtn{padding:6px 9px;}
+  #todoOpenBtn .td-tx{display:none;}
+  #todoOpenBtn .td-ic{font-size:15px;}
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -1746,7 +1814,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.23.1β</span>
+    <span class="sb-ver">v4.24.1β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1845,7 +1913,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.23.1-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.24.1-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1888,6 +1956,8 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   <a class="btn btn-g" id="reportLinkBtn" href="https://brin-meta.vldksk.workers.dev/"
     target="_blank" rel="noopener noreferrer" title="메타 · 키워드광고 리포트 (새 탭으로 열기)">
     <span class="rp-ic">📊</span><span class="rp-tx">리포트</span><span class="rp-ext">↗</span></a>
+  <button class="btn btn-g" id="todoOpenBtn" onclick="openTodoPanel()" title="팀별 ToDo 게시판">
+    <span class="td-ic">✅</span><span class="td-tx">ToDo</span><span class="td-badge">0</span></button>
   <div class="sep"></div>
   <div class="nav-g" id="navG">
     <button class="btn-ic" onclick="shiftTL(-30)">&#8249;</button>
@@ -2516,6 +2586,19 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   </div>
 </div>
 <div class="detail-overlay" id="detailOverlay" onclick="closeDetailPanel()"></div>
+<!-- ══ 팀별 ToDo 게시판 ══════════════════════════════════ -->
+<div id="todoOverlay" onclick="closeTodoPanel()"></div>
+<aside id="todoPanel">
+  <div class="td-head">
+    <span class="td-title">✅ ToDo</span>
+    <span id="todoSync" style="font-size:10px;color:var(--tx3);flex:1"></span>
+    <button class="td-close" onclick="refreshTodo()" title="새로고침">↻</button>
+    <button class="td-close" onclick="closeTodoPanel()" title="닫기">✕</button>
+  </div>
+  <div class="td-tabs" id="todoTabs"></div>
+  <div class="td-body" id="todoBody"></div>
+</aside>
+
 <div class="loading-ov" id="loadingOv"><div class="spin-sm"></div><span id="loadingMsg">데이터를 불러오는 중...</span></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
@@ -3553,6 +3636,8 @@ function handleLogout(){
   if(token)try{google.accounts.oauth2.revoke(token,()=>{});}catch(e){}
   token=null;userEmail='';rows=[];groups=[];clearToken();clearTokenDB().catch(()=>{});if(_silentRefreshTimer)clearTimeout(_silentRefreshTimer);
   _grantedScope='';safeStorage.remove('brin_scope');
+  todoData=[];todoTeamFilter='';todoEditingId=null;_todoSheetName=null;_todoSheetTitles=[];clearInterval(_todoPollTimer);
+  if(typeof closeTodoPanel==='function')closeTodoPanel();
   ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
@@ -3695,6 +3780,8 @@ async function fetchData(isManual){
     }catch(e){console.warn('[BRIN-kwc] parse',e);}
     // 충전내역은 시트가 없을 수 있어서 별도 안전 조회
     fetchChargeSheetSafe();
+    // ToDo 도 시트가 없을 수 있어 단독 조회 (뱃지 갱신용)
+    fetchTodoSafe(true);
     // [3][4] 직방/호갱노노 — 항상 최신 데이터로 갱신
     try{
       parseZbBrin((valueRanges[3]&&valueRanges[3].values)||[]);
@@ -4403,6 +4490,7 @@ document.addEventListener('keydown',e=>{
   // ESC — 모든 모달 닫기
   if(e.key==='Escape'){
     closeDetailPanel();closeSettings();closeLeavePersonMo();
+    if(typeof closeTodoPanel==='function')closeTodoPanel();
   }
   // 입력 중일 때는 단축키 무시
   if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
@@ -10172,6 +10260,434 @@ function downloadAiExcel(name, matchedRows){
   const filename = `BRIN_${name.replace(/[\/\\?%*:|"<>]/g,'_')}_${todayYmd()}.xlsx`;
   XLSX.writeFile(wb, filename);
   showToast('📥 엑셀 다운로드 완료', 'ok');
+}
+
+
+/* ══════════════════════════════════════════════════════
+   ✅ 팀별 ToDo 게시판
+   시트 'ToDo'  A:id  B:팀  C:내용  D:담당자  E:마감일
+                F:상태  G:작성자  H:생성일시  I:완료일시
+   상태값: 진행 / 완료 / 삭제됨  (삭제는 소프트 삭제)
+══════════════════════════════════════════════════════ */
+const TODO_SHEET = 'ToDo';   // 탐지 실패 시 기본값
+const TODO_COLS  = { id:0, team:1, text:2, assignee:3, due:4, status:5, author:6, createdAt:7, doneAt:8 };
+
+let todoData = [];
+let _todoSheetName = null;    // 실제 탭 이름 (자동 탐지 결과)
+let _todoSheetTitles = [];    // 탐지 실패 시 안내용
+let todoTeamFilter = '';      // '' = 내 팀 기본값이 설정됨
+let todoSync = '';
+let todoEditingId = null;
+let _todoPollTimer = null;
+let _todoBusy = false;
+
+/* 탭 이름을 'ToDo' 로 정확히 안 지어도 찾아준다.
+   대소문자·공백·언더바 무시 → todo / To Do / TO_DO / 할일 모두 인식 */
+async function _todoResolveSheet(){
+  if(_todoSheetName) return _todoSheetName;
+  try{
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}?fields=sheets.properties(title)`;
+    const res = await fetch(url, { headers:{ Authorization:`Bearer ${token}` } });
+    if(!res.ok) return null;
+    const j = await res.json();
+    _todoSheetTitles = (j.sheets || []).map(x => x.properties && x.properties.title).filter(Boolean);
+    const norm = t => String(t).toLowerCase().replace(/[\s_\-]/g,'');
+    _todoSheetName =
+         _todoSheetTitles.find(t => norm(t) === 'todo')
+      || _todoSheetTitles.find(t => norm(t) === '할일' || norm(t) === '할일목록')
+      || _todoSheetTitles.find(t => norm(t).includes('todo'))
+      || null;
+    return _todoSheetName;
+  }catch(e){ return null; }
+}
+function _todoRange(suffix){
+  return `${_todoSheetName || TODO_SHEET}!${suffix}`;
+}
+
+// ── 내 팀 라벨 ──
+function todoMyTeamLabel(){
+  const t = (typeof getUserTeam === 'function') ? getUserTeam() : null;
+  return t ? t.label : '';
+}
+// ── 팀 라벨 목록 ──
+function todoAllTeamLabels(){
+  return (typeof TEAMS !== 'undefined') ? Object.values(TEAMS).map(t => t.label) : [];
+}
+// ── 해당 팀 항목을 수정할 수 있는가 ──
+function todoCanEdit(teamLabel){
+  if(typeof userEmail === 'undefined' || !userEmail) return false;
+  if(userEmail === ADMIN_EMAIL) return true;          // 관리자는 전체
+  return teamLabel === todoMyTeamLabel();             // 그 외엔 자기 팀만
+}
+// ── 팀 라벨 → 멤버 이메일 목록 ──
+function todoTeamMembers(label){
+  if(typeof TEAMS === 'undefined') return [];
+  const t = Object.values(TEAMS).find(x => x.label === label);
+  return t && t.members ? t.members.slice() : [];
+}
+
+// ── 파싱 ──
+function parseTodoSheet(values){
+  todoData = [];
+  if(!values || values.length < 2) return;
+  const C = TODO_COLS;
+  for(let i = 1; i < values.length; i++){
+    const r = values[i];
+    if(!r || !r[C.id]) continue;
+    const status = String(r[C.status] || '진행').trim();
+    if(status === '삭제됨') continue;                 // 소프트 삭제 → 화면에서 숨김
+    todoData.push({
+      id:        String(r[C.id]).trim(),
+      team:      String(r[C.team] || '').trim(),
+      text:      String(r[C.text] || '').trim(),
+      assignee:  String(r[C.assignee] || '').trim(),
+      due:       String(r[C.due] || '').trim(),
+      status,
+      author:    String(r[C.author] || '').trim(),
+      createdAt: String(r[C.createdAt] || '').trim(),
+      doneAt:    String(r[C.doneAt] || '').trim(),
+      _rowIdx:   i,
+    });
+  }
+}
+
+// ── 조회 (시트가 없어도 전체 로딩이 깨지지 않도록 단독 호출) ──
+async function fetchTodoSafe(silent){
+  if(!token || !CFG.sheetId) return;
+  try{
+    const name = await _todoResolveSheet();
+    if(!name){ todoData = []; todoSync = '__nosheet__'; if(!silent) renderTodo(); return; }
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(_todoRange('A:I'))}?valueRenderOption=FORMATTED_VALUE`;
+    const res = await fetch(url, { headers:{ Authorization:`Bearer ${token}` } });
+    if(!res.ok){ todoData = []; _todoSheetName = null; todoSync = '__nosheet__'; if(!silent) renderTodo(); return; }
+    const data = await res.json();
+    parseTodoSheet(data.values || []);
+    const n = new Date();
+    todoSync = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')} 갱신`;
+    updateTodoBadge();
+    if(!silent) renderTodo();
+  }catch(e){
+    console.warn('[BRIN-todo]', e);
+  }
+}
+function refreshTodo(){ fetchTodoSafe(); }
+
+// ── 필터바 버튼 뱃지: 내 팀 · 미완료 · 마감 3일 이내 ──
+function updateTodoBadge(){
+  const btn = document.getElementById('todoOpenBtn');
+  if(!btn) return;
+  const my = todoMyTeamLabel();
+  const urgent = todoData.filter(t =>
+    t.status !== '완료' && (!my || t.team === my) && t.due && todoDday(t.due) <= 3).length;
+  btn.classList.toggle('has-due', urgent > 0);
+  const b = btn.querySelector('.td-badge');
+  if(b) b.textContent = urgent;
+}
+
+// ── 마감일 → D-day (음수 = 지남) ──
+function todoDday(dueStr){
+  const d = parseDate(dueStr);
+  if(!d) return 9999;
+  return dayDiff(TODAY, d);
+}
+function todoDdayHtml(dueStr){
+  const d = parseDate(dueStr);
+  if(!d) return '';
+  const n = dayDiff(TODAY, d);
+  let cls = 'ok', txt = `D-${n}`;
+  if(n < 0){ cls = 'over'; txt = `${-n}일 지남`; }
+  else if(n === 0){ cls = 'over'; txt = 'D-DAY'; }
+  else if(n <= 3){ cls = 'soon'; }
+  const pulse = (n >= 0 && n <= 1) ? ' pulse' : '';
+  return `<span class="td-dday ${cls}${pulse}" title="${escHtml(ymdLocal(d))}">${txt}</span>`;
+}
+
+// ── 패널 열기/닫기 ──
+function openTodoPanel(){
+  if(!token){ showToast('로그인 후 이용할 수 있습니다.','warn'); return; }
+  if(!todoTeamFilter) todoTeamFilter = todoMyTeamLabel() || (todoAllTeamLabels()[0] || '');
+  document.getElementById('todoPanel').classList.add('open');
+  document.getElementById('todoOverlay').classList.add('open');
+  renderTodo();
+  fetchTodoSafe();
+  clearInterval(_todoPollTimer);
+  _todoPollTimer = setInterval(() => fetchTodoSafe(true) , 90000);   // 열려 있는 동안만 90초 폴링
+  haptic(8);
+}
+function closeTodoPanel(){
+  document.getElementById('todoPanel').classList.remove('open');
+  document.getElementById('todoOverlay').classList.remove('open');
+  clearInterval(_todoPollTimer);
+  todoEditingId = null;
+}
+function todoSetTeam(label){ todoTeamFilter = label; todoEditingId = null; renderTodo(); haptic(6); }
+
+// ── 렌더 ──
+function renderTodo(){
+  const tabs = document.getElementById('todoTabs');
+  const body = document.getElementById('todoBody');
+  if(!tabs || !body) return;
+
+  const syncEl = document.getElementById('todoSync');
+  if(syncEl) syncEl.textContent = (todoSync && todoSync !== '__nosheet__') ? todoSync : '';
+
+  // 팀 탭
+  const my = todoMyTeamLabel();
+  tabs.innerHTML = todoAllTeamLabels().map(label => {
+    const cnt = todoData.filter(t => t.team === label && t.status !== '완료').length;
+    return `<button class="td-tab${label === todoTeamFilter ? ' on' : ''}" onclick="todoSetTeam('${escHtml(label).replace(/'/g,"\\'")}')">`
+      + `${escHtml(label)}${label === my ? ' ·내' : ''}<span class="td-tab-cnt">${cnt}</span></button>`;
+  }).join('');
+
+  if(todoSync === '__nosheet__'){
+    body.innerHTML = `<div class="td-empty"><b>ToDo</b> 시트를 찾지 못했습니다.<br><br>
+      탭 이름을 <code style="color:var(--pri)">ToDo</code> 로 만들고 1행에 아래 머리글을 넣어주세요.<br>
+      <code style="font-size:10.5px;color:var(--pri)">id · 팀 · 내용 · 담당자 · 마감일 · 상태 · 작성자 · 생성일시 · 완료일시</code>
+      ${_todoSheetTitles.length ? `<br><br><span style="font-size:10.5px">현재 탭: ${escHtml(_todoSheetTitles.join(' · '))}</span>` : ''}
+      <br><br><button class="btn btn-g" style="font-size:11px" onclick="refreshTodo()">↻ 다시 확인</button></div>`;
+    return;
+  }
+
+  const canEdit = todoCanEdit(todoTeamFilter);
+  const list = todoData.filter(t => t.team === todoTeamFilter);
+  const open = list.filter(t => t.status !== '완료')
+    .sort((a,b) => todoDday(a.due) - todoDday(b.due));
+  const done = list.filter(t => t.status === '완료')
+    .sort((a,b) => String(b.doneAt).localeCompare(String(a.doneAt)))
+    .slice(0, 30);
+
+  let html = '';
+
+  // 추가 폼
+  if(canEdit){
+    const members = todoTeamMembers(todoTeamFilter);
+    html += `<div class="td-addbox">
+      <input id="tdNewText" placeholder="할 일을 입력하고 Enter" onkeydown="if(event.key==='Enter')todoAdd()">
+      <div class="td-addrow">
+        <select id="tdNewAssignee">
+          <option value="">담당자 없음</option>
+          ${members.map(m => `<option value="${escHtml(m)}"${m===userEmail?' selected':''}>${escHtml(m)}</option>`).join('')}
+        </select>
+        <input id="tdNewDue" type="date" title="마감일 (선택)">
+      </div>
+      <button class="btn btn-p" style="font-size:12px;padding:7px" onclick="todoAdd()">+ 추가</button>
+    </div>`;
+  } else {
+    html += `<div class="td-readonly">🔒 ${escHtml(todoTeamFilter)} 보드는 읽기 전용입니다 (내 팀: ${escHtml(my || '없음')})</div>`;
+  }
+
+  // 진행 중
+  html += `<div class="td-sec">진행 중 <span style="color:var(--pri)">${open.length}</span></div>`;
+  html += open.length
+    ? open.map(t => todoItemHtml(t, canEdit)).join('')
+    : `<div class="td-empty">진행 중인 할 일이 없습니다 👏</div>`;
+
+  // 완료
+  if(done.length){
+    html += `<div class="td-sec clickable" onclick="todoToggleDoneSec()">
+      <span id="tdDoneArrow">${_todoDoneOpen ? '▾' : '▸'}</span> 완료 <span style="color:var(--green)">${done.length}</span></div>`;
+    html += `<div id="tdDoneList" style="${_todoDoneOpen ? '' : 'display:none'}">`
+      + done.map(t => todoItemHtml(t, canEdit)).join('') + `</div>`;
+  }
+
+  body.innerHTML = html;
+  updateTodoBadge();
+}
+let _todoDoneOpen = false;
+function todoToggleDoneSec(){
+  _todoDoneOpen = !_todoDoneOpen;
+  const l = document.getElementById('tdDoneList'), a = document.getElementById('tdDoneArrow');
+  if(l) l.style.display = _todoDoneOpen ? '' : 'none';
+  if(a) a.textContent = _todoDoneOpen ? '▾' : '▸';
+}
+
+function todoItemHtml(t, canEdit){
+  const isDone = t.status === '완료';
+  const eid = escHtml(t.id).replace(/'/g,"\\'");
+
+  if(todoEditingId === t.id){
+    const members = todoTeamMembers(t.team);
+    const sel = members.includes(t.assignee) ? members : (t.assignee ? [t.assignee, ...members] : members);
+    return `<div class="td-item"><div class="td-editrow">
+      <input id="tdEdText" value="${escHtml(t.text)}" onkeydown="if(event.key==='Enter')todoSaveEdit('${eid}')">
+      <div class="td-addrow">
+        <select id="tdEdAssignee">
+          <option value="">담당자 없음</option>
+          ${sel.map(m => `<option value="${escHtml(m)}"${m===t.assignee?' selected':''}>${escHtml(m)}</option>`).join('')}
+        </select>
+        <input id="tdEdDue" type="date" value="${escHtml(ymdLocal(parseDate(t.due)))}">
+      </div>
+      <div class="td-editbtns">
+        <button class="btn btn-g" style="font-size:11px;padding:5px 12px" onclick="todoCancelEdit()">취소</button>
+        <button class="btn btn-p" style="font-size:11px;padding:5px 12px" onclick="todoSaveEdit('${eid}')">저장</button>
+      </div>
+    </div></div>`;
+  }
+
+  const meta = [];
+  if(!isDone && t.due) meta.push(todoDdayHtml(t.due));
+  if(t.assignee) meta.push(`<span class="td-who">${escHtml(t.assignee)}</span>`);
+  if(isDone && t.doneAt) meta.push(`<span class="td-done-at">${escHtml(String(t.doneAt).slice(5,16))} 완료</span>`);
+
+  return `<div class="td-item${isDone ? ' done' : ''}">
+    <input type="checkbox" class="td-chk" ${isDone ? 'checked' : ''} ${canEdit ? '' : 'disabled'}
+      onchange="todoToggle('${eid}', this.checked)" title="${isDone ? '완료 해제' : '완료 처리'}">
+    <div class="td-main">
+      <div class="td-text">${escHtml(t.text)}</div>
+      ${meta.length ? `<div class="td-meta">${meta.join('')}</div>` : ''}
+    </div>
+    ${canEdit ? `<div class="td-acts">
+      <button onclick="todoStartEdit('${eid}')" title="수정">✏</button>
+      <button class="td-del" onclick="todoDelete('${eid}')" title="삭제">🗑</button>
+    </div>` : ''}
+  </div>`;
+}
+
+// ── 시트 쓰기 공통 ────────────────────────────────
+// 항상 id 로 현재 행을 다시 찾아서 쓴다 (다른 사람이 행을 추가/삭제해도 안전)
+async function _todoFindRowNo(id){
+  await _todoResolveSheet();
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(_todoRange('A:A'))}`;
+  const res = await fetch(url, { headers:{ Authorization:`Bearer ${token}` } });
+  if(!res.ok) throw new Error('ToDo 시트를 읽을 수 없습니다.');
+  const v = (await res.json()).values || [];
+  for(let i = 0; i < v.length; i++){
+    if(String((v[i] && v[i][0]) || '').trim() === id) return i + 1;   // 시트 행번호(1-base)
+  }
+  throw new Error('항목을 찾을 수 없습니다. 이미 삭제되었을 수 있습니다.');
+}
+function _todoRowValues(t){
+  const C = TODO_COLS;
+  const a = new Array(9).fill('');
+  a[C.id]=t.id; a[C.team]=t.team; a[C.text]=t.text; a[C.assignee]=t.assignee;
+  a[C.due]=t.due; a[C.status]=t.status; a[C.author]=t.author;
+  a[C.createdAt]=t.createdAt; a[C.doneAt]=t.doneAt;
+  return a;
+}
+async function _todoWrite(t){
+  const rowNo = await _todoFindRowNo(t.id);
+  const range = _todoRange(`A${rowNo}:I${rowNo}`);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`;
+  const res = await fetch(url, {
+    method:'PUT',
+    headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' },
+    body: JSON.stringify({ values:[_todoRowValues(t)] })
+  });
+  if(!res.ok) throw new Error(await _todoErrMsg(res));
+}
+async function _todoErrMsg(res){
+  const b = await res.json().catch(()=>({}));
+  const m = (b.error && b.error.message) || `HTTP ${res.status}`;
+  if(res.status === 403 && /scope/i.test(m)) return '시트 쓰기 권한이 없습니다. 로그아웃 후 다시 로그인해 "허용"을 눌러주세요.';
+  return m;
+}
+function _todoNow(){
+  const n = _kstShiftedNow();
+  return `${n.getUTCFullYear()}-${String(n.getUTCMonth()+1).padStart(2,'0')}-${String(n.getUTCDate()).padStart(2,'0')}`
+       + ` ${String(n.getUTCHours()).padStart(2,'0')}:${String(n.getUTCMinutes()).padStart(2,'0')}`;
+}
+
+// ── 추가 ──
+async function todoAdd(){
+  if(_todoBusy) return;
+  const text = (document.getElementById('tdNewText').value || '').trim();
+  if(!text){ document.getElementById('tdNewText').focus(); return; }
+  if(!todoCanEdit(todoTeamFilter)){ showToast('이 팀 보드에는 추가할 수 없습니다.','warn'); return; }
+  _todoBusy = true;
+  try{
+    const t = {
+      id: 'td_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      team: todoTeamFilter, text,
+      assignee: document.getElementById('tdNewAssignee').value || '',
+      due: document.getElementById('tdNewDue').value || '',
+      status: '진행', author: userEmail || '', createdAt: _todoNow(), doneAt: '',
+    };
+    await _todoResolveSheet();
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(_todoRange('A:I'))}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+    const res = await fetch(url, {
+      method:'POST',
+      headers:{ Authorization:`Bearer ${token}`, 'Content-Type':'application/json' },
+      body: JSON.stringify({ values:[_todoRowValues(t)] })
+    });
+    if(!res.ok) throw new Error(await _todoErrMsg(res));
+    document.getElementById('tdNewText').value = '';
+    document.getElementById('tdNewDue').value = '';
+    showToast('할 일이 추가되었습니다','ok');
+    await fetchTodoSafe();
+  }catch(e){
+    showToast('추가 실패: ' + (e.message || e), 'err');
+  }finally{ _todoBusy = false; }
+}
+
+// ── 완료 체크 / 해제 ──
+async function todoToggle(id, checked){
+  if(_todoBusy) return;
+  const t = todoData.find(x => x.id === id);
+  if(!t) return;
+  if(!todoCanEdit(t.team)){ showToast('수정 권한이 없습니다.','warn'); renderTodo(); return; }
+  _todoBusy = true;
+  const next = { ...t, status: checked ? '완료' : '진행', doneAt: checked ? _todoNow() : '' };
+  try{
+    await _todoWrite(next);
+    Object.assign(t, next);
+    if(checked) _todoDoneOpen = true;
+    renderTodo();
+    showToast(checked ? '완료 처리했습니다' : '진행 중으로 되돌렸습니다', 'ok');
+    fetchTodoSafe(true);
+  }catch(e){
+    showToast('변경 실패: ' + (e.message || e), 'err');
+    renderTodo();
+  }finally{ _todoBusy = false; }
+}
+
+// ── 수정 ──
+function todoStartEdit(id){
+  const t = todoData.find(x => x.id === id);
+  if(!t || !todoCanEdit(t.team)) return;
+  todoEditingId = id;
+  renderTodo();
+  const el = document.getElementById('tdEdText');
+  if(el){ el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+}
+function todoCancelEdit(){ todoEditingId = null; renderTodo(); }
+async function todoSaveEdit(id){
+  if(_todoBusy) return;
+  const t = todoData.find(x => x.id === id);
+  if(!t) return;
+  const text = (document.getElementById('tdEdText').value || '').trim();
+  if(!text){ document.getElementById('tdEdText').focus(); return; }
+  _todoBusy = true;
+  const next = { ...t, text,
+    assignee: document.getElementById('tdEdAssignee').value || '',
+    due: document.getElementById('tdEdDue').value || '' };
+  try{
+    await _todoWrite(next);
+    Object.assign(t, next);
+    todoEditingId = null;
+    renderTodo();
+    showToast('수정되었습니다','ok');
+    fetchTodoSafe(true);
+  }catch(e){
+    showToast('수정 실패: ' + (e.message || e), 'err');
+  }finally{ _todoBusy = false; }
+}
+
+// ── 삭제 (소프트 삭제) ──
+async function todoDelete(id){
+  if(_todoBusy) return;
+  const t = todoData.find(x => x.id === id);
+  if(!t || !todoCanEdit(t.team)) return;
+  if(!confirm(`"${t.text}"\n\n이 항목을 삭제할까요?\n(시트에는 '삭제됨'으로 남아 복구할 수 있습니다)`)) return;
+  _todoBusy = true;
+  try{
+    await _todoWrite({ ...t, status:'삭제됨' });
+    todoData = todoData.filter(x => x.id !== id);
+    todoEditingId = null;
+    renderTodo();
+    showToast('삭제되었습니다','ok');
+  }catch(e){
+    showToast('삭제 실패: ' + (e.message || e), 'err');
+  }finally{ _todoBusy = false; }
 }
 
 </script>
