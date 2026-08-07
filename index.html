@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="BRIN">
@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.25.0-beta">
+<meta name="version" content="v4.26.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -22,14 +22,18 @@
   --pri:#4f6ef7;--pri2:#3b56d4;
   --green:#2dd98f;--blue:#5ba3f5;--orange:#f5a033;--red:#f06565;--gray:#505870;
   --sh:0 8px 32px rgba(0,0,0,.5);
+  --app-h:100vh;   /* 실제 보이는 화면 높이 (아래 @supports 에서 dvh 로 교체) */
+  --sab:0px;       /* iOS 홈 인디케이터 여백 */
   --hdr-h:52px;    /* 헤더 높이 */
   --fbar-h:53px;   /* 필터바 높이 */
-  --view-h:calc(100vh - var(--hdr-h) - var(--fbar-h)); /* 뷰 영역 높이 */
+  --view-h:calc(var(--app-h) - var(--hdr-h) - var(--fbar-h)); /* 뷰 영역 높이 */
   --m-hdr-h:50px;  /* 모바일 헤더 */
-  --m-view-h:calc(100vh - var(--m-hdr-h) - var(--m-hdr-h)); /* 모바일 뷰 */
+  --m-view-h:calc(var(--app-h) - var(--m-hdr-h) - var(--m-hdr-h)); /* 모바일 뷰 */
 }
+@supports (height:100dvh){ :root{ --app-h:100dvh; } }
+@supports (padding:env(safe-area-inset-bottom)){ :root{ --sab:env(safe-area-inset-bottom); } }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;min-height:100vh;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;min-height:var(--app-h);}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--sur);}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px;}
@@ -79,7 +83,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .nav-g{margin-left:auto;display:flex;align-items:center;gap:6px;}
 .ml{font-size:12px;font-weight:600;min-width:84px;text-align:center;color:var(--tx);}
 
-.lscreen{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 52px);}
+.lscreen{display:flex;align-items:center;justify-content:center;min-height:calc(var(--app-h) - 52px);padding:16px;}
 .lcard{background:var(--sur);border:1px solid var(--bd);border-radius:14px;padding:48px 40px;text-align:center;max-width:400px;width:100%;}
 .lcard h2{font-size:20px;font-weight:700;margin-bottom:8px;}
 .lcard p{color:var(--tx2);font-size:12px;margin-bottom:28px;line-height:1.7;}
@@ -481,7 +485,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 }
 
 @media(max-width:768px){
-  .kw-view{padding:10px;height:calc(100vh - 50px - 50px);}
+  .kw-view{padding:10px;height:var(--view-h);}
   .kw-card{flex-wrap:nowrap;gap:8px;padding:10px 12px;}
   .kw-card .kw-acct{min-width:80px;font-size:12px;}
   .kw-card .kw-balance{min-width:100px;font-size:15px;}
@@ -647,7 +651,7 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
   .inv-card-assignee{display:none;}
   .inv-card-media{grid-column:2;}
 }
-.detail-panel{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--sur);border-left:1px solid var(--bd2);z-index:300;display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 32px rgba(0,0,0,.4);}
+.detail-panel{position:fixed;top:0;right:-320px;width:300px;height:var(--app-h);background:var(--sur);border-left:1px solid var(--bd2);z-index:300;display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 32px rgba(0,0,0,.4);}
 .detail-panel.open{right:0;}
 .detail-overlay{position:fixed;inset:0;z-index:299;display:none;cursor:default;}
 .detail-overlay.open{display:block;}
@@ -777,7 +781,7 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   .gantt-outer.m-pjt-mode .gbar{height:24px;font-size:11px;padding:0 8px;}
 
   /* 모바일 Gantt 높이 */
-  .gantt-outer{height:calc(100vh - 50px - 50px);}
+  .gantt-outer{height:var(--view-h);}
   .gr{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 
   /* DETAIL PANEL → BOTTOM SHEET */
@@ -791,10 +795,10 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   .bsum-card{padding:12px;}
   .bsum-value{font-size:16px;}
   .bgrid{grid-template-columns:1fr;gap:10px;}
-  .budget-view{padding:12px;height:calc(100vh - 50px - 50px - 50px);}
+  .budget-view{padding:12px;height:var(--view-h);}
 
   /* LEAVE → 작은 셀 */
-  .leave-view{padding:10px;height:calc(100vh - 50px - 50px);}
+  .leave-view{padding:10px;height:var(--view-h);}
   .leave-cal-grid{grid-auto-rows:minmax(64px,auto);}
   .lcell{min-height:64px;padding:4px 3px;gap:1px;}
   .l-day{font-size:10px;}
@@ -806,7 +810,7 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   .leave-banner{padding:8px 12px;font-size:11px;flex-wrap:wrap;}
 
   /* MODAL → 풀스크린 */
-  .mc{width:100%;max-width:100%;max-height:100vh;height:100vh;border-radius:0;padding:18px;}
+  .mc{width:100%;max-width:100%;max-height:var(--app-h);height:var(--app-h);border-radius:0;padding:18px;}
 
   /* TOAST */
   .toast-wrap{bottom:auto;top:60px;right:8px;left:8px;}
@@ -820,7 +824,7 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
 
   /* === 모바일 추가 개선 === */
   /* iOS 입력 자동 줌 방지 (font-size>=16px) */
-  .sw input,.fi2,select.fi,.inv-search,input[type="text"],input[type="number"],input[type="search"],input[type="email"],textarea,select{font-size:16px!important;}
+  input,select,textarea{font-size:16px!important;}
   /* 터치 영역 확장 - 아이콘 버튼 */
   .btn-ic{width:36px;height:36px;font-size:16px;}
   /* today-ln 보이는 폭은 유지하되, 보이지 않는 8px 터치 영역 추가 */
@@ -840,6 +844,59 @@ body.light .gantt-bar,body.light .gbar{filter:brightness(.95);}
   .tab .tab-ic{display:none;}
 }
 
+/* ══════════════════════════════════════════════════
+   📱 모바일 종합 보정
+══════════════════════════════════════════════════ */
+@media (max-width:768px){
+  /* 필터바 — 한 줄 유지, 버튼은 아이콘만 */
+  .fbar{flex-wrap:nowrap;}
+  .fbar .sw{flex:1 1 auto;min-width:0;}
+  .fbar .sw input{width:100%;min-width:0;}
+  #scheduleAddBtn{padding:6px 9px!important;}
+  #scheduleAddBtn .fb-tx{display:none;}
+  #scheduleAddBtn .fb-ic{font-size:15px;}
+  .mfilter-btn{flex:none;}
+
+  /* 표는 가로 스크롤 (셀 뭉개짐 방지) */
+  .zb-section{overflow-x:auto;}
+  .zb-table{min-width:520px;}
+  .kwc-pivot-table{min-width:640px;}
+
+  /* 바텀시트 — 홈 인디케이터 여백 확보 */
+  .detail-panel{max-height:calc(var(--app-h) - 56px);padding-bottom:var(--sab);}
+  .dp-body{padding-bottom:calc(20px + var(--sab));}
+  #todoPanel{padding-bottom:var(--sab);}
+  .td-body{padding-bottom:calc(24px + var(--sab));}
+
+  /* 전체화면 모달 하단 여백 */
+  .mc{padding-bottom:calc(18px + var(--sab));}
+
+  /* AI 플로팅 버튼 */
+  #aiFloatBtn{bottom:calc(16px + var(--sab));}
+
+  /* 광고현황·매체안내 서브탭 가로 스크롤 */
+  .sub-tabs,.kw-subtabs{overflow-x:auto;-webkit-overflow-scrolling:touch;
+    flex-wrap:nowrap;white-space:nowrap;padding-left:12px;padding-right:12px;}
+  .sub-tabs::-webkit-scrollbar,.kw-subtabs::-webkit-scrollbar{height:0;}
+  .sub-tab,.kw-subtab{flex:none;}
+
+  /* 텍스트 넘침 방지 */
+  .kw-title,.zb-section-title,.inv-card-pjt{min-width:0;}
+}
+
+/* 아주 좁은 화면 (≤560px) */
+@media (max-width:560px){
+  /* 일정 등록 / API 키 모달 → 바텀시트 */
+  #scheduleAddOverlay,#groqKeyOverlay{align-items:flex-end!important;}
+  .sa-modal{width:100%!important;max-width:100%!important;
+    border-radius:14px 14px 0 0!important;max-height:92vh!important;max-height:calc(var(--app-h) - 24px)!important;
+    padding:18px 16px calc(18px + var(--sab))!important;}
+  /* 요약 카드 2열 */
+  .bsum,.inv-sum-cards,.zb-sum-cards{grid-template-columns:1fr 1fr!important;}
+  /* 연차 카드 1열 */
+  .ls-grid{grid-template-columns:1fr!important;}
+}
+
 /* OFFLINE BANNER (전역) */
 .offline-bar{position:fixed;top:52px;left:0;right:0;background:var(--orange);color:#1a0d00;text-align:center;padding:5px 10px;font-size:11px;font-weight:600;z-index:99;display:none;}
 body.offline .offline-bar{display:block;}
@@ -854,7 +911,7 @@ body.offline .offline-bar{display:block;}
    매체안내 탭
 ═══════════════════════════════════════ */
 .mi-view{padding:18px;overflow-y:auto;height:var(--view-h);}
-@media(max-width:768px){.mi-view{padding:10px;height:calc(100vh - 50px - 50px);}}
+@media(max-width:768px){.mi-view{padding:10px;height:var(--view-h);}}
 
 /* SMS TOOL - BRIN 테마 토글 자동 추종 */
 .sms-tool{
@@ -1123,7 +1180,7 @@ body.light .sms-tool{
 /* ══ 사이드바 (원본 레이아웃 유지 + 좌측 fixed) ══════════ */
 #sidebar{
   position:fixed;top:0;left:0;bottom:0;
-  width:220px;height:100vh;
+  width:220px;height:var(--app-h);
   background:var(--sur);border-right:1px solid var(--bd2);
   display:flex;flex-direction:column;overflow-y:auto;
   z-index:150;transition:transform .25s cubic-bezier(.4,0,.2,1);
@@ -1547,7 +1604,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 #aiChatPanel{
   position:fixed;bottom:90px;right:20px;width:400px;max-width:calc(100vw - 40px);
-  height:560px;max-height:calc(100vh - 130px);
+  height:560px;max-height:calc(var(--app-h) - 130px);
   background:var(--sur);border:1px solid var(--bd2);border-radius:10px;
   box-shadow:0 8px 40px rgba(0,0,0,.55);z-index:9499;
   display:none;flex-direction:column;overflow:hidden;
@@ -1690,7 +1747,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 #aiChatSendBtn:disabled{opacity:.5;cursor:not-allowed;}
 
 @media(max-width:640px){
-  #aiChatPanel{width:calc(100vw - 20px);right:10px;height:calc(100vh - 100px);bottom:80px;}
+  #aiChatPanel{width:calc(100vw - 20px);right:10px;height:calc(var(--app-h) - 96px - var(--sab));bottom:calc(76px + var(--sab));}
   #aiFloatBtn{bottom:16px;right:16px;}
 }
 
@@ -1737,7 +1794,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 #reconnectBanner .rb-btn:hover{filter:brightness(1.1);}
 
 /* ══ 팀별 ToDo 게시판 (우측 슬라이드 패널) ══════════════ */
-#todoPanel{position:fixed;top:0;right:-420px;width:400px;max-width:100vw;height:100vh;
+#todoPanel{position:fixed;top:0;right:-420px;width:400px;max-width:100vw;height:var(--app-h);
   background:var(--sur);border-left:1px solid var(--bd2);z-index:320;
   display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);
   box-shadow:-8px 0 32px rgba(0,0,0,.4);}
@@ -1824,7 +1881,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.25β</span>
+    <span class="sb-ver">v4.26β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1923,7 +1980,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.25.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.26.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -1962,7 +2019,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   <select class="fi" id="pjtFi" onchange="applyFilter()"><option value="">PJT 전체</option></select>
   <select class="fi" id="assigneeFi" onchange="applyFilter()"><option value="">담당자 전체</option></select>
   <button class="btn btn-p hide" id="scheduleAddBtn" onclick="openScheduleAddModal()"
-    style="font-size:11px;padding:6px 12px;white-space:nowrap;margin-left:2px" title="신규 일정 등록">📝 일정 등록</button>
+    style="font-size:11px;padding:6px 12px;white-space:nowrap;margin-left:2px" title="신규 일정 등록"><span class="fb-ic">📝</span><span class="fb-tx"> 일정 등록</span></button>
   <a class="btn btn-g" id="reportLinkBtn" href="https://brin-meta.vldksk.workers.dev/"
     target="_blank" rel="noopener noreferrer" title="메타 · 키워드광고 리포트 (새 탭으로 열기)">
     <span class="rp-ic">📊</span><span class="rp-tx">리포트</span><span class="rp-ext">↗</span></a>
@@ -2934,11 +2991,13 @@ function silentRefresh() {
 function showReconnectBanner(){
   const el = document.getElementById('reconnectBanner');
   if (el) el.style.display = 'flex';
+  if (typeof syncViewHeights === 'function') syncViewHeights();
 }
 
 function hideReconnectBanner(){
   const el = document.getElementById('reconnectBanner');
   if (el) el.style.display = 'none';
+  if (typeof syncViewHeights === 'function') syncViewHeights();
 }
 
 function handleReconnect(){
@@ -3692,9 +3751,11 @@ function onLoggedIn(){
     ?'비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회 + 매체 가이드 문구 수정'
     :'비즈그리다 · 디지털캠프 · 대홍기획 — 집행가능여부 조회';
 
+  syncViewHeights();
   showLoading('데이터를 불러오는 중...');
   fetchData().finally(()=>{
     hideLoading();
+    syncViewHeights();
     // 로그인 후 이전 탭 복원 (URL 해시 기반)
     const savedHash=location.hash.slice(1);
     if(['budget','leave','keyword','media'].includes(savedHash)){
@@ -4564,6 +4625,7 @@ function switchView(v){
   document.getElementById('mediaInfoView').classList.toggle('hide',v!=='media');
   document.getElementById('navG').style.display=v==='gantt'?'flex':'none';
   document.getElementById('fbar').style.display=(v==='gantt'||v==='budget')?'flex':'none';
+  syncViewHeights();
   if(v==='gantt'&&groups.length){if(isMobile())applyMobilePjtMode();else renderGantt();}
   else if(v==='budget'&&groups.length)renderBudget();
   else if(v==='leave')renderLeave();
@@ -6408,6 +6470,28 @@ function updateSyncTime(){
 //  MOBILE / RESPONSIVE / PWA
 // ─────────────────────────────────────────────
 function isMobile(){return window.innerWidth<=768;}
+
+/* 헤더·필터바의 실제 렌더 높이를 CSS 변수로 반영.
+   폰트 크기(모바일 16px 강제)·버튼 줄바꿈·필터바 숨김 상태까지 자동 반영되어
+   뷰 영역이 화면 밖으로 밀리거나 빈 공간이 생기는 문제를 막는다. */
+function syncViewHeights(){
+  try{
+    const hdr = document.querySelector('.hdr');
+    const fbar = document.getElementById('fbar');
+    const rb = document.getElementById('reconnectBanner');
+    const hh = hdr ? Math.round(hdr.getBoundingClientRect().height) : 52;
+    let fh = 0;
+    if(fbar && !fbar.classList.contains('hide') && getComputedStyle(fbar).display !== 'none'){
+      fh = Math.round(fbar.getBoundingClientRect().height);
+    }
+    if(rb && getComputedStyle(rb).display !== 'none'){
+      fh += Math.round(rb.getBoundingClientRect().height);
+    }
+    const root = document.documentElement.style;
+    root.setProperty('--hdr-h', hh + 'px');
+    root.setProperty('--fbar-h', fh + 'px');
+  }catch(e){}
+}
 function haptic(ms){try{if(navigator.vibrate)navigator.vibrate(ms||10);}catch(e){}}
 
 // ── 테마 토글 ─────────────────────────────────
@@ -6715,12 +6799,15 @@ function setupOffline(){
 // 화면 회전/리사이즈 핸들러
 let resizeDebounce=null;
 window.addEventListener('resize',()=>{
+  syncViewHeights();
   clearTimeout(resizeDebounce);
   resizeDebounce=setTimeout(()=>{
+    syncViewHeights();
     applyMobilePjtMode();
     if(view==='gantt'&&!isMobile()){renderGantt();}
   },200);
 });
+window.addEventListener('orientationchange',()=>setTimeout(syncViewHeights,300));
 
 
 window.addEventListener('load',()=>{
@@ -6733,6 +6820,7 @@ window.addEventListener('load',()=>{
   applyTheme(safeStorage.get('brin_theme')||'dark');
   // 자정 날짜 갱신 예약
   scheduleMidnightRefresh();
+  syncViewHeights();
   // 모바일 기능 셋업
   setupPullToRefresh();
   setupLeaveSwipe();
@@ -10729,7 +10817,7 @@ async function todoDelete(id){
 
 <!-- ── 공지사항 팝업 ─────────────────────────────────── -->
 <div id="noticeOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9900;display:none;align-items:center;justify-content:center">
-  <div id="noticeModal" style="background:var(--sur2);border:1px solid var(--bd2);border-radius:16px;width:min(520px,90vw);max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;color:var(--tx)">
+  <div id="noticeModal" style="background:var(--sur2);border:1px solid var(--bd2);border-radius:16px;width:min(520px,90vw);max-height:min(80vh,calc(var(--app-h) - 32px));display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.6);overflow:hidden;color:var(--tx)">
     <!-- 헤더 -->
     <div id="noticeModalHeader" style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--bd2)">
       <span style="font-size:16px;font-weight:800;color:var(--tx)">📢 공지사항</span>
@@ -10762,7 +10850,7 @@ async function todoDelete(id){
 
 <!-- ══ 일정 등록 모달 (관리자 전용) ══════════════════════ -->
 <div id="scheduleAddOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9700;align-items:center;justify-content:center;">
-  <div style="background:var(--sur2);border:1px solid var(--bd2);border-radius:12px;padding:22px;width:470px;max-width:92vw;max-height:88vh;overflow-y:auto;">
+  <div class="sa-modal" style="background:var(--sur2);border:1px solid var(--bd2);border-radius:12px;padding:22px;width:470px;max-width:92vw;max-height:88vh;overflow-y:auto;">
     <div id="saModalTitle" style="font-weight:800;font-size:15px;color:var(--tx);margin-bottom:14px;">📝 신규 일정 등록</div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
@@ -10860,7 +10948,7 @@ async function todoDelete(id){
 
 <!-- ══ Groq API 키 입력 모달 (관리자 아닌 베타테스터용) ══ -->
 <div id="groqKeyOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9600;align-items:center;justify-content:center;">
-  <div style="background:var(--sur2);border:1px solid var(--bd2);border-radius:10px;padding:22px;width:360px;max-width:90vw;">
+  <div class="sa-modal" style="background:var(--sur2);border:1px solid var(--bd2);border-radius:10px;padding:22px;width:360px;max-width:90vw;">
     <div style="font-weight:800;font-size:15px;color:var(--tx);margin-bottom:6px;">🔑 Brin AI API 키 설정</div>
     <div style="font-size:12px;color:var(--tx3);margin-bottom:16px;line-height:1.5;">
       본인의 Groq API 키를 입력하면 Brin AI를 사용할 수 있습니다.<br>
