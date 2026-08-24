@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.26.0-beta">
+<meta name="version" content="v4.27.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -394,6 +394,12 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .kw-biz{display:flex;flex-direction:column;gap:2px;min-width:90px;margin-left:auto;}
 .kw-biz-lbl{font-size:10px;color:var(--tx3);}
 .kw-biz-val{font-size:12px;font-weight:600;color:var(--tx);}
+.kw-stale{display:flex;gap:10px;align-items:flex-start;background:rgba(245,160,51,.08);
+  border:1px solid rgba(245,160,51,.35);border-radius:9px;padding:11px 14px;margin-bottom:12px;}
+.kw-stale-ic{font-size:15px;color:var(--orange);flex:none;line-height:1.4;}
+.kw-stale-tx{font-size:12px;color:var(--orange);line-height:1.6;}
+.kw-stale-sub{font-size:11px;color:var(--tx2);margin-top:5px;line-height:1.6;}
+.kw-stale-sub code{background:var(--sur2);padding:1px 5px;border-radius:3px;color:var(--tx);font-size:10.5px;}
 .kw-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--sur);border:1px solid var(--bd);border-radius:8px;}
 .kw-legend-item{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
 .kw-legend-item.ok{background:rgba(45,217,143,.12);color:var(--green);}
@@ -1881,7 +1887,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.26β</span>
+    <span class="sb-ver">v4.27β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1980,7 +1986,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.26.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.27.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3097,9 +3103,9 @@ const TEAMS={
   },
   team2:{
     label:'2팀',
-    members:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com'],
+    members:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com','mjhlove99@gmail.com'],
     accessAll:false,
-    assignees:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com'],
+    assignees:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com','mjhlove99@gmail.com'],
   },
   team3:{
     label:'3팀',
@@ -5535,7 +5541,8 @@ function renderKeywordCharge(){
   const manualTotal=chargeFiltered.filter(r=>r.method==='수동충전').reduce((s,r)=>s+r.amount,0);
   const autoTotal=chargeFiltered.filter(r=>r.method==='자동충전').reduce((s,r)=>s+r.amount,0);
   const activeMonths=[...new Set(chargeFiltered.map(r=>r.month.slice(5,7)))];
-  if(summary)summary.innerHTML=`<div class="kwc-year-summary"><span class="kwc-year-lbl">${selYear}년 전체 충전금액</span><span class="kwc-year-val">${fmtMoney(yearTotal)}</span><span class="kwc-year-sub" style="margin-left:0">수동 ${fmtMoney(manualTotal)} · 자동 ${fmtMoney(autoTotal)}</span><span class="kwc-year-sub" style="margin-left:auto">${chargeFiltered.length}건 · ${activeMonths.length}개월</span></div>`;
+  const kwchLatestMonth=kwchData.reduce((mx,r)=>r.month>mx?r.month:mx,'');
+  if(summary)summary.innerHTML=staleBannerHtml(kwchLastSync,kwchLatestMonth,'fetchChargeLogs')+`<div class="kwc-year-summary"><span class="kwc-year-lbl">${selYear}년 전체 충전금액</span><span class="kwc-year-val">${fmtMoney(yearTotal)}</span><span class="kwc-year-sub" style="margin-left:0">수동 ${fmtMoney(manualTotal)} · 자동 ${fmtMoney(autoTotal)}</span><span class="kwc-year-sub" style="margin-left:auto">${chargeFiltered.length}건 · ${activeMonths.length}개월</span></div>`;
   const pivot={};
   chargeFiltered.forEach(r=>{if(!pivot[r.acctId])pivot[r.acctId]={};const mo=r.month.slice(5,7);if(!pivot[r.acctId][mo])pivot[r.acctId][mo]={total:0,count:0};pivot[r.acctId][mo].total+=r.amount;pivot[r.acctId][mo].count++;});
   const grandTotal={};MONTHS.forEach(mo=>{grandTotal[mo]=0;});
@@ -5753,20 +5760,49 @@ function parseKeywordCampaign(values){
 }
 
 // 'YYYY-MM' 정규화 헬퍼
+/* 년월 정규화 → 'YYYY-MM'
+   시트 셀 서식(텍스트/날짜/사용자지정)에 따라 표기가 제각각이라 넉넉히 받는다.
+   2026-07 / 2026-07-01 / 2026.07 / 2026. 7 / 2026/07 / 2026년 7월 / 26-07 모두 인식 */
 function normalizeYearMonth(s){
-  if(!s)return'';
-  // 이미 YYYY-MM 형식
-  if(/^\d{4}-\d{2}$/.test(s))return s;
-  // YYYY-MM-DD 형식
-  const m1=s.match(/^(\d{4})-(\d{2})-\d{2}$/);
-  if(m1)return`${m1[1]}-${m1[2]}`;
-  // YYYY.MM 형식
-  const m2=s.match(/^(\d{4})\.(\d{2})/);
-  if(m2)return`${m2[1]}-${m2[2]}`;
-  // YY-MM 형식 (20YY 가정)
-  const m3=s.match(/^(\d{2})-(\d{2})$/);
-  if(m3)return`20${m3[1]}-${m3[2]}`;
+  if(s===null||s===undefined)return'';
+  const t=String(s).trim();
+  if(!t)return'';
+  // YYYY (구분자) M or MM  — 구분자: - . / 년월 공백
+  let m=t.match(/^(\d{4})\s*[-.\/년]\s*(\d{1,2})/);
+  if(m)return`${m[1]}-${String(m[2]).padStart(2,'0')}`;
+  // YY-MM (20YY 가정)
+  m=t.match(/^(\d{2})\s*[-.\/]\s*(\d{1,2})$/);
+  if(m)return`20${m[1]}-${String(m[2]).padStart(2,'0')}`;
   return'';
+}
+
+/* 시트 갱신 시각(문자열) → 경과 일수. 파싱 실패 시 null */
+function syncAgeDays(str){
+  if(!str)return null;
+  const m=String(str).match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})/);
+  if(!m)return null;
+  const d=new Date(+m[1],+m[2]-1,+m[3]);
+  d.setHours(0,0,0,0);
+  return Math.max(0,Math.round((TODAY-d)/86400000));
+}
+
+/* 데이터 신선도 경고 배너 HTML.
+   시트를 채우는 Apps Script 가 멈추면 화면엔 옛날 숫자가 그대로 남아
+   '업데이트가 안 된다'는 오해가 생기므로 명시적으로 알린다. */
+function staleBannerHtml(lastSync, latestMonth, scriptName){
+  const age=syncAgeDays(lastSync);
+  const curMonth=`${TODAY.getFullYear()}-${String(TODAY.getMonth()+1).padStart(2,'0')}`;
+  const monthMissing = latestMonth && latestMonth < curMonth;
+  const tooOld = age!==null && age>=3;
+  if(!monthMissing && !tooOld) return '';
+  const msgs=[];
+  if(monthMissing) msgs.push(`이번 달(${curMonth}) 데이터가 아직 없습니다 · 최신 ${escHtml(latestMonth)}`);
+  if(tooOld) msgs.push(`시트가 ${age}일째 갱신되지 않았습니다${lastSync?` (마지막 ${escHtml(lastSync)})`:''}`);
+  return `<div class="kw-stale">
+    <span class="kw-stale-ic">⚠</span>
+    <div class="kw-stale-tx"><b>데이터가 최신이 아닙니다.</b><br>${msgs.join('<br>')}
+    <div class="kw-stale-sub">앱은 시트를 읽기만 합니다. Apps Script <code>${escHtml(scriptName)}</code> 실행 또는
+    시간 기반 트리거 설정을 확인해주세요.</div></div></div>`;
 }
 
 // ── 캠페인비용 피벗 테이블 렌더 ──────────────────────────
@@ -5825,7 +5861,8 @@ function renderKeywordCampaign(){
   // 연간 합계 요약
   const yearTotal=campFiltered.reduce((s,r)=>s+r.amount,0);
   const activeMonths=MONTHS.filter(mo=>campFiltered.some(r=>r.month===`${selYear}-${mo}`));
-  summary.innerHTML=`
+  const kwcLatestMonth=kwcData.reduce((mx,r)=>r.month>mx?r.month:mx,'');
+  summary.innerHTML=staleBannerHtml(kwcLastSync,kwcLatestMonth,'fetchKeywordCampaignSpending')+`
     <div class="kwc-year-summary">
       <span class="kwc-year-lbl">${selYear}년 전체 광고비</span>
       <span class="kwc-year-val">${fmtMoney(yearTotal)}</span>
@@ -5948,7 +5985,11 @@ function renderKeyword(){
 
   // 마지막 갱신 시각
   const latest=kwData.map(d=>d.updatedAt).filter(Boolean).sort().reverse()[0]||'';
-  if(syncEl)syncEl.textContent=latest?`마지막 갱신: ${latest}`:'—';
+  const latestAge=syncAgeDays(latest);
+  if(syncEl){
+    syncEl.textContent=latest?`마지막 갱신: ${latest}${latestAge>=1?` (${latestAge}일 전)`:''}`:'—';
+    syncEl.style.color=(latestAge!==null&&latestAge>=2)?'var(--orange)':'';
+  }
 
   // 정렬: 지정된 순서대로
   const KW_ORDER=['fiana','brinsight1','brinsight2','brinsight3','brinsight4','brinsight05','brinsight6','brinsight7','brinsight8','brinsight88','brinsight9','brinsight10','brinsight11'];
