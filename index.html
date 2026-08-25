@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.27.0-beta">
+<meta name="version" content="v4.28.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1887,7 +1887,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.27β</span>
+    <span class="sb-ver">v4.28β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1986,7 +1986,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.27.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.28.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -4054,15 +4054,19 @@ function renderGantt(){
   }
   const todayPx=doff(TODAY)*CELL+CELL/2,totalW=DAYS*CELL;
 
+  // 행마다 appendChild 하면 매번 레이아웃이 재계산된다.
+  // 조각(DocumentFragment)에 모아 마지막에 두 번만 붙여 리플로우를 최소화.
+  const fragL=document.createDocumentFragment(), fragR=document.createDocumentFragment();
+
   groups.forEach(g=>{
     const hl=document.createElement('div');hl.className='pjt-hd-l';
     const advBadge=g.advertiser?`<span class="adv-badge">${escHtml(g.advertiser)}</span>`:'';
     hl.innerHTML=`<div class="pdot" style="background:${g.color}"></div><div class="pname" style="color:${g.color}">${escHtml(g.name)}</div>${advBadge}<div class="pbg">${fmtMoney(g.rows.reduce((s,r)=>s+r.budget,0))}</div>`;
-    gl.appendChild(hl);
+    fragL.appendChild(hl);
     const hr=document.createElement('div');hr.className='pjt-hd-r';
     hr.style.width=totalW+'px';hr.style.height='32px';
     if(todayPx>=0&&todayPx<=totalW){const tl=document.createElement('div');tl.className='today-ln';tl.style.left=todayPx+'px';hr.appendChild(tl);}
-    gr.appendChild(hr);
+    fragR.appendChild(hr);
 
     // 매체명 오름차순 정렬 (렌더용 복사본, 원본 데이터 변경 없음)
     const sortedRows=[...g.rows].sort((a,b)=>a.media.localeCompare(b.media,'ko'));
@@ -4072,7 +4076,7 @@ function renderGantt(){
       rl.style.height='34px';
       const pendingBadge=r.isPending?`<span class="rbadge r-pending" title="일정 미정">📅 일정 조정중</span>`:'';
       rl.innerHTML=`<span class="rname" title="${escHtml(r.media)}">${escHtml(r.media)}</span><span class="rbadge ${mcls(r.bsa)}">${escHtml(r.bsa)}</span><span class="rbadge ${scls(r.status)}">${escHtml(displayStatus(r.status))}</span>${pendingBadge}`;
-      gl.appendChild(rl);
+      fragL.appendChild(rl);
       const rr=document.createElement('div');rr.className='grow-r'+(isDone?' done-row':'')+(r.isPending?' pending-row':'');
       rr.style.width=totalW+'px';rr.style.height='34px';
       if(todayPx>=0&&todayPx<=totalW){const tl=document.createElement('div');tl.className='today-ln';tl.style.left=todayPx+'px';rr.appendChild(tl);}
@@ -4080,7 +4084,7 @@ function renderGantt(){
       if(r.isPending){
         rr.style.cursor='pointer';
         rr.addEventListener('click',ev=>{ev.stopPropagation();openDetailPanel({...r,type:r.type||''});});
-        gr.appendChild(rr);
+        fragR.appendChild(rr);
         return;
       }
       const s=doff(r.sdate),e=doff(r.edate);
@@ -4108,9 +4112,12 @@ function renderGantt(){
         bar.addEventListener('click',ev=>{ev.stopPropagation();hideTip();openDetailPanel({...r,type:r.type||''});});
         rr.appendChild(bar);
       }
-      gr.appendChild(rr);
+      fragR.appendChild(rr);
     });
   });
+
+  gl.appendChild(fragL);
+  gr.appendChild(fragR);
 
   // gr 스크롤 → gl 수직 동기화
   const ganttLeft=document.getElementById('ganttLeft'),ganttRight=document.getElementById('ganttRight');
@@ -4156,6 +4163,7 @@ function renderDateHeader(){
   // Row 2: 일 단위 (날짜 + 요일)
   const dayRow=document.createElement('div');dayRow.className='dhd-days';
   dayRow.style.width=(DAYS*CELL)+'px';
+  const dayFrag=document.createDocumentFragment();
   const DOW=['일','월','화','수','목','금','토'];
   for(let i=0;i<DAYS;i++){
     const d=new Date(tlStart);d.setDate(d.getDate()+i);
@@ -4168,8 +4176,9 @@ function renderDateHeader(){
     tick.className='dday'+(isToday?' istoday':'')+(isMStart?' mstart':'')+(isWknd?' wknd':'')+(isSun?' sun':'')+(isSat?' sat':'');
     tick.style.width=CELL+'px';tick.style.minWidth=CELL+'px';
     tick.innerHTML=`<span class="d-num">${d.getDate()}</span><span class="d-dow">${DOW[dow]}</span>`;
-    dayRow.appendChild(tick);
+    dayFrag.appendChild(tick);
   }
+  dayRow.appendChild(dayFrag);
   hd.appendChild(dayRow);
 }
 
@@ -5014,7 +5023,8 @@ let _sheetNotes={};
 async function fetchSheetNotes(){
   if(!token||!CFG.sheetId||!CFG.sheetName)return;
   try{
-    const rangeEnc=encodeURIComponent(`${CFG.sheetName}!A:Z`);
+    // A:Z 전체 그리드는 서버 처리 비용이 커서 실제 데이터 범위(CFG.range)로 제한
+    const rangeEnc=encodeURIComponent(`${CFG.sheetName}!${CFG.range}`);
     const fields=encodeURIComponent('sheets(data(rowData(values(note))))');
     const url=`https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}?includeGridData=true&ranges=${rangeEnc}&fields=${fields}`;
     const res=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
@@ -6367,25 +6377,25 @@ function updateLeaveBanner(){
       const isHalfToday=(p.halfDates||[]).some(d=>d.getTime()===TODAY.getTime());
       const isFullTomorrow=p.dates.some(d=>d.getTime()===tomorrow.getTime());
       const isHalfTomorrow=(p.halfDates||[]).some(d=>d.getTime()===tomorrow.getTime());
-      if(isFullToday)todayNames.push(p.name);
-      else if(isHalfToday)todayNames.push(`${p.name}(반차)`);
-      if(isFullTomorrow)tomorrowNames.push(p.name);
-      else if(isHalfTomorrow)tomorrowNames.push(`${p.name}(반차)`);
+      if(isFullToday)todayNames.push(escHtml(p.name));
+      else if(isHalfToday)todayNames.push(`${escHtml(p.name)}(반차)`);
+      if(isFullTomorrow)tomorrowNames.push(escHtml(p.name));
+      else if(isHalfTomorrow)tomorrowNames.push(`${escHtml(p.name)}(반차)`);
     });
     let parts=[];
-    if(todayNames.length)parts.push(`<span><span class="lb-ic">🏖</span><strong>오늘 연차:</strong> ${escHtml(todayNames.join(', '))}</span>`);
-    if(tomorrowNames.length)parts.push(`<span><span class="lb-ic">📅</span><strong>내일 연차:</strong> ${escHtml(tomorrowNames.join(', '))}</span>`);
+    if(todayNames.length)parts.push(`<span><span class="lb-ic">🏖</span><strong>오늘 연차:</strong> ${todayNames.join(', ')}</span>`);
+    if(tomorrowNames.length)parts.push(`<span><span class="lb-ic">📅</span><strong>내일 연차:</strong> ${tomorrowNames.join(', ')}</span>`);
     const weekEnd=new Date(TODAY);weekEnd.setDate(weekEnd.getDate()+6);
     const weekNames=new Set();
     leaveData.forEach(p=>{
       p.dates.forEach(d=>{
-        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(p.name);
+        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(escHtml(p.name));
       });
       (p.halfDates||[]).forEach(d=>{
-        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(`${p.name}(반차)`);
+        if(d>TODAY&&d<=weekEnd&&d.getTime()!==tomorrow.getTime())weekNames.add(`${escHtml(p.name)}(반차)`);
       });
     });
-    if(weekNames.size)parts.push(`<span style="opacity:.85">이번 주 추가 예정: ${escHtml([...weekNames].join(', '))}</span>`);
+    if(weekNames.size)parts.push(`<span style="opacity:.85">이번 주 추가 예정: ${[...weekNames].join(', ')}</span>`);
     if(parts.length){
       banner.innerHTML=parts.join('<span style="margin:0 8px;opacity:.4">|</span>');
       banner.classList.remove('hide');return;
@@ -6395,10 +6405,10 @@ function updateLeaveBanner(){
     const y=leaveCalDate.getFullYear(),m=leaveCalDate.getMonth();
     const monthNames=new Set();
     leaveData.forEach(p=>{
-      p.dates.forEach(d=>{if(d.getFullYear()===y&&d.getMonth()===m)monthNames.add(p.name);});
+      p.dates.forEach(d=>{if(d.getFullYear()===y&&d.getMonth()===m)monthNames.add(escHtml(p.name));});
     });
     if(monthNames.size){
-      banner.innerHTML=`<span><span class="lb-ic">📅</span><strong>${y}년 ${m+1}월 연차 예정:</strong> ${escHtml([...monthNames].join(', '))}</span>`;
+      banner.innerHTML=`<span><span class="lb-ic">📅</span><strong>${y}년 ${m+1}월 연차 예정:</strong> ${[...monthNames].join(', ')}</span>`;
       banner.classList.remove('hide');return;
     }
   }
@@ -9375,6 +9385,14 @@ function _saToggleAssigneeCustom(){
   custom.style.display = (sel.value === '__custom__') ? '' : 'none';
 }
 
+// 시트 API 응답 → 사람이 읽을 오류 메시지 (권한 부족은 별도 플래그)
+async function _saErrMsg(res){
+  const b = await res.json().catch(()=>({}));
+  const m = (b.error && b.error.message) || `HTTP ${res.status}`;
+  if(res.status === 403 && /scope/i.test(m)){ const e = new Error(m); e._needScope = true; throw e; }
+  return m;
+}
+
 async function saveScheduleAdd(){
   const errEl = document.getElementById('saError');
   errEl.style.display = 'none';
@@ -9444,32 +9462,54 @@ async function saveScheduleAdd(){
 
     let url, method;
     if(isEdit){
-      // ── 수정: 해당 행만 덮어쓰기 ──
-      const rowNo = _saSheetRowNo(_saEditRow);
+      // ── 수정: 대상 행을 '내용'으로 다시 찾아서 덮어쓰기 ──
+      //  이 시트에는 고유 id 컬럼이 없으므로, 열어둔 시점의
+      //  프로젝트+매체+시작일+종료일 4개 값이 모두 같은 행을 실제 시트에서 재탐색한다.
+      //  (행 번호만 믿으면 그 사이 행 삽입/삭제 시 엉뚱한 행을 덮어쓸 수 있음.
+      //   같은 PJT·매체가 연장으로 여러 줄 있는 경우도 날짜까지 봐야 구분됨)
       const rm = String(CFG.range||'A:L').match(/^([A-Za-z]+)\d*:([A-Za-z]+)\d*$/);
       const colA = rm ? rm[1] : 'A', colZ = rm ? rm[2] : 'L';
-      const rowRange = `${CFG.sheetName}!${colA}${rowNo}:${colZ}${rowNo}`;
+      const colIdx = L => [...L.toUpperCase()].reduce((n,ch)=>n*26+(ch.charCodeAt(0)-64),0)-1;
+      const off = colIdx(colA);
 
-      // 안전장치: 쓰기 전에 그 행이 정말 우리가 연 항목인지 확인
-      //  (다른 사람이 시트에 행을 삽입/삭제했으면 행번호가 밀려 엉뚱한 데이터를 덮어쓸 수 있음)
-      const chkRes = await fetch(
-        `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(rowRange)}?valueRenderOption=FORMATTED_VALUE`,
+      const allRes = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(`${CFG.sheetName}!${CFG.range}`)}?valueRenderOption=FORMATTED_VALUE`,
         { headers:{ 'Authorization': `Bearer ${token}` } });
-      if(chkRes.ok){
-        const chk = await chkRes.json();
-        const cur = (chk.values && chk.values[0]) || [];
-        // 조회 범위가 A열에서 시작하지 않을 수도 있으므로 오프셋 보정
-        const colIdx = L => [...L.toUpperCase()].reduce((n,ch)=>n*26+(ch.charCodeAt(0)-64),0)-1;
-        const off = colIdx(colA);
-        const curPjt   = String(cur[C.pjt   - off] || '').trim();
-        const curMedia = String(cur[C.media - off] || '').trim();
-        if(curPjt !== String(_saEditRow.pjt||'').trim() ||
-           curMedia !== String(_saEditRow.media||'').trim()){
-          throw new Error(`시트 ${rowNo}행이 "${curPjt} · ${curMedia}" 로 바뀌어 있습니다. `
-            + `다른 사람이 시트를 수정한 것 같습니다. 새로고침(↻) 후 다시 시도해주세요.`);
-        }
+      if(!allRes.ok) throw new Error(await _saErrMsg(allRes));
+      const allVals = (await allRes.json()).values || [];
+
+      const norm = v => String(v==null?'':v).trim();
+      const sameDate = (cell, d) => {
+        if(!d) return norm(cell) === '';
+        const p = parseDate(cell);
+        return !!p && ymdLocal(p) === ymdLocal(d);
+      };
+      const cand = [];
+      for(let i = CFG.headerRow; i < allVals.length; i++){
+        const row = allVals[i] || [];
+        if(norm(row[C.pjt   - off]) !== norm(_saEditRow.pjt))   continue;
+        if(norm(row[C.media - off]) !== norm(_saEditRow.media)) continue;
+        if(!sameDate(row[C.sdate - off], _saEditRow.sdate))     continue;
+        if(!sameDate(row[C.edate - off], _saEditRow.edate))     continue;
+        cand.push(i);
       }
 
+      const baseRow = (String(CFG.range||'').match(/^[A-Za-z]+(\d+)/) ? parseInt(RegExp.$1,10) : 1);
+      let targetIdx;
+      if(cand.length === 1){
+        targetIdx = cand[0];
+      } else if(cand.length > 1 && cand.includes(_saEditRow._rowIdx)){
+        targetIdx = _saEditRow._rowIdx;              // 완전히 같은 행이 여럿이면 원래 위치 유지
+      } else if(cand.length === 0){
+        throw new Error(`"${_saEditRow.pjt} · ${_saEditRow.media}" 항목을 시트에서 찾지 못했습니다. `
+          + `다른 사람이 이미 수정/삭제했을 수 있습니다. 새로고침(↻) 후 다시 시도해주세요.`);
+      } else {
+        throw new Error(`동일한 내용의 행이 ${cand.length}건 있어 어느 것을 수정할지 특정할 수 없습니다. `
+          + `시트에서 직접 수정해주세요.`);
+      }
+
+      const rowNo = baseRow + targetIdx;
+      const rowRange = `${CFG.sheetName}!${colA}${rowNo}:${colZ}${rowNo}`;
       url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(rowRange)}?valueInputOption=USER_ENTERED`;
       method = 'PUT';
     } else {
@@ -10557,7 +10597,13 @@ function openTodoPanel(){
   renderTodo();
   fetchTodoSafe();
   clearInterval(_todoPollTimer);
-  _todoPollTimer = setInterval(() => fetchTodoSafe(true) , 90000);   // 열려 있는 동안만 90초 폴링
+  // 열려 있는 동안만 90초 폴링. 패널이 닫혔거나 탭이 백그라운드면 스스로 멈춘다.
+  _todoPollTimer = setInterval(() => {
+    const p = document.getElementById('todoPanel');
+    if(!p || !p.classList.contains('open') || !token){ clearInterval(_todoPollTimer); _todoPollTimer = null; return; }
+    if(document.visibilityState !== 'visible') return;
+    fetchTodoSafe(true);
+  }, 90000);
   haptic(8);
 }
 function closeTodoPanel(){
