@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.34.0-beta">
+<meta name="version" content="v4.35.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -154,6 +154,9 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .s-end{background:rgba(240,101,101,.14);color:var(--red);}
 .s-done{background:rgba(100,110,140,.3);color:#8899bb;}
 .s-send{background:rgba(245,160,51,.14);color:var(--orange);}
+/* 시작 전 — 아직 집행 전 구간 (옅은 노란색) */
+.s-todo{background:rgba(247,215,116,.16);color:#e8c65a;}
+body.light .s-todo{background:rgba(214,168,20,.14);color:#8a6a05;}
 
 .grow-r{display:flex;align-items:center;border-bottom:1px solid var(--bd);height:34px;box-sizing:border-box;position:relative;flex-shrink:0;overflow:hidden;}
 .today-ln{position:absolute;top:0;bottom:0;width:2px;background:var(--orange);opacity:.8;pointer-events:all;z-index:5;cursor:pointer;}
@@ -167,6 +170,8 @@ select.fi{background:var(--sur2);border:1px solid var(--bd2);color:var(--tx);pad
 .bar-end{background:rgba(240,101,101,.8);color:#2a0606;}
 .bar-done{background:rgba(90,100,130,.75);color:#b0bcd0;background-image:repeating-linear-gradient(135deg,transparent,transparent 4px,rgba(0,0,0,.2) 4px,rgba(0,0,0,.2) 5px);}
 .bar-send{background:rgba(245,160,51,.85);color:#2a1700;}
+.bar-todo{background:rgba(247,215,116,.82);color:#4a3600;}
+body.light .bar-todo{background:rgba(240,200,80,.92);color:#4a3600;}
 .dday-tag{position:absolute;right:5px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:var(--orange);z-index:6;pointer-events:none;background:rgba(11,13,21,.85);padding:1px 4px;border-radius:2px;border:1px solid var(--orange);}
 .dday-tag.pulse{animation:dpulse 2.4s ease-in-out infinite;}
 .dday-tag.pulse-urgent{animation:dpulseUrgent 1.8s ease-in-out infinite;color:#ff6b6b;border-color:#ff6b6b;}
@@ -1887,7 +1892,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.34β</span>
+    <span class="sb-ver">v4.35β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1986,7 +1991,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.34.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.35.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3709,11 +3714,19 @@ function isDoneStatus(s){const st=String(s||'').trim();return (st.includes('종�
 function displayStatus(s){
   if(!s)return'';
   if(isDoneStatus(s))return'종료';
+  if(isNotStarted(s))return'시작 전';
   if(isOngoing(s))return'진행중';
   return s;
 }
-function scls(s){if(!s)return'';if(isDoneStatus(s))return's-done';if(isOngoing(s))return's-on';return's-pre';}
-function bcls(s){if(!s)return'bar-pre';if(isDoneStatus(s))return'bar-done';if(isOngoing(s))return'bar-on';return'bar-pre';}
+/* '시작 전' 은 진행중 필터에는 포함되지만(타임라인에 보여야 함)
+   실제로는 아직 집행 전이라 바 색을 따로 구분한다.
+   상태값 중 '시작' 을 포함하는 것은 '시작 전' 하나뿐이므로 이 판정이 안전하다. */
+function isNotStarted(s){
+  const st=String(s||'').replace(/\s/g,'');
+  return st.includes('시작')&&!isDoneStatus(s);
+}
+function scls(s){if(!s)return'';if(isDoneStatus(s))return's-done';if(isNotStarted(s))return's-todo';if(isOngoing(s))return's-on';return's-pre';}
+function bcls(s){if(!s)return'bar-pre';if(isDoneStatus(s))return'bar-done';if(isNotStarted(s))return'bar-todo';if(isOngoing(s))return'bar-on';return'bar-pre';}
 function mcls(m){if(!m)return'm-default';const l=m.toLowerCase();if(l.includes('나스'))return'm-nas';if(l.includes('카페'))return'm-naver';if(l.includes('m2'))return'm-m2';if(l.includes('meta')||l.includes('메타'))return'm-meta';if(l.includes('kakao')||l.includes('카카오'))return'm-kakao';if(l.includes('youtube')||l.includes('유튜브'))return'm-youtube';if(l.includes('거래명세서'))return'm-gm';return'm-default';}
 
 // ── OAUTH ──────────────────────────────────────
