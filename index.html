@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.32.0-beta">
+<meta name="version" content="v4.33.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
@@ -1887,7 +1887,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.32β</span>
+    <span class="sb-ver">v4.33β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -1986,7 +1986,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.32.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.33.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -2972,6 +2972,7 @@ let _silentRefreshTimer = null;
      reconnect : 배너 클릭 → 토큰 교체 + 데이터만 새로고침
      interactive: 최초 로그인 → 전체 진입 절차                       */
 let _tokenMode   = 'interactive';
+let _pendingRefetch = false;   // 401 로 중단된 조회가 있는지
 let _silentTry   = 0;
 let _silentBusy  = false;
 let _lastSilentAt= 0;
@@ -3056,7 +3057,11 @@ function handleReconnect(){
    화면이 끊기는 것처럼 보였다. */
 function onTokenRenewed(refetch){
   hideReconnectBanner();
-  if (refetch && typeof fetchData === 'function') fetchData();
+  // 401 로 중단됐던 조회가 있으면 갱신 직후 반드시 다시 불러온다.
+  // (이 처리가 없으면 다음 폴링까지 최대 30분간 화면이 비어 보인다)
+  const need = refetch || _pendingRefetch;
+  _pendingRefetch = false;
+  if (need && typeof fetchData === 'function') fetchData();
 }
 
 // Page Visibility: 탭 복귀 시 토큰 확인
@@ -3783,7 +3788,7 @@ function handleLogout(){
   if(_tokenWatchTimer)clearInterval(_tokenWatchTimer);
   _tokenMode='interactive';_silentTry=0;_silentBusy=false;_lastSilentAt=0;hideReconnectBanner();
   _grantedScope='';safeStorage.remove('brin_scope');
-  todoData=[];todoTeamFilter='';todoStatusTab='open';todoEditingId=null;_todoSheetName=null;_todoSheetTitles=[];clearInterval(_todoPollTimer);
+  todoData=[];todoTeamFilter='';todoStatusTab='open';todoEditingId=null;_todoSheetName=null;_todoSheetMissing=false;_todoSheetTitles=[];clearInterval(_todoPollTimer);
   if(typeof closeTodoPanel==='function')closeTodoPanel();
   ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
@@ -3891,7 +3896,9 @@ async function fetchData(isManual){
     const res=await fetch(url,{headers:{Authorization:`Bearer ${token}`}});
     if(res.status===401){
       // 로그아웃하지 않는다. 화면의 기존 데이터를 유지한 채 토큰만 다시 받는다.
-      console.warn('[BRIN-auth] 401 → 토큰 재발급 시도');
+      // 갱신에 성공하면 onTokenRenewed 가 이 조회를 자동으로 다시 실행한다.
+      console.warn('[BRIN-auth] 401 → 토큰 재발급 후 재조회 예약');
+      _pendingRefetch = true;
       silentRefresh();
       return;
     }
@@ -10682,8 +10689,10 @@ let _todoBusy = false;
 
 /* 탭 이름을 'ToDo' 로 정확히 안 지어도 찾아준다.
    대소문자·공백·언더바 무시 → todo / To Do / TO_DO / 할일 모두 인식 */
+let _todoSheetMissing = false;   // 못 찾았음을 기억 (매 조회마다 메타데이터 요청 방지)
 async function _todoResolveSheet(){
   if(_todoSheetName) return _todoSheetName;
+  if(_todoSheetMissing) return null;
   try{
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}?fields=sheets.properties(title)`;
     const res = await fetch(url, { headers:{ Authorization:`Bearer ${token}` } });
@@ -10696,6 +10705,7 @@ async function _todoResolveSheet(){
       || _todoSheetTitles.find(t => norm(t) === '할일' || norm(t) === '할일목록')
       || _todoSheetTitles.find(t => norm(t).includes('todo'))
       || null;
+    if(!_todoSheetName) _todoSheetMissing = true;   // 새로고침 전까지 재조회 안 함
     return _todoSheetName;
   }catch(e){ return null; }
 }
@@ -10764,7 +10774,7 @@ async function fetchTodoSafe(silent){
     if(!name){ todoData = []; todoSync = '__nosheet__'; if(!silent) renderTodo(); return; }
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${CFG.sheetId}/values/${encodeURIComponent(_todoRange('A:I'))}?valueRenderOption=FORMATTED_VALUE`;
     const res = await fetch(url, { headers:{ Authorization:`Bearer ${token}` } });
-    if(!res.ok){ todoData = []; _todoSheetName = null; todoSync = '__nosheet__'; if(!silent) renderTodo(); return; }
+    if(!res.ok){ todoData = []; _todoSheetName = null; _todoSheetMissing = true; todoSync = '__nosheet__'; if(!silent) renderTodo(); return; }
     const data = await res.json();
     parseTodoSheet(data.values || []);
     const n = new Date();
@@ -10775,7 +10785,7 @@ async function fetchTodoSafe(silent){
     console.warn('[BRIN-todo]', e);
   }
 }
-function refreshTodo(){ fetchTodoSafe(); }
+function refreshTodo(){ _todoSheetMissing=false; _todoSheetName=null; fetchTodoSafe(); }
 
 // ── 필터바 버튼 뱃지: 내 팀 · 미완료 · 마감 3일 이내 ──
 function updateTodoBadge(){
