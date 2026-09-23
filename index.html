@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.36.0-beta">
+<meta name="version" content="v4.38.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -1836,6 +1836,9 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 .td-tab .td-tab-cnt{font-size:10px;opacity:.8;margin-left:3px;}
 .td-body{flex:1;overflow-y:auto;padding:12px 16px 24px;}
 .td-teamname{font-size:12px;font-weight:700;color:var(--pri);padding:4px 2px;}
+.td-orphan{background:rgba(245,160,51,.09);border:1px solid rgba(245,160,51,.32);border-radius:8px;
+  padding:9px 12px;margin-bottom:12px;font-size:11px;color:var(--orange);line-height:1.6;}
+.td-orphan span{color:var(--tx2);}
 .td-subtabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin:-2px 0 14px;}
 .td-subtab{flex:1;padding:8px 4px;border:none;background:none;color:var(--tx3);
   font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
@@ -1976,7 +1979,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.36β</span>
+    <span class="sb-ver">v4.38β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -2080,7 +2083,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.36.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.38.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -3314,38 +3317,49 @@ const PASS_REMEMBER_DAYS=30; // 패스프레이즈 기억 기간(일) // Apps Sc
 
 
 // ── 팀 구성 ──────────────────────────────────────────────
-// 1팀(관리자): 전체 PJT 확인
-// 2팀: 소속 담당자 PJT만 확인
-// 3팀: 소속 담당자 PJT만 확인
+// admin(관리자): 전체 PJT 확인
+// 1·2·3팀: 소속 담당자 PJT만 확인
+// ⚠ label 은 ToDo 시트 B열에 그대로 저장되므로 변경 시 기존 행도 같이 고쳐야 한다
 const TEAMS={
-  team1:{
-    label:'1팀',
+  admin:{
+    label:'관리자',
     members:['vldksk@gmail.com','woooak@gmail.com'],
     accessAll:true,   // 전체 PJT 확인 가능
     assignees:null,   // 필터 없음
   },
+  team1:{
+    label:'1팀',
+    members:['sj@brin.co.kr','haesuinthesea@gmail.com','mjhlove99@gmail.com'],
+    accessAll:false,
+    assignees:['sj@brin.co.kr','haesuinthesea@gmail.com','mjhlove99@gmail.com'],
+  },
   team2:{
     label:'2팀',
-    members:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com','mjhlove99@gmail.com'],
-    accessAll:false,
-    assignees:['sj@brin.co.kr','haesuinthesea@gmail.com','ja3hyun@gmail.com','mjhlove99@gmail.com'],
-  },
-  team3:{
-    label:'3팀',
     members:['dch@brin.co.kr','doyobeeee@gmail.com','cksgud312660@gmail.com'],
     accessAll:false,
     assignees:['dch@brin.co.kr','doyobeeee@gmail.com','cksgud312660@gmail.com'],
+  },
+  team3:{
+    label:'3팀',
+    members:['jae@brin.co.kr','ja3hyun@gmail.com','y3012is@gmail.com'],
+    accessAll:false,
+    assignees:['jae@brin.co.kr','ja3hyun@gmail.com','y3012is@gmail.com'],
   },
 };
 
 /* 일정 등록·수정 권한
    관리자 + 아래 목록에 있는 팀의 소속원.
-   다른 팀에도 열어주려면 'team3' 처럼 키만 추가하면 된다. */
-const SCHEDULE_EDIT_TEAMS=['team2'];
+   다른 팀에도 열어주려면 'team2' 처럼 키만 추가하면 된다. */
+const SCHEDULE_EDIT_TEAMS=['team1','team3'];
 function canManageSchedule(){
   if(typeof userEmail==='undefined'||!userEmail)return false;
   if(userEmail===ADMIN_EMAIL)return true;
   return SCHEDULE_EDIT_TEAMS.some(k=>TEAMS[k]&&TEAMS[k].members.includes(userEmail));
+}
+// 권한 안내 문구 — SCHEDULE_EDIT_TEAMS 를 고쳐도 문구가 따라오도록 자동 생성
+function scheduleEditScopeText(){
+  const names=SCHEDULE_EDIT_TEAMS.map(k=>TEAMS[k]&&TEAMS[k].label).filter(Boolean);
+  return names.length?`관리자 및 ${names.join('·')} 전용`:'관리자 전용';
 }
 
 // 현재 유저의 팀 반환
@@ -4915,7 +4929,7 @@ function closeDetailPanel(){
 function extendCurrentDetail(){
   const r=_dpRow;
   if(!r){ showToast('연장할 항목이 선택되지 않았습니다.','warn'); return; }
-  if(!canManageSchedule()){ showToast('일정 등록·수정 권한이 없습니다. (관리자 및 2팀 전용)','warn'); return; }
+  if(!canManageSchedule()){ showToast('일정 등록·수정 권한이 없습니다. ('+scheduleEditScopeText()+')','warn'); return; }
   if(!r.sdate||!r.edate){ showToast('시작일·종료일이 있어야 연장할 수 있습니다.','warn'); return; }
 
   const days=dayDiff(r.sdate,r.edate)+1;              // 시작일 포함 집행일수
@@ -9559,7 +9573,7 @@ let _saEditRow = null;   // null = 신규 등록, 객체 = 해당 행 수정
 // 모달 공통 준비: 드롭다운 채우기 + 초기화
 function _saPrepareModal(){
   if(!canManageSchedule()){
-    showToast('일정 등록·수정 권한이 없습니다. (관리자 및 2팀 전용)', 'warn');
+    showToast('일정 등록·수정 권한이 없습니다. ('+scheduleEditScopeText()+')', 'warn');
     return false;
   }
   if(!isDataReady()){
@@ -9854,7 +9868,7 @@ async function _saResolveGid(){
 /* 일정 삭제 — 시트 행을 실제로 제거한다. 되돌릴 수 없다. */
 async function deleteScheduleRow(){
   if(!_saEditRow){ showToast('삭제할 항목이 없습니다.','warn'); return; }
-  if(!canManageSchedule()){ showToast('삭제 권한이 없습니다. (관리자 및 2팀 전용)','warn'); return; }
+  if(!canManageSchedule()){ showToast('삭제 권한이 없습니다. ('+scheduleEditScopeText()+')','warn'); return; }
 
   const r = _saEditRow;
   const period = (r.sdate && r.edate) ? `${ymdLocal(r.sdate)} ~ ${ymdLocal(r.edate)}` : '기간 미정';
@@ -11146,12 +11160,25 @@ function renderTodo(){
 
   const canEdit = todoCanEdit(todoTeamFilter);
   const list = todoData.filter(t => t.team === todoTeamFilter);
+
+  /* 팀 라벨은 시트 B열에 문자열로 저장된다.
+     팀명을 바꾸면 기존 행이 어느 보드에도 안 잡히거나 엉뚱한 보드로 가므로,
+     알려진 라벨에 없는 값이 있으면 관리자에게 알려 시트를 고치게 한다. */
+  const knownLabels = todoAllTeamLabels();
+  const orphans = todoData.filter(t => !knownLabels.includes(t.team));
+  const orphanNote = (orphans.length && userEmail === ADMIN_EMAIL)
+    ? `<div class="td-orphan">⚠ 소속 팀을 알 수 없는 항목 ${orphans.length}건
+        (<b>${escHtml([...new Set(orphans.map(t=>t.team||'(빈값)'))].join(', '))}</b>)<br>
+        <span>팀명을 변경하셨다면 시트 <b>ToDo</b> 의 <b>팀</b> 열 값을 현재 팀명으로 바꿔주세요.</span></div>`
+    : '';
   const open = list.filter(t => t.status !== '완료')
     .sort((a,b) => todoDday(a.due) - todoDday(b.due));
   const done = list.filter(t => t.status === '완료')
     .sort((a,b) => String(b.doneAt).localeCompare(String(a.doneAt)));
 
   let html = '';
+
+  html += orphanNote;
 
   // ── 2행: 진행 중 / 완료 탭 ──
   html += `<div class="td-subtabs">
