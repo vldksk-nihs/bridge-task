@@ -10,7 +10,7 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.41.0-beta">
+<meta name="version" content="v4.42.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
@@ -1969,6 +1969,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 #gifToolView .toast.show{transform:translateX(-50%) translateY(0)}
 @media(max-width:580px){#gifToolView .ctrls{grid-template-columns:1fr}#gifToolView .prow{grid-template-columns:1fr}#gifToolView h1{font-size:24px}}
 
+
 /* ══ 문자광고 · 타겟팅 리스트 ══════════════════════════ */
 .tg-presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-bottom:16px;}
 .tg-pre{background:var(--sms-card);border:1.5px solid var(--sms-border);border-radius:9px;
@@ -2026,7 +2027,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.41β</span>
+    <span class="sb-ver">v4.42β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -2133,7 +2134,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.41.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.42.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -2791,7 +2792,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
     <div class="cblock">
       <div class="clabel">프레임 딜레이</div>
       <div class="crow">
-        <input type="range" id="delayR" min="50" max="2000" value="200" step="50">
+        <input type="range" id="delayR" min="50" max="5000" value="200" step="50">
         <span class="vbadge" id="delayV">200ms</span>
       </div>
     </div>
@@ -12817,7 +12818,8 @@ function getOutputSize(){
   return {w:w,h:h};
 }
 
-delayR.addEventListener('input',function(){delayV.textContent=delayR.value+'ms';});
+function fmtDelay(){var v=parseInt(delayR.value);delayV.textContent=v>=1000?(v/1000).toFixed(v%1000?2:0).replace(/\.?0+$/,'')+'s':v+'ms';}
+delayR.addEventListener('input',fmtDelay);
 drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over');});
 drop.addEventListener('dragleave',function(){drop.classList.remove('over');});
 drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');handleFiles(e.dataTransfer.files);});
