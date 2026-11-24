@@ -10,9 +10,10 @@
 <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiQlJJTiBUYXNrIE1hbmFnZXIiLCJzaG9ydF9uYW1lIjoiQlJJTiIsInN0YXJ0X3VybCI6Ii4vIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJvcmllbnRhdGlvbiI6ImFueSIsImJhY2tncm91bmRfY29sb3IiOiIjMGIwZDE1IiwidGhlbWVfY29sb3IiOiIjNGY2ZWY3IiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDt1dGY4LDxzdmcgeG1sbnM9JTI3aHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmclMjcgdmlld0JveD0lMjcwIDAgMTkyIDE5MiUyNz48cmVjdCB3aWR0aD0lMjcxOTIlMjcgaGVpZ2h0PSUyNzE5MiUyNyByeD0lMjczMiUyNyBmaWxsPSUyNyUyMzRmNmVmNyUyNy8+PHRleHQgeD0lMjc1MCUyNSUyNyB5PSUyNzU1JTI1JTI3IGRvbWluYW50LWJhc2VsaW5lPSUyN21pZGRsZSUyNyB0ZXh0LWFuY2hvcj0lMjdtaWRkbGUlMjcgZmlsbD0lMjclMjNmZmZmZmYlMjcgZm9udC1zaXplPSUyNzYwJTI3IGZvbnQtZmFtaWx5PSUyN3NhbnMtc2VyaWYlMjcgZm9udC13ZWlnaHQ9JTI3ODAwJTI3PkJSPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9XX0=">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' width='192' height='192'><rect width='192' height='192' rx='32' fill='%234f6ef7'/><text x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-size='60' font-family='sans-serif' font-weight='800'>BR</text></svg>">
 <title>BRIN Task Manager</title>
-<meta name="version" content="v4.42.0-beta">
+<meta name="version" content="v4.43.0-beta">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap');
@@ -1539,6 +1540,13 @@ body.sb-collapsed .sb-item::after{
   30%{transform:rotate(-10deg) scale(1.1);}
   70%{transform:rotate(10deg) scale(1.1);}
 }
+/* 🖼 이미지 리사이저 → 크기 조절 */
+.sb-item:hover .sb-ic-anim-resize{ animation:sbScale .5s ease; }
+@keyframes sbScale{
+  0%,100%{transform:scale(1);}
+  40%{transform:scale(.82);}
+  70%{transform:scale(1.14);}
+}
 /* ⚙ 설정 → 톱니바퀴 회전 */
 .sb-bottom .sb-item:hover .sb-ic{
   animation:sbSpin .6s ease;
@@ -2017,6 +2025,123 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
   .tg-presets{grid-template-columns:1fr 1fr;}
   .tg-detail-in{grid-template-columns:1fr;}
 }
+
+/* ══ 기타 도구 · 이미지 리사이저 ══════════════════════
+   원본 CSS 를 #imgResizeView 하위로 스코프.
+   .wrap .drop .over .locked .dragging 이 앱과 이름이 겹쳐 스코프가 필수다.
+   테마는 원본의 OS 설정(prefers-color-scheme) 대신 앱의 🌙 토글을 따르도록
+   표면·글자·테두리를 앱 토큰(--sur/--tx/--bd)에 연결했다. 포인트색만 원본 유지. */
+#imgResizeView{
+  overflow-y:auto;height:var(--view-h);position:relative;padding:18px;
+  --bg:transparent; --surface:var(--sur); --surface-2:var(--sur2); --inset:var(--sur3);
+  --fg:var(--tx); --muted:var(--tx2); --line:var(--bd);
+  --accent:#54cdb5; --accent-fg:#06211c; --accent-soft:rgba(84,205,181,.14);
+  --warn:var(--orange);
+  --font-ui:'Noto Sans KR',system-ui,-apple-system,sans-serif;
+  --font-display:'Space Grotesk','Noto Sans KR',system-ui,sans-serif;
+}
+body.light #imgResizeView{
+  --accent:#0d6b5e; --accent-fg:#ffffff; --accent-soft:#e2f0ec; --warn:#8a5000;
+}
+@media(max-width:768px){ #imgResizeView{padding:10px;} }
+
+  #imgResizeView{color-scheme:light}
+  #imgResizeView{margin:0}
+  #imgResizeView img{max-width:100%}
+  #imgResizeView [hidden]{display:none!important}
+  #imgResizeView /* Layout: working canvas on the left, #imgResizeView a single column of controls on the right; stacks at phone width. */
+  
+  
+  
+
+  *{box-sizing:border-box}
+  #imgResizeView{background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:14px;line-height:1.5;
+    -webkit-font-smoothing:antialiased}
+  #imgResizeView .wrap{max-width:1080px;margin:0 auto;padding-block:22px 40px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));
+    padding-right:max(16px,env(safe-area-inset-right,0px));}
+
+  #imgResizeView header{margin-bottom:18px}
+  #imgResizeView h1{font-family:var(--font-display);font-size:21px;font-weight:600;margin:0;letter-spacing:-.01em}
+  #imgResizeView header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+  #imgResizeView .layout{display:grid;gap:16px;grid-template-columns:1fr}
+  @media (min-width:880px){ #imgResizeView .layout{grid-template-columns:minmax(0,1fr) 330px;align-items:start} }
+
+  #imgResizeView .card{background:var(--surface);border:1px solid var(--line);border-radius:12px}
+  #imgResizeView .stage{padding:14px;min-width:0}
+  #imgResizeView .panel{padding:4px 14px 14px}
+
+  #imgResizeView /* ---- stage ---- */
+  .viewport{position:relative;border-radius:9px;padding:14px;display:grid;place-items:center;
+    min-height:250px;background:var(--inset);
+    background-image:linear-gradient(45deg,rgba(128,128,128,.14) 25%,transparent 25%,transparent 75%,rgba(128,128,128,.14) 75%),
+      linear-gradient(45deg,rgba(128,128,128,.14) 25%,transparent 25%,transparent 75%,rgba(128,128,128,.14) 75%);
+    background-size:18px 18px;background-position:0 0,9px 9px;}
+  #imgResizeView #out{display:block;max-width:100%;max-height:min(50vh,430px);width:auto;height:auto;
+    box-shadow:0 0 0 1px rgba(0,0,0,.18),0 6px 18px rgba(0,0,0,.14);border-radius:2px;
+    touch-action:none;cursor:grab}
+  #imgResizeView #out.dragging{cursor:grabbing}
+  #imgResizeView #out.locked{cursor:default}
+  #imgResizeView .stage-foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+    margin-top:11px;font-size:12px;color:var(--muted)}
+  #imgResizeView .srcinfo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+  #imgResizeView .hint{margin-top:9px;font-size:12px;color:var(--muted)}
+
+  #imgResizeView .drop{position:absolute;inset:0;border-radius:9px;display:none;place-items:center;
+    background:var(--accent-soft);border:2px dashed var(--accent);color:var(--accent);font-weight:600}
+  #imgResizeView .viewport.over .drop{display:grid}
+
+  #imgResizeView /* ---- controls ---- */
+  .sec{padding-top:14px;border-top:1px solid var(--line)}
+  #imgResizeView .sec:first-child{border-top:0}
+  #imgResizeView .sec > h2{font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--muted);margin:0 0 9px}
+  #imgResizeView .row{display:flex;gap:8px;align-items:center}
+  #imgResizeView .row + .row{margin-top:9px}
+  #imgResizeView label.fld{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;font-size:11px;color:var(--muted)}
+
+  #imgResizeView input[type=number], #imgResizeView input[type=text], #imgResizeView select{width:100%;min-width:0;font:inherit;font-size:14px;
+    font-variant-numeric:tabular-nums;color:var(--fg);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+  #imgResizeView input[type=number]:focus-visible, #imgResizeView select:focus-visible, #imgResizeView button:focus-visible, #imgResizeView input[type=range]:focus-visible{
+    outline:2px solid var(--accent);outline-offset:1px}
+
+  #imgResizeView .seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:2px;gap:2px}
+  #imgResizeView .seg button{flex:1;min-width:0;font:inherit;font-size:12.5px;font-weight:500;color:var(--muted);
+    background:transparent;border:0;border-radius:7px;padding:6px 4px;cursor:pointer}
+  #imgResizeView .seg button[aria-pressed=true]{background:var(--accent);color:var(--accent-fg)}
+
+  #imgResizeView .chips{display:flex;flex-wrap:wrap;gap:6px}
+  #imgResizeView .chip{font:inherit;font-size:12px;color:var(--fg);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px;cursor:pointer}
+  #imgResizeView .chip:hover{border-color:var(--accent)}
+  #imgResizeView .lockbtn{flex:0 0 auto;align-self:flex-end;height:35px;width:38px;font-size:14px;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:8px;color:var(--muted)}
+  #imgResizeView .lockbtn[aria-pressed=true]{color:var(--accent);border-color:var(--accent);background:var(--accent-soft)}
+
+  #imgResizeView input[type=range]{width:100%;accent-color:var(--accent);background:transparent}
+  #imgResizeView .rangelabel{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);
+    font-variant-numeric:tabular-nums}
+
+  #imgResizeView .check{display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer}
+  #imgResizeView .check input{accent-color:var(--accent);width:15px;height:15px}
+
+  #imgResizeView .readout{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;
+    font-variant-numeric:tabular-nums;padding:8px 10px;background:var(--surface-2);
+    border-radius:8px;color:var(--muted)}
+  #imgResizeView .readout b{color:var(--fg);font-weight:600}
+  #imgResizeView .note{font-size:11.5px;color:var(--warn);margin-top:7px}
+
+  #imgResizeView .save{width:100%;font:inherit;font-size:14px;font-weight:600;color:var(--accent-fg);
+    background:var(--accent);border:0;border-radius:9px;padding:11px;cursor:pointer;margin-top:12px}
+  #imgResizeView .save:disabled{opacity:.5;cursor:default}
+  #imgResizeView .ghost{width:100%;font:inherit;font-size:13px;color:var(--fg);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:9px;padding:9px;cursor:pointer;margin-top:8px}
+  #imgResizeView .status{font-size:12px;color:var(--muted);margin-top:8px;min-height:1.2em}
+
+  @media (prefers-reduced-motion: reduce){#imgResizeView, #imgResizeView *{transition:none!important;animation:none!important}}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
@@ -2027,7 +2152,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 <aside id="sidebar">
   <div class="sb-logo">
     <span class="sb-logo-text">BRIN <em>TASK</em> MANAGER</span>
-    <span class="sb-ver">v4.42β</span>
+    <span class="sb-ver">v4.43β</span>
     <button class="sb-collapse-btn" onclick="toggleSbCollapse()" title="사이드바 접기/펼치기">
       <span class="sb-collapse-icon">◀</span>
     </button>
@@ -2117,6 +2242,9 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
     <button class="sb-item" id="sbn-gif" data-label="GIF 제작" onclick="sbGo('gif')">
       <span class="sb-ic sb-ic-anim-gif">🎞</span> GIF 제작
     </button>
+    <button class="sb-item" id="sbn-imgresize" data-label="이미지 리사이저" onclick="sbGo('imgresize')">
+      <span class="sb-ic sb-ic-anim-resize">🖼</span> 이미지 리사이저
+    </button>
   </nav>
   <div class="sb-bottom">
     <button class="sb-item hide" id="sbSettingsBtn" data-label="설정" onclick="openSettings()">
@@ -2134,7 +2262,7 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
 <header class="hdr">
   <button id="sbHamburger" onclick="toggleSidebar()" title="메뉴">☰</button>
-  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.42.0-beta</span></div>
+  <div class="logo">BRIN <em>TASK</em> MANAGER <span class="ver" title="버전">v4.43.0-beta</span></div>
   <nav class="tabs">
     <button class="tab on" onclick="switchView('gantt')"><span class="tab-ic">📊</span><span class="tab-text">📊 타임라인</span></button>
     <button class="tab" id="budgetTab" onclick="switchView('budget')"><span class="tab-ic">💰</span><span class="tab-text">💰 예산 요약</span></button>
@@ -2765,6 +2893,118 @@ body.has-sidebar.has-ai #aiFloatBtn{display:flex;}
 
     <!-- 향후 추가 영역 -->
 
+  </div>
+
+  <!-- ══ 기타 도구 · 이미지 리사이저 ══════════════════════ -->
+  <div class="mi-view hide" id="imgResizeView">
+<div class="wrap">
+  <header>
+    <h1>이미지 리사이저</h1>
+    <p>원하는 크기를 넣고 이미지를 끌어 잘라낼 위치를 맞춘 뒤 저장합니다. 변환은 모두 이 화면 안에서 처리됩니다.</p>
+  </header>
+
+  <div class="layout">
+    <section class="card stage">
+      <div class="viewport" id="viewport">
+        <canvas id="out" width="1080" height="1080"></canvas>
+        <div class="drop">여기에 이미지를 놓으세요</div>
+      </div>
+      <div class="stage-foot">
+        <span class="srcinfo" id="srcinfo">샘플 이미지 · 1600 × 1200</span>
+        <span class="chips">
+          <button class="chip" id="pick">이미지 열기</button>
+          <button class="chip" id="useSample">샘플로 되돌리기</button>
+        </span>
+      </div>
+      <p class="hint" id="hint">미리보기를 끌어 위치를 옮기고, 휠이나 아래 확대 슬라이더로 크기를 맞추세요. 파일을 끌어다 놓거나 붙여넣기(Ctrl+V)도 됩니다.</p>
+      <input type="file" id="file" accept="image/*" hidden>
+    </section>
+
+    <section class="card panel">
+      <div class="sec">
+        <h2>크기</h2>
+        <div class="seg" role="group" aria-label="크기 지정 방식">
+          <button id="tabSize" aria-pressed="true">가로·세로 지정</button>
+          <button id="tabRatio" aria-pressed="false">비율</button>
+        </div>
+
+        <div id="panelSize">
+          <div class="row" style="margin-top:10px">
+            <label class="fld">가로 (px)<input type="number" id="w" min="1" max="12000" step="1" value="1080"></label>
+            <label class="fld">세로 (px)<input type="number" id="h" min="1" max="12000" step="1" value="1080"></label>
+            <button class="lockbtn" id="lock" aria-pressed="true" title="원본 비율 유지">🔗</button>
+          </div>
+          <div class="row" style="margin-top:10px">
+            <div class="seg" style="flex:1" role="group" aria-label="맞춤 방식">
+              <button id="fitCover" aria-pressed="true">채우기 (잘라냄)</button>
+              <button id="fitContain" aria-pressed="false">맞추기 (여백)</button>
+            </div>
+          </div>
+          <div class="row" id="bgRow" hidden>
+            <label class="fld">여백 색<select id="bg">
+              <option value="#ffffff">흰색</option>
+              <option value="#000000">검정</option>
+              <option value="transparent">투명 (PNG·WebP)</option>
+            </select></label>
+          </div>
+        </div>
+
+        <div id="panelRatio" hidden>
+          <div class="row" style="margin-top:10px">
+            <label class="fld">비율 (%)<input type="number" id="pct" min="1" max="400" step="1" value="50"></label>
+          </div>
+          <input type="range" id="pctRange" min="5" max="300" step="1" value="50" style="margin-top:8px">
+          <div class="chips" style="margin-top:8px">
+            <button class="chip" data-pct="25">25%</button>
+            <button class="chip" data-pct="50">50%</button>
+            <button class="chip" data-pct="75">75%</button>
+            <button class="chip" data-pct="100">100%</button>
+            <button class="chip" data-pct="200">200%</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec" id="posSec">
+        <h2>위치 · 확대</h2>
+        <input type="range" id="zoom" min="100" max="400" step="1" value="100">
+        <div class="rangelabel"><span>확대 <b id="zoomVal">100%</b></span><span id="zoomPx"></span></div>
+        <div class="chips" style="margin-top:9px">
+          <button class="chip" id="btnCover">꽉 채우기</button>
+          <button class="chip" id="btnContain">전체 보이기</button>
+          <button class="chip" id="btnCenter">가운데</button>
+          <button class="chip" id="btn100">원본 1:1</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h2>저장</h2>
+        <div class="row">
+          <label class="fld">형식<select id="fmt">
+            <option value="jpg">JPG</option>
+            <option value="png">PNG</option>
+            <option value="webp">WebP</option>
+          </select></label>
+          <label class="fld" id="qWrap">품질<select id="q">
+            <option value="0.92">높음 (92)</option>
+            <option value="0.82" selected>보통 (82)</option>
+            <option value="0.7">낮음 (70)</option>
+          </select></label>
+        </div>
+        <label class="check" style="margin-top:10px"><input type="checkbox" id="limitOn"><span>용량 제한 맞추기</span></label>
+        <div class="row" id="limitRow" hidden>
+          <label class="fld">최대 용량 (KB)<input type="number" id="limitKb" min="10" max="20000" step="10" value="500"></label>
+        </div>
+        <div class="readout" style="margin-top:11px">
+          <span>결과</span><b id="resultSize">계산 중…</b>
+        </div>
+        <p class="note" id="note" hidden></p>
+        <button class="save" id="save">파일로 저장</button>
+        <button class="ghost" id="reset">설정 초기화</button>
+        <p class="status" id="status"></p>
+      </div>
+    </section>
+  </div>
+</div>
   </div>
 
   <!-- ══ 기타 도구 · GIF 제작 ══════════════════════════ -->
@@ -4050,7 +4290,7 @@ function handleLogout(){
   _grantedScope='';safeStorage.remove('brin_scope');
   todoData=[];todoTeamFilter='';todoStatusTab='open';todoEditingId=null;_todoSheetName=null;_todoSheetMissing=false;_todoSheetTitles=[];clearInterval(_todoPollTimer);
   if(typeof closeTodoPanel==='function')closeTodoPanel();
-  ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','gifToolView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
+  ['ganttView','budgetView','leaveView','keywordView','mediaInfoView','gifToolView','imgResizeView','fbar','syncWrap','refBtn','logoutBtn','settingsBtn','themeBtn','userInfo','mediaInfoTab','smsTabEditBtn','scheduleAddBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('hide');});
   document.getElementById('lscreen').classList.remove('hide');
   document.getElementById('loginBtn').classList.remove('hide');
   clearInterval(pollTimer);
@@ -4101,7 +4341,7 @@ function onLoggedIn(){
     syncViewHeights();
     // 로그인 후 이전 탭 복원 (URL 해시 기반)
     const savedHash=location.hash.slice(1);
-    if(['budget','leave','keyword','media','gif'].includes(savedHash)){
+    if(['budget','leave','keyword','media','gif','imgresize'].includes(savedHash)){
       switchView(savedHash);
     }
   });
@@ -5104,7 +5344,7 @@ function switchView(v){
     t.classList.toggle('on',on);
   });
   // 사이드바 active 동기화
-  ['gantt','budget','leave','keyword','media','gif'].forEach(id=>{
+  ['gantt','budget','leave','keyword','media','gif','imgresize'].forEach(id=>{
     const el=document.getElementById('sbn-'+id);
     if(el)el.classList.toggle('active',id===v);
   });
@@ -5114,6 +5354,7 @@ function switchView(v){
   document.getElementById('keywordView').classList.toggle('hide',v!=='keyword');
   document.getElementById('mediaInfoView').classList.toggle('hide',v!=='media');
   document.getElementById('gifToolView').classList.toggle('hide',v!=='gif');
+  document.getElementById('imgResizeView').classList.toggle('hide',v!=='imgresize');
   document.getElementById('navG').style.display=v==='gantt'?'flex':'none';
   document.getElementById('fbar').style.display=(v==='gantt'||v==='budget')?'flex':'none';
   syncViewHeights();
@@ -9397,7 +9638,7 @@ function closeSidebar(){
 function sbGo(v){
   switchView(v);
   // 1단계 active 동기화
-  ['gantt','budget','leave','keyword','media','gif'].forEach(id=>{
+  ['gantt','budget','leave','keyword','media','gif','imgresize'].forEach(id=>{
     const el=document.getElementById('sbn-'+id);
     if(el)el.classList.toggle('active',id===v);
   });
@@ -13096,6 +13337,389 @@ function renderTargeting(){
       실제 집행 가능 여부·최소 금액은 <b>① 집행 가능여부</b> 탭에서 확인하세요. 타겟팅 조건은 매체사 정책에 따라 변동됩니다.
     </div>`;
 }
+
+
+/* ══ 기타 도구 · 이미지 리사이저 ═════════════════════════════
+   원본 스크립트는 이미 (function(){…})() 로 감싸져 있어 전역 오염이 없다.
+   그대로 삽입한다.                                              */
+
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var out = $('out'), ctx = out.getContext('2d', {willReadFrequently:false});
+
+  var source = null;            // {el, w, h, name, bytes}
+  var mode = 'size';            // 'size' | 'ratio'
+  var fit = 'cover';            // 'cover' | 'contain'
+  var keepRatio = true;
+  var tw = 1080, th = 1080;
+  var scale = 1, offX = 0, offY = 0;
+  var downCache = {k:1, el:null};
+
+  /* ---------- sample image ---------- */
+  function makeSample(){
+    var c = document.createElement('canvas');
+    c.width = 1600; c.height = 1200;
+    var g = c.getContext('2d');
+    var grad = g.createLinearGradient(0,0,1600,1200);
+    grad.addColorStop(0,'#0b4f46'); grad.addColorStop(.5,'#2c8a79'); grad.addColorStop(1,'#d9c483');
+    g.fillStyle = grad; g.fillRect(0,0,1600,1200);
+    g.globalAlpha = .18; g.fillStyle = '#ffffff';
+    for(var i=0;i<7;i++){ g.beginPath(); g.arc(240+i*210, 300+((i%3)*220), 90+(i%4)*34, 0, Math.PI*2); g.fill(); }
+    g.globalAlpha = 1;
+    g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 4;
+    g.strokeRect(60,60,1480,1080);
+    g.fillStyle = 'rgba(255,255,255,.95)';
+    g.font = '600 76px Inter, sans-serif';
+    g.fillText('샘플 이미지', 110, 680);
+    g.font = '500 38px Inter, sans-serif';
+    g.fillStyle = 'rgba(255,255,255,.85)';
+    g.fillText('1600 × 1200 — 내 이미지를 올리면 바뀝니다', 112, 745);
+    return {el:c, w:1600, h:1200, name:'sample', bytes:0};
+  }
+
+  /* ---------- scaling helpers ---------- */
+  function sourceFor(s){
+    if(!source) return {el:null, k:1};
+    if(s >= 0.5) return {el:source.el, k:1};
+    var k = 1;
+    while(k/2 > s) k /= 2;
+    if(downCache.k === k && downCache.el) return {el:downCache.el, k:k};
+    var el = source.el, cur = 1;
+    while(cur/2 >= k){
+      cur /= 2;
+      var c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(source.w*cur));
+      c.height = Math.max(1, Math.round(source.h*cur));
+      var g = c.getContext('2d');
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+      g.drawImage(el, 0, 0, c.width, c.height);
+      el = c;
+    }
+    downCache = {k:k, el:el};
+    return {el:el, k:k};
+  }
+  function containScale(){ return Math.min(tw/source.w, th/source.h); }
+  function coverScale(){ return Math.max(tw/source.w, th/source.h); }
+  function center(){ offX = (tw - source.w*scale)/2; offY = (th - source.h*scale)/2; }
+  function applyFit(which){
+    scale = which === 'contain' ? containScale() : coverScale();
+    center(); syncZoom();
+  }
+  function clampOffset(){
+    var iw = source.w*scale, ih = source.h*scale;
+    if(iw >= tw) offX = Math.min(0, Math.max(tw-iw, offX)); else offX = Math.min(tw-iw, Math.max(0, offX));
+    if(ih >= th) offY = Math.min(0, Math.max(th-ih, offY)); else offY = Math.min(th-ih, Math.max(0, offY));
+  }
+
+  /* ---------- render ---------- */
+  function effectiveBg(){
+    var v = $('bg').value;
+    if($('fmt').value === 'jpg' && v === 'transparent') return '#ffffff';
+    return v;
+  }
+  function render(){
+    if(!source) return;
+    out.width = tw; out.height = th;
+    ctx.clearRect(0,0,tw,th);
+    var bg = effectiveBg();
+    if(bg !== 'transparent'){ ctx.fillStyle = bg; ctx.fillRect(0,0,tw,th); }
+    var src = sourceFor(scale);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(src.el, offX, offY, source.w*scale, source.h*scale);
+    $('bgRow').hidden = !(mode === 'size' && fit === 'contain');
+    $('zoomPx').textContent = Math.round(source.w*scale) + ' × ' + Math.round(source.h*scale) + ' px';
+    out.classList.toggle('locked', mode === 'ratio');
+    scheduleEstimate();
+  }
+
+  /* ---------- zoom slider ---------- */
+  function syncZoom(){
+    var base = containScale();
+    var rel = Math.round(scale/base*100);
+    var max = Math.max(400, Math.ceil(coverScale()/base*100) + 80);
+    var z = $('zoom');
+    z.min = 20; z.max = max; z.value = Math.min(max, Math.max(20, rel));
+    $('zoomVal').textContent = rel + '%';
+  }
+  $('zoom').addEventListener('input', function(){
+    if(!source || mode === 'ratio') return;
+    var base = containScale();
+    var cx = tw/2, cy = th/2;
+    var rx = (cx - offX)/(source.w*scale), ry = (cy - offY)/(source.h*scale);
+    scale = base * (+this.value/100);
+    offX = cx - rx*source.w*scale; offY = cy - ry*source.h*scale;
+    $('zoomVal').textContent = Math.round(scale/base*100) + '%';
+    render();
+  });
+
+  /* ---------- drag ---------- */
+  var drag = null;
+  out.addEventListener('pointerdown', function(e){
+    if(!source || mode === 'ratio') return;
+    var f = out.width / out.getBoundingClientRect().width;
+    drag = {x:e.clientX, y:e.clientY, ox:offX, oy:offY, f:f};
+    out.setPointerCapture(e.pointerId); out.classList.add('dragging');
+  });
+  out.addEventListener('pointermove', function(e){
+    if(!drag) return;
+    offX = drag.ox + (e.clientX - drag.x)*drag.f;
+    offY = drag.oy + (e.clientY - drag.y)*drag.f;
+    render();
+  });
+  function endDrag(e){
+    if(!drag) return;
+    drag = null; out.classList.remove('dragging');
+    try{ out.releasePointerCapture(e.pointerId); }catch(err){}
+  }
+  out.addEventListener('pointerup', endDrag);
+  out.addEventListener('pointercancel', endDrag);
+  out.addEventListener('wheel', function(e){
+    if(!source || mode === 'ratio') return;
+    e.preventDefault();
+    var r = out.getBoundingClientRect(), f = out.width/r.width;
+    var px = (e.clientX - r.left)*f, py = (e.clientY - r.top)*f;
+    var rx = (px - offX)/(source.w*scale), ry = (py - offY)/(source.h*scale);
+    var next = scale * (e.deltaY < 0 ? 1.08 : 1/1.08);
+    next = Math.max(containScale()*0.2, Math.min(containScale()*12, next));
+    scale = next;
+    offX = px - rx*source.w*scale; offY = py - ry*source.h*scale;
+    syncZoom(); render();
+  }, {passive:false});
+
+  /* ---------- size inputs ---------- */
+  function setTarget(nw, nh){
+    tw = Math.max(1, Math.min(12000, Math.round(nw)));
+    th = Math.max(1, Math.min(12000, Math.round(nh)));
+    $('w').value = tw; $('h').value = th;
+    applyFit(fit); render();
+  }
+  $('w').addEventListener('input', function(){
+    var v = parseInt(this.value, 10); if(!v || v < 1) return;
+    setTarget(v, keepRatio ? v * source.h/source.w : th);
+  });
+  $('h').addEventListener('input', function(){
+    var v = parseInt(this.value, 10); if(!v || v < 1) return;
+    setTarget(keepRatio ? v * source.w/source.h : tw, v);
+  });
+  $('lock').addEventListener('click', function(){
+    keepRatio = !keepRatio; this.setAttribute('aria-pressed', String(keepRatio));
+    this.textContent = keepRatio ? '🔗' : '⛓️‍💥';
+  });
+
+  function setFit(v){
+    fit = v;
+    $('fitCover').setAttribute('aria-pressed', String(v === 'cover'));
+    $('fitContain').setAttribute('aria-pressed', String(v === 'contain'));
+    applyFit(v); render();
+  }
+  $('fitCover').addEventListener('click', function(){ setFit('cover'); });
+  $('fitContain').addEventListener('click', function(){ setFit('contain'); });
+  $('bg').addEventListener('change', render);
+
+  /* ---------- ratio mode ---------- */
+  function applyPct(p){
+    p = Math.max(1, Math.min(400, p));
+    $('pct').value = p; $('pctRange').value = Math.min(300, p);
+    tw = Math.max(1, Math.round(source.w*p/100));
+    th = Math.max(1, Math.round(source.h*p/100));
+    scale = p/100; offX = 0; offY = 0;
+    $('w').value = tw; $('h').value = th;
+    syncZoom(); render();
+  }
+  $('pct').addEventListener('input', function(){ var v = parseFloat(this.value); if(v) applyPct(v); });
+  $('pctRange').addEventListener('input', function(){ applyPct(parseFloat(this.value)); });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-pct]'), function(b){
+    b.addEventListener('click', function(){ applyPct(parseFloat(b.dataset.pct)); });
+  });
+
+  function setMode(m){
+    mode = m;
+    $('tabSize').setAttribute('aria-pressed', String(m === 'size'));
+    $('tabRatio').setAttribute('aria-pressed', String(m === 'ratio'));
+    $('panelSize').hidden = m !== 'size';
+    $('panelRatio').hidden = m !== 'ratio';
+    $('posSec').hidden = m !== 'size';
+    $('hint').textContent = m === 'size'
+      ? '미리보기를 끌어 위치를 옮기고, 휠이나 확대 슬라이더로 크기를 맞추세요. 파일을 끌어다 놓거나 붙여넣기(Ctrl+V)도 됩니다.'
+      : '원본 비율 그대로 전체를 축소·확대합니다. 잘라낼 부분을 고르려면 가로·세로 지정을 쓰세요.';
+    if(m === 'ratio') applyPct(parseFloat($('pct').value) || 50);
+    else { applyFit(fit); render(); }
+  }
+  $('tabSize').addEventListener('click', function(){ setMode('size'); });
+  $('tabRatio').addEventListener('click', function(){ setMode('ratio'); });
+
+  $('btnCover').addEventListener('click', function(){ applyFit('cover'); render(); });
+  $('btnContain').addEventListener('click', function(){ applyFit('contain'); render(); });
+  $('btnCenter').addEventListener('click', function(){ center(); render(); });
+  $('btn100').addEventListener('click', function(){ scale = 1; center(); syncZoom(); render(); });
+
+  /* ---------- encoding ---------- */
+  var TYPES = {jpg:'image/jpeg', png:'image/png', webp:'image/webp'};
+  function toBlob(canvas, type, q){
+    return new Promise(function(res){ canvas.toBlob(function(b){ res(b); }, type, q); });
+  }
+  function scaledCopy(canvas, s){
+    var c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(canvas.width*s));
+    c.height = Math.max(1, Math.round(canvas.height*s));
+    var g = c.getContext('2d');
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high';
+    if(effectiveBg() !== 'transparent'){ g.fillStyle = effectiveBg(); g.fillRect(0,0,c.width,c.height); }
+    g.drawImage(canvas, 0, 0, c.width, c.height);
+    return c;
+  }
+  async function build(){
+    var fmt = $('fmt').value, type = TYPES[fmt];
+    var limit = $('limitOn').checked && fmt !== 'png' ? Math.round(parseFloat($('limitKb').value || 0)*1024) : 0;
+    if(fmt === 'png'){
+      var b = await toBlob(out, type);
+      return {blob:b, w:out.width, h:out.height, q:null};
+    }
+    if(!limit){
+      var q = parseFloat($('q').value);
+      var b2 = await toBlob(out, type, q);
+      return {blob:b2, w:out.width, h:out.height, q:q};
+    }
+    var lo = 0.05, hi = 0.96, best = null;
+    for(var i=0;i<8;i++){
+      var mid = (lo+hi)/2;
+      var bb = await toBlob(out, type, mid);
+      if(bb.size <= limit){ best = {blob:bb, q:mid}; lo = mid; } else hi = mid;
+    }
+    if(best) return {blob:best.blob, w:out.width, h:out.height, q:best.q, limited:true};
+    var s = 1;
+    for(var j=0;j<12;j++){
+      s *= 0.85;
+      var c = scaledCopy(out, s);
+      var b3 = await toBlob(c, type, 0.72);
+      if(b3.size <= limit) return {blob:b3, w:c.width, h:c.height, q:0.72, limited:true, shrunk:true};
+    }
+    var last = await toBlob(out, type, 0.05);
+    return {blob:last, w:out.width, h:out.height, q:0.05, limited:true, failed:true};
+  }
+
+  function fmtSize(n){
+    return n < 1024*1024 ? (n/1024).toFixed(0) + ' KB' : (n/1024/1024).toFixed(2) + ' MB';
+  }
+  var estTimer = null, estToken = 0;
+  function scheduleEstimate(){
+    clearTimeout(estTimer);
+    $('resultSize').textContent = '계산 중…';
+    estTimer = setTimeout(runEstimate, 320);
+  }
+  async function runEstimate(){
+    var token = ++estToken;
+    try{
+      var r = await build();
+      if(token !== estToken || !r.blob) return;
+      $('resultSize').textContent = r.w + ' × ' + r.h + ' · ' + fmtSize(r.blob.size);
+      var note = $('note');
+      if(r.failed){ note.hidden = false; note.textContent = '지정한 용량까지 줄이지 못했습니다. 크기를 더 줄이거나 WebP를 써 보세요.'; }
+      else if(r.shrunk){ note.hidden = false; note.textContent = '용량을 맞추려고 ' + r.w + ' × ' + r.h + ' px로 더 줄였습니다.'; }
+      else if(r.limited){ note.hidden = false; note.textContent = '품질 ' + Math.round(r.q*100) + '으로 자동 조정했습니다.'; }
+      else note.hidden = true;
+    }catch(e){
+      if(token === estToken) $('resultSize').textContent = '계산 실패';
+    }
+  }
+
+  $('fmt').addEventListener('change', function(){
+    var png = this.value === 'png';
+    $('qWrap').style.visibility = png || $('limitOn').checked ? 'hidden' : 'visible';
+    if(png && $('limitOn').checked){ $('limitOn').checked = false; $('limitRow').hidden = true; }
+    render();
+  });
+  $('q').addEventListener('change', scheduleEstimate);
+  $('limitOn').addEventListener('change', function(){
+    if(this.checked && $('fmt').value === 'png'){ $('fmt').value = 'jpg'; }
+    $('limitRow').hidden = !this.checked;
+    $('qWrap').style.visibility = this.checked || $('fmt').value === 'png' ? 'hidden' : 'visible';
+    scheduleEstimate();
+  });
+  $('limitKb').addEventListener('input', scheduleEstimate);
+
+  /* ---------- save ---------- */
+  function baseName(){
+    var n = (source && source.name) || 'image';
+    return n.replace(/\.[^.]+$/, '').slice(0, 60) || 'image';
+  }
+  $('save').addEventListener('click', async function(){
+    var btn = this, st = $('status');
+    btn.disabled = true; st.textContent = '만드는 중…';
+    try{
+      var r = await build();
+      if(!r.blob) throw new Error('encode');
+      var name = baseName() + '_' + r.w + 'x' + r.h + '.' + $('fmt').value;
+      var url = URL.createObjectURL(r.blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+      st.textContent = name + ' 저장됨 (' + fmtSize(r.blob.size) + ')';
+    }catch(err){
+      st.textContent = '저장하지 못했습니다.';
+    }finally{ btn.disabled = false; }
+  });
+
+  $('reset').addEventListener('click', function(){
+    setMode('size'); keepRatio = true;
+    $('lock').setAttribute('aria-pressed','true'); $('lock').textContent = '🔗';
+    $('limitOn').checked = false; $('limitRow').hidden = true;
+    $('fmt').value = 'jpg'; $('q').value = '0.82'; $('qWrap').style.visibility = 'visible';
+    $('bg').value = '#ffffff'; $('status').textContent = '';
+    setTarget(Math.min(1080, source.w), Math.min(1080, source.w) * source.h/source.w);
+    setFit('cover');
+  });
+
+  /* ---------- loading images ---------- */
+  function setSource(s){
+    source = s; downCache = {k:1, el:null};
+    $('srcinfo').textContent = (s.name === 'sample' ? '샘플 이미지' : s.name) + ' · ' + s.w + ' × ' + s.h
+      + (s.bytes ? ' · ' + fmtSize(s.bytes) : '');
+    $('status').textContent = '';
+    if(mode === 'ratio'){ applyPct(parseFloat($('pct').value) || 50); }
+    else{
+      var cap = 1080;
+      var nw = s.w > cap ? cap : s.w;
+      setTarget(nw, nw * s.h/s.w);
+    }
+  }
+  async function loadFile(file){
+    if(!file || !/^image\//.test(file.type)){ $('status').textContent = '이미지 파일만 열 수 있습니다.'; return; }
+    try{
+      var bmp = await createImageBitmap(file, {imageOrientation:'from-image'});
+      setSource({el:bmp, w:bmp.width, h:bmp.height, name:file.name, bytes:file.size});
+    }catch(e){
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function(){ setSource({el:im, w:im.naturalWidth, h:im.naturalHeight, name:file.name, bytes:file.size}); };
+      im.onerror = function(){ $('status').textContent = '이미지를 읽지 못했습니다.'; };
+      im.src = url;
+    }
+  }
+  $('pick').addEventListener('click', function(){ $('file').click(); });
+  $('file').addEventListener('change', function(){ if(this.files[0]) loadFile(this.files[0]); this.value = ''; });
+  $('useSample').addEventListener('click', function(){ setSource(makeSample()); });
+
+  var vp = $('viewport');
+  ['dragenter','dragover'].forEach(function(ev){
+    vp.addEventListener(ev, function(e){ e.preventDefault(); vp.classList.add('over'); });
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    vp.addEventListener(ev, function(e){ e.preventDefault(); vp.classList.remove('over'); });
+  });
+  vp.addEventListener('drop', function(e){
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if(f) loadFile(f);
+  });
+  document.addEventListener('paste', function(e){
+    var items = e.clipboardData && e.clipboardData.files;
+    if(items && items[0]) loadFile(items[0]);
+  });
+
+  setSource(makeSample());
+})();
+
 </script>
 
 <!-- ── 공지사항 팝업 ─────────────────────────────────── -->
